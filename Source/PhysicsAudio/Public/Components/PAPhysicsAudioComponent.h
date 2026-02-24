@@ -23,12 +23,15 @@ public:
 	void OnAttachedToPhysicsComponent(UPrimitiveComponent* InPhysicsComponent, const FPAPhysicsActorAudioHandle& InAudioProperties);
 	void OnDetachedFromPhysicsComponent();
 	
-protected:
+protected:	
+	void PlayCollisionSound();
+	
 	void SetMassData();
 	float ObjectMass;
 	float MinVelocityToSpawnCollisionSound;
 	float MinVelocityDeltaToSpawnSound;
 	
+	UPROPERTY()
 	UAkRtpc* VelocityRTPC;
 	
 	FPAPhysicsActorAudioHandle PhysicsActorAudioProperties;

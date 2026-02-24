@@ -5,6 +5,17 @@
 
 class UAkAudioEvent;
 class UAkRtpc;
+class UAkSwitchValue;
+
+UCLASS(BlueprintType)
+class PHYSICSAUDIO_API UPAMaterialSwitchMap : public UDataAsset
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Material Switch")
+	TMap<TEnumAsByte<EPhysicalSurface>, TSoftObjectPtr<UAkSwitchValue>> MaterialSwitchMap;
+};
 
 UCLASS(BlueprintType)
 class PHYSICSAUDIO_API UPAPhysicsRTPCs : public UDataAsset
@@ -12,7 +23,6 @@ class PHYSICSAUDIO_API UPAPhysicsRTPCs : public UDataAsset
 	GENERATED_BODY()
 
 public:
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="RTPC")
 	UAkRtpc* VelocityRTPC = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="RTPC")

@@ -20,8 +20,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	USphereComponent* SphereCollision;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
-	UStaticMesh* StaticMesh;
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	UStaticMeshComponent* StaticMeshComponent;
 	
 	UPROPERTY(BlueprintReadWrite)
@@ -31,7 +29,6 @@ public:
 	
 protected:
 	
-	virtual void OnConstruction(const FTransform& Transform) override;
 	UFUNCTION()
 	void OnPhysicsComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UFUNCTION(BlueprintCallable)

@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{97335998-3D4B-42F6-9672-D1499E5C2F0F}" SchemaVersion="123">
 	<AudioObjects>
-		<WorkUnit Name="Default Work Unit" ID="{97335998-3D4B-42F6-9672-D1499E5C2F0F}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{97335998-3D4B-42F6-9672-D1499E5C2F0F}" PersistMode="Standalone">
+			<ChildrenList>
+				<Sound Name="Silence" ID="{BFAE99AD-01A6-4F8A-9389-F995529D99F0}" ShortID="338252409">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<SourcePlugin Name="Silence" ID="{711315F0-F50F-4280-A171-C0B229C59CE3}" ShortID="677095738" PluginName="Wwise Silence" CompanyID="0" PluginID="101">
+							<Language>SFX</Language>
+						</SourcePlugin>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="Silence" ID="{711315F0-F50F-4280-A171-C0B229C59CE3}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+			</ChildrenList>
+		</WorkUnit>
 	</AudioObjects>
 </WwiseDocument>

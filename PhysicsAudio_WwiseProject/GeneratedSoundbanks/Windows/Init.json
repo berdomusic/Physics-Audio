@@ -55,9 +55,25 @@
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
       "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
      }
+    ],
+    "SwitchGroups": [
+     {
+      "Id": "4059161636",
+      "Name": "S_Material",
+      "ObjectPath": "\\Switches\\Default Work Unit\\S_Material",
+      "GUID": "{E48E9806-D438-4405-BF4C-D8BD8BD7B22E}",
+      "Switches": [
+       {
+        "Id": "782826392",
+        "Name": "Default",
+        "ObjectPath": "\\Switches\\Default Work Unit\\S_Material\\Default",
+        "GUID": "{195C67E6-4682-4A53-94FF-7C0663023403}"
+       }
+      ]
+     }
     ]
    }
   ],
-  "FileHash": "{174487CA-0649-9D9B-5DA6-F2C8C0C31EBE}"
+  "FileHash": "{5A3C4024-18F2-3ADA-AEB4-30283D24DA08}"
  }
 }

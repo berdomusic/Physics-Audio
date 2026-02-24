@@ -6,6 +6,7 @@
 #include "Engine/StreamableManager.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "System/PAFunctionLibrary.h"
 
 UPAPhysicsAudioComponent::UPAPhysicsAudioComponent(const FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer)
@@ -37,6 +38,13 @@ void UPAPhysicsAudioComponent::OnDetachedFromPhysicsComponent()
 	bAkAudioEventsLoaded = false;
 	CollisionSound = nullptr;
 	DestructionSound = nullptr;
+}
+
+void UPAPhysicsAudioComponent::PlayCollisionSound()
+{
+	const float mappedVelocity = UKismetMathLibrary::MapRangeClamped(CurrentVelocity, 50.f, 500.f, .1f, 1.f);
+	SetRTPCValue(VelocityRTPC, mappedVelocity, 0, FString());
+	PostAkEvent(CollisionSound, 0, FOnAkPostEventCallback());
 }
 
 void UPAPhysicsAudioComponent::SetMassData()
@@ -92,7 +100,9 @@ void UPAPhysicsAudioComponent::OnComponentHit(UPrimitiveComponent* HitComponent,
 		UKismetSystemLibrary::PrintString(GetWorld(), "Bump", true, false);
 		if (bAkAudioEventsLoaded)
 		{
-			//play sound logic
+			if (IsValid(Hit.PhysMaterial.Get()))
+				SetSwitch(UPAFunctionLibrary::GetAkSwitchFromSurface(Hit.PhysMaterial->SurfaceType));			
+			PlayCollisionSound();
 		}		
 	}
 }

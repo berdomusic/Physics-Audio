@@ -13,8 +13,23 @@ namespace AK
 {
     namespace EVENTS
     {
+        static const AkUniqueID EMPTYEVENT = 1650177404U;
         static const AkUniqueID WOODENBOX_COLLISION = 1844639947U;
     } // namespace EVENTS
+
+    namespace SWITCHES
+    {
+        namespace S_MATERIAL
+        {
+            static const AkUniqueID GROUP = 4059161636U;
+
+            namespace SWITCH
+            {
+                static const AkUniqueID DEFAULT = 782826392U;
+            } // namespace SWITCH
+        } // namespace S_MATERIAL
+
+    } // namespace SWITCHES
 
     namespace GAME_PARAMETERS
     {

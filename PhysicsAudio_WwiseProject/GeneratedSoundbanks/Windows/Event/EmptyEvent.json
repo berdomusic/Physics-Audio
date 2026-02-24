@@ -1,0 +1,51 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "1650177404",
+    "Type": "Event",
+    "GUID": "{FFE2033A-8798-4257-904E-87906C758EBA}",
+    "Language": "SFX",
+    "Hash": "{8FAD5834-FD4F-04C1-89C6-609A672A7A32}",
+    "ObjectPath": "EmptyEvent",
+    "ShortName": "EmptyEvent",
+    "Path": "Event/EmptyEvent.bnk",
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "677095738",
+       "Name": "Silence",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\Silence\\Silence",
+       "GUID": "{711315F0-F50F-4280-A171-C0B229C59CE3}",
+       "LibName": "Wwise Silence",
+       "LibId": "6619138"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1650177404",
+      "Name": "EmptyEvent",
+      "ObjectPath": "\\Events\\Default Work Unit\\EmptyEvent",
+      "GUID": "{FFE2033A-8798-4257-904E-87906C758EBA}",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "677095738"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{35C8B3C1-C8C3-E626-26C7-1513198C4371}"
+ }
+}

@@ -21,13 +21,6 @@ APAPhysicsActor::APAPhysicsActor()
 	SphereCollision->SetCollisionProfileName(TEXT("OverlapPhysicsActors"));	
 }
 
-void APAPhysicsActor::OnConstruction(const FTransform& Transform)
-{
-	Super::OnConstruction(Transform);
-	if (StaticMesh)
-		StaticMeshComponent->SetStaticMesh(StaticMesh);
-}
-
 void APAPhysicsActor::OnPhysicsComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -54,7 +47,7 @@ void APAPhysicsActor::BeginPlay()
 		InitTimerHandle,
 		this,
 		&APAPhysicsActor::Init,
-		1.f,
+		.2f,
 		false
 	);
 }
