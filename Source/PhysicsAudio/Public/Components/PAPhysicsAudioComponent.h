@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "AkComponent.h"
+#include "AkAudioEvent.h"
 #include "System/PhysicsAudioStructs.h"
+
 #include "PAPhysicsAudioComponent.generated.h"
 
 /**
@@ -15,14 +17,29 @@ class PHYSICSAUDIO_API UPAPhysicsAudioComponent : public UAkComponent
 {
 	GENERATED_BODY()
 	
-	UPAPhysicsAudioComponent();
+	UPAPhysicsAudioComponent(const FObjectInitializer& ObjectInitializer);
 	
 public:	
 	void OnAttachedToPhysicsComponent(UPrimitiveComponent* InPhysicsComponent, const FPAPhysicsActorAudioHandle& InAudioProperties);
 	void OnDetachedFromPhysicsComponent();
 	
 protected:
+	void SetMassData();
+	float ObjectMass;
+	float MinVelocityToSpawnCollisionSound;
+	float MinVelocityDeltaToSpawnSound;
+	
+	UAkRtpc* VelocityRTPC;
+	
 	FPAPhysicsActorAudioHandle PhysicsActorAudioProperties;
+	
+	UPROPERTY()
+	UAkAudioEvent* CollisionSound;
+	UPROPERTY()
+	UAkAudioEvent* DestructionSound;
+	void LoadAkAudioEvents();
+	void OnAkAudioEventsLoaded();
+	bool bAkAudioEventsLoaded;
 	
 	UPROPERTY()
 	UPrimitiveComponent* ParentComponent;

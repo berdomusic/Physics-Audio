@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{DC8A258B-A416-4B1C-BCB7-CE2D60B4439B}" SchemaVersion="123">
+	<Events>
+		<WorkUnit Name="PhysicsObjects" ID="{DC8A258B-A416-4B1C-BCB7-CE2D60B4439B}" PersistMode="Standalone">
+			<ChildrenList>
+				<Folder Name="WoodenBox" ID="{133707F7-B2FE-4595-AA07-3F90BE5FCAF6}" ShortID="883605232">
+					<ChildrenList>
+						<Event Name="WoodenBox_Collision" ID="{57FE86C3-0FBA-418E-8DFD-EA33F13E8B9B}">
+							<ChildrenList>
+								<Action Name="" ID="{80A5DD52-94E0-43AC-8732-C79F63D128B4}" ShortID="648901368">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="WoodenBox_Collision" ID="{82AF5FBC-B3BE-4195-9420-F0C766A218C6}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

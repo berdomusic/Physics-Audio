@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}" SchemaVersion="123">
+	<GameParameters>
+		<WorkUnit Name="PhysicsObjects" ID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}" PersistMode="Standalone">
+			<ChildrenList>
+				<GameParameter Name="S_Velocity" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}">
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="S_Mass" ID="{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}">
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="1"/>
+						<Property Name="Max" Type="Real64" Value="2"/>
+					</PropertyList>
+				</GameParameter>
+			</ChildrenList>
+		</WorkUnit>
+	</GameParameters>
+</WwiseDocument>

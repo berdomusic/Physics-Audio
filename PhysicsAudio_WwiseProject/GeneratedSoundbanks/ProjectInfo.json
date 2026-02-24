@@ -1,0 +1,29 @@
+{
+ "ProjectInfo": {
+  "Project": {
+   "Name": "PhysicsAudio_WwiseProject",
+   "GUID": "{B3E487A5-6EC0-4BE9-9194-5530801CCD42}",
+   "Generator": "2024.1.5.8803"
+  },
+  "CacheRoot": "../.cache",
+  "Platforms": [
+   {
+    "Name": "Windows",
+    "GUID": "{02512D11-7AA0-4413-9368-9AEAEA6B78FD}",
+    "BasePlatform": "Windows",
+    "BasePlatformGUID": "{6E0CB257-C6C8-4C5C-8366-2740DFC441EB}",
+    "Path": "Windows"
+   }
+  ],
+  "Languages": [
+   {
+    "Name": "English(US)",
+    "Id": "684519430",
+    "GUID": "{2BA8402B-6F04-4112-BA2B-34CF2A38C7D9}",
+    "Default": "true",
+    "UseAsStandIn": "true"
+   }
+  ],
+  "FileHash": "{90FF19CC-F9CA-95FB-2FB5-C3F21689F51F}"
+ }
+}

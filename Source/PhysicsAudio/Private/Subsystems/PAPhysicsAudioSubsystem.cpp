@@ -48,10 +48,8 @@ void UPAPhysicsAudioSubsystem::TryAddComponentToPool(UPAPhysicsAudioComponent* I
 		}		
 		AvailablePhysicsAudioComponentsPool.AddUnique(newComponent);
 	}
-	else //means that we don't need that component anymore
-	{
+	else //we don't need that component anymore
 		InComponent->DestroyComponent();
-	}
 }
 
 UPAPhysicsAudioComponent* UPAPhysicsAudioSubsystem::TryGetAudioComponentFromPool()
@@ -169,13 +167,13 @@ void UPAPhysicsAudioSubsystem::PopulatePoolAsync()
 
 bool UPAPhysicsAudioSubsystem::Tick(float DeltaTime)
 {
-	if (TickCounter < 1)
+	/*if (TickCounter < 1)
 	{
 		++TickCounter;
 		return true;
 	}
 
-	TickCounter = 0;
+	TickCounter = 0;*/
 	RunQueue(true);
 	return true;
 }
