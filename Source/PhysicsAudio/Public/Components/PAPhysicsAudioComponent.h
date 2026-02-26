@@ -13,7 +13,7 @@
  * 
  */
 UCLASS()
-class PHYSICSAUDIO_API UPAPhysicsAudioComponent : public UAkComponent
+class PHYSICSAUDIO_API UPAPhysicsAudioComponent : public UAkComponent, public IPhysicsAudioInterface
 {
 	GENERATED_BODY()
 	
@@ -22,14 +22,16 @@ class PHYSICSAUDIO_API UPAPhysicsAudioComponent : public UAkComponent
 public:	
 	void OnAttachedToPhysicsComponent(UPrimitiveComponent* InPhysicsComponent, const FPAPhysicsActorAudioHandle& InAudioProperties);
 	void OnDetachedFromPhysicsComponent();
-	
-protected:	
-	void PlayCollisionSound();
-	
+	void SetVelocityRTPC() const;
+
+protected:
+	UFUNCTION()
+	virtual void OnHitByProjectile_Implementation(AActor* HitActor, UPrimitiveComponent* HitComp, AActor* ProjectileActor, UPrimitiveComponent* ProjectileComp, FVector NormalImpulse, const FHitResult& Hit) override;
 	void SetMassData();
 	float ObjectMass;
-	float MinVelocityToSpawnCollisionSound;
-	float MinVelocityDeltaToSpawnSound;
+	float SlideThreshold;
+	float MinVelocityToSpawnImpactSound;
+	float MinVelocityDeltaToSpawnImpactSound;
 	
 	UPROPERTY()
 	UAkRtpc* VelocityRTPC;
@@ -37,12 +39,18 @@ protected:
 	FPAPhysicsActorAudioHandle PhysicsActorAudioProperties;
 	
 	UPROPERTY()
-	UAkAudioEvent* CollisionSound;
+	UAkAudioEvent* ImpactSound;
+	UPROPERTY()
+	UAkAudioEvent* SlideSound;
 	UPROPERTY()
 	UAkAudioEvent* DestructionSound;
 	void LoadAkAudioEvents();
 	void OnAkAudioEventsLoaded();
 	bool bAkAudioEventsLoaded;
+	
+	float AudibilityRangeSquared = 0.f;
+	void SetAudibilityRange();
+	bool IsAudible() const;
 	
 	UPROPERTY()
 	UPrimitiveComponent* ParentComponent;

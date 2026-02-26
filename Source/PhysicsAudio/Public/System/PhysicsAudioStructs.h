@@ -7,6 +7,35 @@ class UAkAudioEvent;
 class UAkRtpc;
 class UAkSwitchValue;
 
+UINTERFACE(MinimalAPI, Blueprintable)
+class UPhysicsAudioInterface : public UInterface
+{
+	GENERATED_BODY()
+};
+
+class IPhysicsAudioInterface
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintNativeEvent, Category = "PhysicsAudio")
+	void OnHitByProjectile(
+		AActor* HitActor,
+		UPrimitiveComponent* HitComp,
+		AActor* ProjectileActor,
+		UPrimitiveComponent* ProjectileComp,
+		FVector NormalImpulse,
+		const FHitResult& Hit
+	);
+	virtual void OnHitByProjectile_Implementation(AActor* HitActor,
+		UPrimitiveComponent* HitComp,
+		AActor* ProjectileActor,
+		UPrimitiveComponent* ProjectileComp,
+		FVector NormalImpulse,
+		const FHitResult& Hit
+		);
+};
+
 UCLASS(BlueprintType)
 class PHYSICSAUDIO_API UPAMaterialSwitchMap : public UDataAsset
 {
@@ -35,7 +64,9 @@ struct FPAPhysicsActorAudioHandle : public FTableRowBase
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
-	TSoftObjectPtr<UAkAudioEvent> CollisionSound;
+	TSoftObjectPtr<UAkAudioEvent> ImpactSound;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
+	TSoftObjectPtr<UAkAudioEvent> SlideSound;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
 	TSoftObjectPtr<UAkAudioEvent> DestructionSound;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RTPC")

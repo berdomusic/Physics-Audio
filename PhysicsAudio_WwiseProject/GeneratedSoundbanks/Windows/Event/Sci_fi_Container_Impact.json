@@ -1,0 +1,158 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "1678608561",
+    "Type": "Event",
+    "GUID": "{6A36F9BF-6877-4C36-A128-E8B48104D1D4}",
+    "Language": "SFX",
+    "Hash": "{7FE5637A-EF44-2A05-1199-92391467814C}",
+    "ObjectPath": "Sci_fi_Container_Impact",
+    "ShortName": "Sci_fi_Container_Impact",
+    "Path": "Event/Sci_fi_Container_Impact.bnk",
+    "Media": [
+     {
+      "Id": "86835345",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Sci-Fi_Container-002.wav",
+      "Path": "Media/86835345.wem",
+      "CachePath": "B9/{B9075BBD-D0F7-142C-E20F-651298B99BAD}.wem"
+     },
+     {
+      "Id": "251061401",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Sci-Fi_Container-007.wav",
+      "Path": "Media/251061401.wem",
+      "CachePath": "48/{48B9BE5A-8BE5-FDCE-4C15-631C76F2BD0F}.wem"
+     },
+     {
+      "Id": "418741047",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Sci-Fi_Container-001.wav",
+      "Path": "Media/418741047.wem",
+      "CachePath": "64/{6482FE5A-F058-B6AD-1F0E-10E0F252259C}.wem"
+     },
+     {
+      "Id": "432227634",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Sci-Fi_Container-008.wav",
+      "Path": "Media/432227634.wem",
+      "CachePath": "F3/{F3276DD5-485D-22A0-1B93-ADCFE3350117}.wem"
+     },
+     {
+      "Id": "486694780",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Sci-Fi_Container-003.wav",
+      "Path": "Media/486694780.wem",
+      "CachePath": "03/{033731DA-4F60-9996-96B4-61262932FA6C}.wem"
+     },
+     {
+      "Id": "523257996",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Sci-Fi_Container-006.wav",
+      "Path": "Media/523257996.wem",
+      "CachePath": "E2/{E22C7BD0-88D5-2AEF-3621-B926B9850692}.wem"
+     },
+     {
+      "Id": "726073970",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Sci-Fi_Container-004.wav",
+      "Path": "Media/726073970.wem",
+      "CachePath": "25/{25DBAE85-6062-BDD7-7EE8-B8BABD1E2BC2}.wem"
+     },
+     {
+      "Id": "837715653",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Sci-Fi_Container-005.wav",
+      "Path": "Media/837715653.wem",
+      "CachePath": "ED/{ED7B5FE4-D9DE-6573-E0D9-CBF45A187D85}.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "894668602",
+       "Name": "Impacter",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\Impact\\Sci_fi_Container_Impact\\Impacter",
+       "GUID": "{6A775AD7-000D-4C36-83FA-D1680BD6FB15}",
+       "LibName": "Impacter",
+       "LibId": "12058626",
+       "MediaRefs": [
+        {
+         "Id": "86835345"
+        },
+        {
+         "Id": "251061401"
+        },
+        {
+         "Id": "418741047"
+        },
+        {
+         "Id": "432227634"
+        },
+        {
+         "Id": "486694780"
+        },
+        {
+         "Id": "523257996"
+        },
+        {
+         "Id": "726073970"
+        },
+        {
+         "Id": "837715653"
+        }
+       ]
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1678608561",
+      "Name": "Sci_fi_Container_Impact",
+      "ObjectPath": "\\Events\\PhysicsObjects\\Sci-fi Container\\Sci_fi_Container_Impact",
+      "GUID": "{6A36F9BF-6877-4C36-A128-E8B48104D1D4}",
+      "MaxAttenuation": "4000",
+      "DurationType": "Unknown",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "894668602"
+        }
+       ]
+      }
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "960181970",
+      "Name": "S_Velocity",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Velocity",
+      "GUID": "{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{90F98FB6-6730-F2EA-DE39-16A77B7DCF26}"
+ }
+}

@@ -19,8 +19,15 @@
     "LibName": "No Output",
     "LibId": "11862023",
     "Type": "AudioDevice"
+   },
+   {
+    "LibName": "Impacter",
+    "LibId": "12058626",
+    "Type": "Source",
+    "DLL": "AkImpacter",
+    "StaticLib": "AkImpacterSource"
    }
   ],
-  "FileHash": "{C1BA0FAC-BB32-0FC2-CFF8-8E6E0ADC15FC}"
+  "FileHash": "{79B8F062-5F1F-FE63-8E9D-A0FEDD8543D2}"
  }
 }

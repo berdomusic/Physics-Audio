@@ -1,0 +1,93 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "107651542",
+    "Type": "Event",
+    "GUID": "{8C97A3B4-D029-460E-8317-8E7C504B068E}",
+    "Language": "SFX",
+    "Hash": "{5192DF48-9874-7CBB-4377-D419B21D59C4}",
+    "ObjectPath": "Sci_fi_Container_Slide",
+    "ShortName": "Sci_fi_Container_Slide",
+    "Path": "Event/Sci_fi_Container_Slide.bnk",
+    "Media": [
+     {
+      "Id": "6416374",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Sci-Fi_Container-003.wav",
+      "Path": "Media/6416374.wem",
+      "CachePath": "93/{93159E1C-1B68-0ECA-945C-2D0B2721C084}.wem"
+     },
+     {
+      "Id": "387697435",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Sci-Fi_Container-002.wav",
+      "Path": "Media/387697435.wem",
+      "CachePath": "24/{2456224B-D528-BB6B-DB03-2654DC7C8D61}.wem"
+     },
+     {
+      "Id": "776870288",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Sci-Fi_Container-004.wav",
+      "Path": "Media/776870288.wem",
+      "CachePath": "11/{117AFD09-5818-12EE-28A3-22BCB855C5D1}.wem"
+     },
+     {
+      "Id": "934552411",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Sci-Fi_Container-001.wav",
+      "Path": "Media/934552411.wem",
+      "CachePath": "6B/{6B235854-5198-7601-5D32-C089398B92E8}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "107651542",
+      "Name": "Sci_fi_Container_Slide",
+      "ObjectPath": "\\Events\\PhysicsObjects\\Sci-fi Container\\Sci_fi_Container_Slide",
+      "GUID": "{8C97A3B4-D029-460E-8317-8E7C504B068E}",
+      "MaxAttenuation": "2500",
+      "DurationType": "OneShot",
+      "DurationMin": "0.6701507",
+      "DurationMax": "1.3103179",
+      "MediaRefs": [
+       {
+        "Id": "6416374"
+       },
+       {
+        "Id": "387697435"
+       },
+       {
+        "Id": "776870288"
+       },
+       {
+        "Id": "934552411"
+       }
+      ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "960181970",
+      "Name": "S_Velocity",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Velocity",
+      "GUID": "{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{FD20F84F-D0A7-9153-3A7A-BB714C072F89}"
+ }
+}

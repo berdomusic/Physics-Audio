@@ -3,6 +3,7 @@
 #include "PhysicsAudioProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "System/PhysicsAudioStructs.h"
 
 APhysicsAudioProjectile::APhysicsAudioProjectile() 
 {
@@ -38,6 +39,9 @@ void APhysicsAudioProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherA
 	{
 		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
 
+		if (OtherActor->GetClass()->ImplementsInterface(UPhysicsAudioInterface::StaticClass()))
+			IPhysicsAudioInterface::Execute_OnHitByProjectile(OtherActor, OtherActor, OtherComp, this, CollisionComp,
+			                                                  NormalImpulse, Hit);
 		Destroy();
 	}
 }

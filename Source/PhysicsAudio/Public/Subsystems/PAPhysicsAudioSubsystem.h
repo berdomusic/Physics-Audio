@@ -69,6 +69,8 @@ public:
 	void TryAddPhysicsAudioToPrimitive(UPrimitiveComponent* InComponent, const FPAPhysicsActorAudioHandle& InAudioHandle);
 	UFUNCTION(BlueprintCallable, Category = "PhysicsAudio")
 	void ReturnPhysicsAudioComponentToPool(UPrimitiveComponent* InComponent);
+	UFUNCTION(BlueprintPure)
+	TArray<FVector> GetListenersPositions() { return ListenersPositions; }
 	
 	UPROPERTY(BlueprintReadOnly, Category = "PhysicsAudio")
 	TArray<UPAPhysicsAudioComponent*> AvailablePhysicsAudioComponentsPool;
@@ -93,6 +95,9 @@ private:
 	bool CheckIfCanAttachAudioComponent(const UPrimitiveComponent* InComponent);
 	UPAPhysicsAudioComponent* GetAudioComponentFromPrimitive(UPrimitiveComponent* InComponent);
 	void RemoveAudioObjectFromActivePool(const UPrimitiveComponent* InComponent);
+	
+	TArray<FVector> ListenersPositions;
+	void CacheListenersPositions();
 	
 	FTSTicker::FDelegateHandle TickHandle;
 	uint8 TickCounter = 0;

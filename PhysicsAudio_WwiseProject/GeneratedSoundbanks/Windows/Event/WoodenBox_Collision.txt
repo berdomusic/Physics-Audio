@@ -1,6 +1,0 @@
-Event	ID	Name			Wwise Object Path	Notes
-	1844639947	WoodenBox_Collision			\PhysicsObjects\WoodenBox\WoodenBox_Collision	
-
-Source plug-ins	ID	Name	Type		Wwise Object Path	Notes
-	364687942	Silence	Wwise Silence		\Actor-Mixer Hierarchy\PhysicsObjects\Main\Collision\WoodenBox\WoodenBox_Collision\Silence	
-

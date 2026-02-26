@@ -3,9 +3,11 @@
 
 #include "Actors/PAPhysicsActor.h"
 
+#include "GameFramework/Character.h"
 #include "Subsystems/PAPhysicsAudioSubsystem.h"
 #include "System/PhysicsAudioSettings.h"
 
+class UPAPhysicsAudioComponent;
 // Sets default values
 APAPhysicsActor::APAPhysicsActor()
 {
@@ -21,8 +23,18 @@ APAPhysicsActor::APAPhysicsActor()
 	SphereCollision->SetCollisionProfileName(TEXT("OverlapPhysicsActors"));	
 }
 
+void APAPhysicsActor::OnHitByProjectile_Implementation(AActor* HitActor, UPrimitiveComponent* HitComp,
+	AActor* ProjectileActor, UPrimitiveComponent* ProjectileComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	const TArray<USceneComponent*>& attachedChildren = StaticMeshComponent->GetAttachChildren();
+	
+	for (USceneComponent* child : attachedChildren)
+		if (child && child->GetClass()->ImplementsInterface(UPhysicsAudioInterface::StaticClass()))
+			Execute_OnHitByProjectile(child, HitActor, HitComp, ProjectileActor, ProjectileComp, NormalImpulse, Hit);			
+}
+
 void APAPhysicsActor::OnPhysicsComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+                                            UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	RetriggerDeactivationTimer();
 }
@@ -111,8 +123,8 @@ bool APAPhysicsActor::ShouldDeactivatePhysicsAudio() const
 	if (!OverlappedActors.IsEmpty())
 	{
 		for (const AActor* const overlappedActor : OverlappedActors)
-			if (IsValid(overlappedActor) && overlappedActor->IsA(APawn::StaticClass()))
-				return false;
+			if (IsValid(overlappedActor) && overlappedActor->IsA(ACharacter::StaticClass()))
+				return false; //if there are controllable characters nearby we want to preserve physics audio
 	}
 	else if (StaticMeshComponent->GetPhysicsLinearVelocity().SizeSquared() > FMath::Square(PhysicsAudioSettings::PHYSICS_AUDIO_ACTIVATION_VELOCITY))
 		return false;	

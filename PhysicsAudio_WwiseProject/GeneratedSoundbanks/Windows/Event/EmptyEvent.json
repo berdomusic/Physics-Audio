@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{FFE2033A-8798-4257-904E-87906C758EBA}",
     "Language": "SFX",
-    "Hash": "{8FAD5834-FD4F-04C1-89C6-609A672A7A32}",
+    "Hash": "{683B94E2-7972-9690-9CF9-DC34195A3A2A}",
     "ObjectPath": "EmptyEvent",
     "ShortName": "EmptyEvent",
     "Path": "Event/EmptyEvent.bnk",
@@ -46,6 +46,6 @@
     ]
    }
   ],
-  "FileHash": "{35C8B3C1-C8C3-E626-26C7-1513198C4371}"
+  "FileHash": "{7B0E48B0-C9F1-711D-1223-B0D2B8010FE6}"
  }
 }

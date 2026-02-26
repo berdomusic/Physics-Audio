@@ -134,6 +134,23 @@ void UPAPhysicsAudioSubsystem::RemoveAudioObjectFromActivePool(const UPrimitiveC
 			ActivePhysicsAudioObjectsPool.RemoveAt(i);
 }
 
+void UPAPhysicsAudioSubsystem::CacheListenersPositions()
+{
+	ListenersPositions.Empty();
+	if (FAkAudioDevice* AudioDevice = FAkAudioDevice::Get())
+	{
+		UAkComponentSet& DefaultListeners = AudioDevice->GetDefaultListeners();
+		for (const TWeakObjectPtr<UAkComponent>& WeakListener : DefaultListeners)
+		{
+			if (UAkComponent* Listener = WeakListener.Get())
+			{
+				const FVector listenerLocation = Listener->GetComponentLocation();
+				ListenersPositions.Add(listenerLocation);
+			}
+		}
+	}
+}
+
 void UPAPhysicsAudioSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
@@ -167,13 +184,14 @@ void UPAPhysicsAudioSubsystem::PopulatePoolAsync()
 
 bool UPAPhysicsAudioSubsystem::Tick(float DeltaTime)
 {
-	/*if (TickCounter < 1)
+	if (TickCounter < 1)
 	{
 		++TickCounter;
+		RunQueue(true);
 		return true;
 	}
-
-	TickCounter = 0;*/
+	TickCounter = 0;
+	CacheListenersPositions();
 	RunQueue(true);
 	return true;
 }

@@ -5,12 +5,49 @@
 			<ChildrenList>
 				<Folder Name="WoodenBox" ID="{133707F7-B2FE-4595-AA07-3F90BE5FCAF6}" ShortID="883605232">
 					<ChildrenList>
-						<Event Name="WoodenBox_Collision" ID="{57FE86C3-0FBA-418E-8DFD-EA33F13E8B9B}">
+						<Event Name="WoodenBox_Impact" ID="{57FE86C3-0FBA-418E-8DFD-EA33F13E8B9B}">
 							<ChildrenList>
 								<Action Name="" ID="{80A5DD52-94E0-43AC-8732-C79F63D128B4}" ShortID="648901368">
 									<ReferenceList>
 										<Reference Name="Target">
-											<ObjectRef Name="WoodenBox_Collision" ID="{82AF5FBC-B3BE-4195-9420-F0C766A218C6}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+											<ObjectRef Name="WoodenBox_Impact" ID="{82AF5FBC-B3BE-4195-9420-F0C766A218C6}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="WoodenBox_Slide" ID="{59A3D029-F495-4698-9134-40BE6C6A48EF}">
+							<ChildrenList>
+								<Action Name="" ID="{A87B4DC8-0FE4-414A-8CCF-C0AE3EA48E76}" ShortID="286477016">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="WoodenBox_Slide" ID="{4DB535DB-46F8-446D-9577-F2B8FB3AC92F}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="Sci-fi Container" ID="{BC956B45-2D7C-4AB3-8621-8ADF463BDEAE}" ShortID="554082072">
+					<ChildrenList>
+						<Event Name="Sci_fi_Container_Impact" ID="{6A36F9BF-6877-4C36-A128-E8B48104D1D4}">
+							<ChildrenList>
+								<Action Name="" ID="{F7D7BFF6-F6DC-499C-AF58-9DC9D6123E7B}" ShortID="285170355">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Sci_fi_Container_Impact" ID="{501F7C3E-7AE9-4A41-912C-1498BAB77C5B}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Sci_fi_Container_Slide" ID="{8C97A3B4-D029-460E-8317-8E7C504B068E}">
+							<ChildrenList>
+								<Action Name="" ID="{C2ACD74D-25CB-4CD3-B92C-A136E0DC077A}" ShortID="137196908">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Sci_fi_Container_Slide" ID="{F3E13ABD-0AA3-4D66-9C39-B1C672F33874}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

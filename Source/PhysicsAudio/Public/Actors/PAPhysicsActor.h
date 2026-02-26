@@ -9,7 +9,7 @@
 #include "PAPhysicsActor.generated.h"
 
 UCLASS()
-class PHYSICSAUDIO_API APAPhysicsActor : public AActor
+class PHYSICSAUDIO_API APAPhysicsActor : public AActor, public IPhysicsAudioInterface
 {
 	GENERATED_BODY()
 	
@@ -28,7 +28,7 @@ public:
 	bool bAllowPhysicsSounds;
 	
 protected:
-	
+	virtual void OnHitByProjectile_Implementation(AActor* HitActor, UPrimitiveComponent* HitComp, AActor* ProjectileActor, UPrimitiveComponent* ProjectileComp, FVector NormalImpulse, const FHitResult& Hit) override;
 	UFUNCTION()
 	void OnPhysicsComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UFUNCTION(BlueprintCallable)
