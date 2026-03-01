@@ -8,32 +8,41 @@ class UAkRtpc;
 class UAkSwitchValue;
 
 UINTERFACE(MinimalAPI, Blueprintable)
-class UPhysicsAudioInterface : public UInterface
+class UDamageInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class IPhysicsAudioInterface
+class IDamageInterface
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintNativeEvent, Category = "PhysicsAudio")
+	void OnDamageDealt(
+		AActor* Dealer,
+		const FHitResult& Hit,
+		const FVector& InImpulse
+	);
+};
+
+UINTERFACE(MinimalAPI, Blueprintable)
+class UProjectileInterface : public UInterface
+{
+	GENERATED_BODY()
+};
+
+class IProjectileInterface
 {
 	GENERATED_BODY()
 
 public:
 	UFUNCTION(BlueprintNativeEvent, Category = "PhysicsAudio")
 	void OnHitByProjectile(
-		AActor* HitActor,
-		UPrimitiveComponent* HitComp,
 		AActor* ProjectileActor,
-		UPrimitiveComponent* ProjectileComp,
-		FVector NormalImpulse,
-		const FHitResult& Hit
+		const FHitResult& Hit,
+		const FVector& InProjectileImpulse
 	);
-	virtual void OnHitByProjectile_Implementation(AActor* HitActor,
-		UPrimitiveComponent* HitComp,
-		AActor* ProjectileActor,
-		UPrimitiveComponent* ProjectileComp,
-		FVector NormalImpulse,
-		const FHitResult& Hit
-		);
 };
 
 UCLASS(BlueprintType)
@@ -56,6 +65,8 @@ public:
 	UAkRtpc* VelocityRTPC = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="RTPC")
 	UAkRtpc* MassRTPC = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="RTPC")
+	UAkRtpc* ProjectileRTPC = nullptr;
 };
 
 USTRUCT(BlueprintType)
@@ -63,14 +74,16 @@ struct FPAPhysicsActorAudioHandle : public FTableRowBase
 {
 	GENERATED_BODY()
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mass")
+	float ObjectMassOverride = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
 	TSoftObjectPtr<UAkAudioEvent> ImpactSound;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
 	TSoftObjectPtr<UAkAudioEvent> SlideSound;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
+	TSoftObjectPtr<UAkAudioEvent> ProjectileSound;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
 	TSoftObjectPtr<UAkAudioEvent> DestructionSound;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RTPC")
-	TObjectPtr<UPAPhysicsRTPCs> RTPC_Handle;
 };
 
 USTRUCT(BlueprintType)
@@ -84,5 +97,5 @@ struct FPAPhysicsActorProperties : public FTableRowBase
 	FVector2D SizeOffsets = FVector2D::UnitVector;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FDataTableRowHandle PhysicsActorAudioProperties;
-
 };
+

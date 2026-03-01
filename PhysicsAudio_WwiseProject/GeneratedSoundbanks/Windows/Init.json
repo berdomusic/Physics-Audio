@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{66A89DBF-E13A-076F-9F3D-00150165AC86}",
+    "Hash": "{D626D50C-63A4-49B8-769E-CF173D0485D3}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -60,6 +60,12 @@
       "Name": "S_Mass",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
       "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
+     },
+     {
+      "Id": "2667713947",
+      "Name": "S_ProjectileSpeed",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_ProjectileSpeed",
+      "GUID": "{2A573DD8-4FCF-473F-BB3F-E2188568AB17}"
      }
     ],
     "SwitchGroups": [
@@ -80,6 +86,6 @@
     ]
    }
   ],
-  "FileHash": "{DEC2DCB6-A08B-B36A-EFD9-EFE5599946A8}"
+  "FileHash": "{15C7EBBD-2D17-37CF-24CF-AB3EB981F22B}"
  }
 }

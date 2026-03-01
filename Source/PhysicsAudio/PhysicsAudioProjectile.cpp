@@ -19,6 +19,9 @@ APhysicsAudioProjectile::APhysicsAudioProjectile()
 
 	// Set as root component
 	RootComponent = CollisionComp;
+	
+	AudioComponent = CreateDefaultSubobject<UPAPhysicsAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->SetupAttachment(RootComponent);
 
 	// Use a ProjectileMovementComponent to govern this projectile's movement
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComp"));
@@ -37,11 +40,22 @@ void APhysicsAudioProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherA
 	// Only add impulse and destroy projectile if we hit a physics
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
-
-		if (OtherActor->GetClass()->ImplementsInterface(UPhysicsAudioInterface::StaticClass()))
-			IPhysicsAudioInterface::Execute_OnHitByProjectile(OtherActor, OtherActor, OtherComp, this, CollisionComp,
-			                                                  NormalImpulse, Hit);
-		Destroy();
+		FVector impulse = GetVelocity() * 100.f;
+		if (OtherActor->GetClass()->ImplementsInterface(UProjectileInterface::StaticClass()))
+			IProjectileInterface::Execute_OnHitByProjectile(OtherActor, this, Hit, impulse);
+		else
+			OtherComp->AddImpulseAtLocation(impulse, GetActorLocation());
+		
+		if (OtherActor->GetClass()->ImplementsInterface(UDamageInterface::StaticClass()))
+			IDamageInterface::Execute_OnDamageDealt(OtherActor, this, Hit, impulse);		
 	}
+	if (IsValid(AudioComponent))
+		AudioComponent->OnComponentHit(HitComp, OtherActor, OtherComp, NormalImpulse, Hit);
+}
+
+void APhysicsAudioProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+	if (IsValid(AudioComponent))
+		AudioComponent->OnAttachedToPhysicsComponent(CollisionComp, ProjectileAudioProperties, 100.f);
 }

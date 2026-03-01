@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{8C97A3B4-D029-460E-8317-8E7C504B068E}",
     "Language": "SFX",
-    "Hash": "{5192DF48-9874-7CBB-4377-D419B21D59C4}",
+    "Hash": "{766F52FB-07DA-FC40-4832-AB3EEA4C53D0}",
     "ObjectPath": "Sci_fi_Container_Slide",
     "ShortName": "Sci_fi_Container_Slide",
     "Path": "Event/Sci_fi_Container_Slide.bnk",
@@ -84,10 +84,16 @@
       "Name": "S_Velocity",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Velocity",
       "GUID": "{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}"
+     },
+     {
+      "Id": "1217927383",
+      "Name": "S_Mass",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
+      "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
      }
     ]
    }
   ],
-  "FileHash": "{FD20F84F-D0A7-9153-3A7A-BB714C072F89}"
+  "FileHash": "{9DBF9FC2-8A9C-9778-E6F6-2490D94258B5}"
  }
 }

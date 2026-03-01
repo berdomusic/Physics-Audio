@@ -26,3 +26,40 @@ UAkSwitchValue* UPAFunctionLibrary::GetAkSwitchFromSurface(const TEnumAsByte<EPh
 	}
 	return nullptr;
 }
+
+UPAPhysicsRTPCs* UPAFunctionLibrary::GetRTPC_Assets()
+{	
+	if (UDataAsset* dataAsset = UPAGameReferencesSubsystem::Get().GetRTPCsDataAsset())
+		if (UPAPhysicsRTPCs* rtpcAssets = Cast<UPAPhysicsRTPCs>(dataAsset))
+			return rtpcAssets;
+	checkNoEntry()
+	return nullptr;
+}
+
+bool UPAFunctionLibrary::IsAudioHandleNotEmpty(const FPAPhysicsActorAudioHandle& InHandle)
+{
+	// Returns true if any sound asset is assigned
+	return !InHandle.ImpactSound.IsNull() ||
+		!InHandle.SlideSound.IsNull() ||
+		!InHandle.ProjectileSound.IsNull() ||
+		!InHandle.DestructionSound.IsNull();
+}
+
+bool UPAFunctionLibrary::ResolveAudioHandle(const FDataTableRowHandle& InRowHandle, FPAPhysicsActorAudioHandle& OutHandle)
+{
+	if (!InRowHandle.DataTable)
+		return false;
+
+	const FPAPhysicsActorAudioHandle* row =
+		InRowHandle.DataTable->FindRow<FPAPhysicsActorAudioHandle>(
+			InRowHandle.RowName,
+			TEXT("ResolveAudioHandle")
+		);
+
+	if (row)
+	{
+		OutHandle = *row;
+		return true;
+	}	
+	return false;
+}

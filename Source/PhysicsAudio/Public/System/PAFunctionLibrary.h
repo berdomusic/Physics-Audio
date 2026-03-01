@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AkSwitchValue.h"
+#include "System/PhysicsAudioStructs.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "PAFunctionLibrary.generated.h"
 
@@ -16,4 +17,8 @@ class PHYSICSAUDIO_API UPAFunctionLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 public:
 	static UAkSwitchValue* GetAkSwitchFromSurface(const TEnumAsByte<EPhysicalSurface> InSurface);
+	static UPAPhysicsRTPCs* GetRTPC_Assets();
+	UFUNCTION(BlueprintPure)
+	static bool IsAudioHandleNotEmpty(const FPAPhysicsActorAudioHandle& InHandle);
+	static bool ResolveAudioHandle(const FDataTableRowHandle& InRowHandle, FPAPhysicsActorAudioHandle& OutHandle);
 };

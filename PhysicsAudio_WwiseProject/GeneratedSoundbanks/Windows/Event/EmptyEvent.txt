@@ -1,6 +1,0 @@
-Event	ID	Name			Wwise Object Path	Notes
-	1650177404	EmptyEvent			\Default Work Unit\EmptyEvent	
-
-Source plug-ins	ID	Name	Type		Wwise Object Path	Notes
-	677095738	Silence	Wwise Silence		\Actor-Mixer Hierarchy\Default Work Unit\Silence\Silence	
-

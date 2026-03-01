@@ -29,6 +29,7 @@
 					</ValueList>
 				</Property>
 				<Property Name="LicenseKey" Type="string" Value="PHByb2plY3QgaWQ9IjIyMTY3IiBtYXNrPSJSU0NaNTk3MyIgZW5jPSIwIj48bGljZW5zZSBpZD0iMSIgbmFtZT0iV3dpc2UiIHR5cGU9IjMiIHBsYXRmb3Jtcz0iMTAiIGV4cGlyZXM9IjIwMjYtMDYtMDEiICAvPjxsaWNlbnNlIGlkPSIyMSIgbmFtZT0iTWFpbnRlbmFuY2UiIHR5cGU9IjMiIHBsYXRmb3Jtcz0iMTAiIGV4cGlyZXM9IjIwMjYtMDYtMDEiICAvPjxsaWNlbnNlIGlkPSI3MCIgbmFtZT0iSW5kaWUgTGljZW5zZSIgdHlwZT0iMyIgcGxhdGZvcm1zPSIxMCIgZXhwaXJlcz0iMjAyNi0wNi0wMSIgIC8+PGxpY2Vuc2UgaWQ9IjY0IiBuYW1lPSJJbXBhY3RlciIgdHlwZT0iMiIgcGxhdGZvcm1zPSIxMCIgZXhwaXJlcz0iMjAyNi0wNi0wMSIgIC8+PHBsdWdpbiBpZD0iMTIwNTg2MjYiIG5hbWU9IkltcGFjdGVyIiBsaWNlbnNlPSI2NCIgLz48L3Byb2plY3Q+|OHj3iQdgSIFOxLBIF632q4GQM8CWFBfc6RtdeTUc3tIfXldrTIENcLSe0qcz6bIGq79UreZKVmBQOG8AzFjXPrI19dIfSkWxIEuZr94ssOR98VLS1+8OJjMViAZ3Jv3MhGFWsyxm3YH/MYODg/9m1kcZjxLKHkPDOnP3cK8RdtS+r0C/1Ofo1dk+Is0RTLHSHgdhOSCVijfdJ1sXa3TwtAeMZMqWZo799k95EOc58HEb+Eyi6kvQ6Fmd1tKM65a9nt0Bmjmiic1jKNiOPXijcRxttW1OOgwNqJz9krlwJNlJAuX8IpAWAfuo7htOX+bgtyBi7LHzDxVitexD2Hnhyw=="/>
+				<Property Name="SoundBankGenerateDefinitionFile" Type="bool" Value="False"/>
 				<Property Name="SoundBankGenerateHeaderFile" Type="bool" Value="True"/>
 				<Property Name="SoundBankHeaderFilePath" Type="string" Value="GeneratedSoundbanks"/>
 				<Property Name="SoundBankPaths" Type="string">
@@ -56,6 +57,7 @@
 						<Value Platform="Windows"></Value>
 					</ValueList>
 				</Property>
+				<Property Name="UseActionNameForEvent" Type="bool" Value="False"/>
 				<Property Name="VolumeThreshold" Type="Real64">
 					<ValueList>
 						<Value Platform="Windows">-80</Value>

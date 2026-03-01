@@ -33,5 +33,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, config)
 	FPAGameReferenceDataAsset MaterialSwitchesSoft;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, config)
+	FPAGameReferenceDataAsset RTPCs_Soft;
 
 };

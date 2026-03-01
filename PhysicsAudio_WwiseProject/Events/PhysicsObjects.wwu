@@ -27,6 +27,17 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="WoodenBox_Projectile" ID="{28CD8541-B999-478C-AB49-0C851561B3DF}">
+							<ChildrenList>
+								<Action Name="" ID="{DE1CF361-FECA-4C9E-9E2F-3EC2C667CC2F}" ShortID="994868114">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="WoodenBox_Projectile" ID="{17C2660B-A4F6-4181-A067-C72519AF4C63}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Sci-fi Container" ID="{BC956B45-2D7C-4AB3-8621-8ADF463BDEAE}" ShortID="554082072">
@@ -48,6 +59,43 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Sci_fi_Container_Slide" ID="{F3E13ABD-0AA3-4D66-9C39-B1C672F33874}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Sci_fi_Container_Projectile" ID="{D251E098-393C-4FB2-94C7-6314153D88C2}">
+							<ChildrenList>
+								<Action Name="" ID="{9FD997FC-0F0F-4EC3-83B3-E6D3DC5A4EDC}" ShortID="27866717">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Sci_fi_Container_Projectile" ID="{0066BC4D-A6B1-4B7B-AC35-511795903940}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="Projectile" ID="{5E812B53-116B-41B2-AD76-C97C5222DFBD}" ShortID="1043263759">
+					<ChildrenList>
+						<Event Name="Projectile_Impact" ID="{F47466CA-B9D9-49EC-B964-3A6BEC6DF42B}">
+							<ChildrenList>
+								<Action Name="" ID="{745BD120-9FDB-439E-9E64-D983627D54A3}" ShortID="655563256">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Projectile_Impact" ID="{F3136D30-939D-4A54-BB38-FEE159EE90B4}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Projectile_Slide" ID="{CADE1FFB-6157-4066-B689-6DDC61FD7840}">
+							<ChildrenList>
+								<Action Name="" ID="{DDDB551A-D103-401A-87AD-94454BC0D423}" ShortID="916783542">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Projectile_Slide" ID="{6C727A7A-D332-4AD4-B37E-836DDBF1A41F}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

@@ -93,9 +93,9 @@ void UPAPhysicsAudioSubsystem::RunQueue(bool bOneItem)
 		{
 			UPAPhysicsAudioComponent* newComponent = TryGetAudioComponentFromPool();
 			if (IsValid(newComponent))
-			{				
+			{	
 				newComponent->AttachToComponent(QueueItem.TargetComponent, FAttachmentTransformRules::KeepRelativeTransform);
-				newComponent->OnAttachedToPhysicsComponent(QueueItem.TargetComponent, QueueItem.Handle);
+				newComponent->OnAttachedToPhysicsComponent(QueueItem.TargetComponent, QueueItem.Handle, QueueItem.Handle.ObjectMassOverride);
 				ActivePhysicsAudioObjectsPool.AddUnique(FPAActivePhysicsAudioObject {QueueItem.TargetComponent, newComponent});
 				if (bOneItem)
 					return;
@@ -145,7 +145,7 @@ void UPAPhysicsAudioSubsystem::CacheListenersPositions()
 			if (UAkComponent* Listener = WeakListener.Get())
 			{
 				const FVector listenerLocation = Listener->GetComponentLocation();
-				ListenersPositions.Add(listenerLocation);
+				ListenersPositions.AddUnique(listenerLocation);
 			}
 		}
 	}

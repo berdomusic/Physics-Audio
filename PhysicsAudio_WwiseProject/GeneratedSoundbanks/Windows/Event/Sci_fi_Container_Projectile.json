@@ -1,0 +1,111 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "2842158634",
+    "Type": "Event",
+    "GUID": "{D251E098-393C-4FB2-94C7-6314153D88C2}",
+    "Language": "SFX",
+    "Hash": "{A82D1BC3-6EF0-B8ED-F568-2DA11EB1C180}",
+    "ObjectPath": "Sci_fi_Container_Projectile",
+    "ShortName": "Sci_fi_Container_Projectile",
+    "Path": "Event/Sci_fi_Container_Projectile.bnk",
+    "Media": [
+     {
+      "Id": "299541030",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Sci-Fi_Container-004.wav",
+      "Path": "Media/299541030.wem",
+      "CachePath": "2F/{2FD21E82-A87A-DB1C-B689-0AC0EDEB84F1}.wem"
+     },
+     {
+      "Id": "566156717",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "PRO_Sci-Fi_Container-003.wav",
+      "Path": "Media/566156717.wem",
+      "CachePath": "E3/{E3962D30-8773-5EDE-E7A4-832914535689}.wem"
+     },
+     {
+      "Id": "773384674",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "PRO_Sci-Fi_Container-002.wav",
+      "Path": "Media/773384674.wem",
+      "CachePath": "60/{600949E2-7926-E48E-7348-7F11D8A26F66}.wem"
+     },
+     {
+      "Id": "874213248",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Sci-Fi_Container-008.wav",
+      "Path": "Media/874213248.wem",
+      "CachePath": "AE/{AE5E2DB2-42E4-B405-55D3-8CD01F901108}.wem"
+     },
+     {
+      "Id": "954276250",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Sci-Fi_Container-005.wav",
+      "Path": "Media/954276250.wem",
+      "CachePath": "49/{496B885C-224C-E00D-CE94-10914569B795}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2842158634",
+      "Name": "Sci_fi_Container_Projectile",
+      "ObjectPath": "\\Events\\PhysicsObjects\\Sci-fi Container\\Sci_fi_Container_Projectile",
+      "GUID": "{D251E098-393C-4FB2-94C7-6314153D88C2}",
+      "MaxAttenuation": "4000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.6190619",
+      "DurationMax": "3.0116684",
+      "MediaRefs": [
+       {
+        "Id": "299541030"
+       },
+       {
+        "Id": "566156717"
+       },
+       {
+        "Id": "773384674"
+       },
+       {
+        "Id": "874213248"
+       },
+       {
+        "Id": "954276250"
+       }
+      ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1217927383",
+      "Name": "S_Mass",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
+      "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
+     },
+     {
+      "Id": "2667713947",
+      "Name": "S_ProjectileSpeed",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_ProjectileSpeed",
+      "GUID": "{2A573DD8-4FCF-473F-BB3F-E2188568AB17}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{048DEC06-3EE2-ABF3-3F7B-F314C104FAF5}"
+ }
+}

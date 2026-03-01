@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{59A3D029-F495-4698-9134-40BE6C6A48EF}",
     "Language": "SFX",
-    "Hash": "{DA92B2B9-48BD-5862-4A84-44639A0F94F3}",
+    "Hash": "{A8E23229-D6B6-C1D6-013B-74419AFA71BB}",
     "ObjectPath": "WoodenBox_Slide",
     "ShortName": "WoodenBox_Slide",
     "Path": "Event/WoodenBox_Slide.bnk",
@@ -142,6 +142,6 @@
     ]
    }
   ],
-  "FileHash": "{7F28FD65-2AC4-30E5-1005-E688CF911A93}"
+  "FileHash": "{4F6848A8-73EE-827B-F8B7-73D1BFE7E0B8}"
  }
 }

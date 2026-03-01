@@ -13,24 +13,28 @@
  * 
  */
 UCLASS()
-class PHYSICSAUDIO_API UPAPhysicsAudioComponent : public UAkComponent, public IPhysicsAudioInterface
+class PHYSICSAUDIO_API UPAPhysicsAudioComponent : public UAkComponent, public IProjectileInterface
 {
 	GENERATED_BODY()
 	
 	UPAPhysicsAudioComponent(const FObjectInitializer& ObjectInitializer);
 	
 public:	
-	void OnAttachedToPhysicsComponent(UPrimitiveComponent* InPhysicsComponent, const FPAPhysicsActorAudioHandle& InAudioProperties);
+	void OnAttachedToPhysicsComponent(UPrimitiveComponent* InPhysicsComponent, const FPAPhysicsActorAudioHandle& InAudioProperties, float InMassOverride);
 	void OnDetachedFromPhysicsComponent();
-	void SetVelocityRTPC() const;
+	void SetVelocityRTPC(bool bInAccountForDelta) const;
 
+	UFUNCTION()
+	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
+		UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 protected:
 	UFUNCTION()
-	virtual void OnHitByProjectile_Implementation(AActor* HitActor, UPrimitiveComponent* HitComp, AActor* ProjectileActor, UPrimitiveComponent* ProjectileComp, FVector NormalImpulse, const FHitResult& Hit) override;
+	virtual void OnHitByProjectile_Implementation(AActor* ProjectileActor, const FHitResult& Hit,
+	                                              const FVector& InProjectileImpulse) override; 
 	void SetMassData();
 	float ObjectMass;
+	float ObjectMassOverride;
 	float SlideThreshold;
-	float MinVelocityToSpawnImpactSound;
 	float MinVelocityDeltaToSpawnImpactSound;
 	
 	UPROPERTY()
@@ -43,6 +47,8 @@ protected:
 	UPROPERTY()
 	UAkAudioEvent* SlideSound;
 	UPROPERTY()
+	UAkAudioEvent* ProjectileSound;
+	UPROPERTY()
 	UAkAudioEvent* DestructionSound;
 	void LoadAkAudioEvents();
 	void OnAkAudioEventsLoaded();
@@ -54,12 +60,14 @@ protected:
 	
 	UPROPERTY()
 	UPrimitiveComponent* ParentComponent;
-	UFUNCTION()
-	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	
+	bool bIsSliding;
 	float CurrentVelocity;
-	float LastPlayedVelocity;	
-	bool CheckVelocityDelta() const;
+	float PreviousVelocity;
+	float CurrentVelocityDelta;
+	bool CheckVelocityDelta();
 	
+	float ImpactCooldown;
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 };

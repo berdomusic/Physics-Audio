@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/PAPhysicsAudioComponent.h"
 #include "GameFramework/Actor.h"
 #include "PhysicsAudioProjectile.generated.h"
 
@@ -23,6 +24,12 @@ class APhysicsAudioProjectile : public AActor
 	UProjectileMovementComponent* ProjectileMovement;
 
 public:
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPAPhysicsAudioComponent* AudioComponent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FPAPhysicsActorAudioHandle ProjectileAudioProperties;
+	
 	APhysicsAudioProjectile();
 
 	/** called when projectile hits something */
@@ -33,5 +40,8 @@ public:
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }
 	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
+	
+protected:
+	virtual void BeginPlay() override;
 };
 

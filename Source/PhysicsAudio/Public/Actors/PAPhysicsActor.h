@@ -3,13 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/PAHealthComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "System/PhysicsAudioStructs.h"
 #include "PAPhysicsActor.generated.h"
 
 UCLASS()
-class PHYSICSAUDIO_API APAPhysicsActor : public AActor, public IPhysicsAudioInterface
+class PHYSICSAUDIO_API APAPhysicsActor : public AActor, public IProjectileInterface, public IDamageInterface
 {
 	GENERATED_BODY()
 	
@@ -21,19 +22,41 @@ public:
 	USphereComponent* SphereCollision;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	UStaticMeshComponent* StaticMeshComponent;
+	UPROPERTY()
+	UPAHealthComponent* HealthComponent;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FDataTableRowHandle PhysicsAudioHandle;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FDataTableRowHandle DestructionAudioHandle;
+	UPROPERTY(BlueprintReadOnly)
+	FPAPhysicsActorAudioHandle PhysicsAudioProperties;
+	UPROPERTY(BlueprintReadOnly)
+	FPAPhysicsActorAudioHandle DestructionAudioProperties;	
 	
 	UPROPERTY(BlueprintReadWrite)
-	FPAPhysicsActorAudioHandle PhysicsAudioProperties;
-	UPROPERTY(BlueprintReadWrite)
-	bool bAllowPhysicsSounds;
+	TArray<UStaticMeshComponent*> DestructionMeshes;
+	
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void TEST_Destroy();
 	
 protected:
-	virtual void OnHitByProjectile_Implementation(AActor* HitActor, UPrimitiveComponent* HitComp, AActor* ProjectileActor, UPrimitiveComponent* ProjectileComp, FVector NormalImpulse, const FHitResult& Hit) override;
+	
+	bool bAllowPhysicsSounds;
+	bool bAllowDestructionSounds;
+	
+	virtual void OnHitByProjectile_Implementation(AActor* ProjectileActor, const FHitResult& Hit,
+	                                              const FVector& InProjectileImpulse) override;
+	virtual void OnDamageDealt_Implementation(AActor* Dealer, const FHitResult& Hit, const FVector& InImpulse) override;
 	UFUNCTION()
 	void OnPhysicsComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	
 	UFUNCTION(BlueprintCallable)
 	void Init();
-	virtual void BeginPlay() override;	
+	void GetDestructibleMeshes();
+
+	virtual void OnConstruction(const FTransform& Transform) override;
+	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	FTimerHandle InitTimerHandle;
@@ -48,6 +71,8 @@ protected:
 	UFUNCTION()
 	void OnActivationEndOverlap(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor, 
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UFUNCTION()
+	void OnDeath(AActor* Dealer, const FHitResult& Hit, const FVector& Impulse);
 	
 	bool ShouldDeactivatePhysicsAudio() const;
 	void DeactivatePhysicsAudio();

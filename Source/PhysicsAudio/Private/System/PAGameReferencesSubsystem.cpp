@@ -4,6 +4,14 @@
 #include "System/PAGameReferencesSubsystem.h"
 #include "System/PAGameReferencesSettings.h"
 
+void UPAGameReferencesSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+	//preload
+	MaterialSwitchDataAsset = GetMaterialSwitchDataAsset();
+	RTPCsDataAsset = GetRTPCsDataAsset();
+}
+
 UPAGameReferencesSubsystem& UPAGameReferencesSubsystem::Get()
 {
 	UPAGameReferencesSubsystem* const subsystem = GEngine->GetEngineSubsystem<UPAGameReferencesSubsystem>();
@@ -18,4 +26,13 @@ UDataAsset* UPAGameReferencesSubsystem::GetMaterialSwitchDataAsset() const
 		MaterialSwitchDataAsset = UPAGameReferencesSettings::Get().MaterialSwitchesSoft.DataAsset.LoadSynchronous();
 	}
 	return MaterialSwitchDataAsset;
+}
+
+UDataAsset* UPAGameReferencesSubsystem::GetRTPCsDataAsset() const
+{
+	if(!RTPCsDataAsset)
+	{
+		RTPCsDataAsset = UPAGameReferencesSettings::Get().RTPCs_Soft.DataAsset.LoadSynchronous();
+	}
+	return RTPCsDataAsset;
 }
