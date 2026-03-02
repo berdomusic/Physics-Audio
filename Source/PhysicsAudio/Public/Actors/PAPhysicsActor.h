@@ -67,13 +67,15 @@ protected:
 	UFUNCTION()
 	void OnActivationBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	void RetriggerDeactivationTimer();
+	
 	UFUNCTION()
 	void OnActivationEndOverlap(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor, 
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
 	void OnDeath(AActor* Dealer, const FHitResult& Hit, const FVector& Impulse);
-	
+
+	static bool ShouldActivatePhysicsAudio(const AActor* OtherActor, UPrimitiveComponent* OtherComp);
 	bool ShouldDeactivatePhysicsAudio() const;
 	void DeactivatePhysicsAudio();
+	void RetriggerDeactivationTimer();
 };

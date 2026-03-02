@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{D626D50C-63A4-49B8-769E-CF173D0485D3}",
+    "Hash": "{4D377E9C-C78E-111F-9A47-E212FD88FBF4}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -50,10 +50,10 @@
     ],
     "GameParameters": [
      {
-      "Id": "960181970",
-      "Name": "S_Velocity",
-      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Velocity",
-      "GUID": "{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}"
+      "Id": "1205658230",
+      "Name": "S_Roll",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Roll",
+      "GUID": "{878403F9-00A7-4E86-A34C-75B2471275B1}"
      },
      {
       "Id": "1217927383",
@@ -66,6 +66,18 @@
       "Name": "S_ProjectileSpeed",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_ProjectileSpeed",
       "GUID": "{2A573DD8-4FCF-473F-BB3F-E2188568AB17}"
+     },
+     {
+      "Id": "3874927894",
+      "Name": "S_Slide",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
+      "GUID": "{4CFDFD1B-B48A-4537-B9F0-EFE1F9EC47A6}"
+     },
+     {
+      "Id": "4098934257",
+      "Name": "S_Impact",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Impact",
+      "GUID": "{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}"
      }
     ],
     "SwitchGroups": [
@@ -86,6 +98,6 @@
     ]
    }
   ],
-  "FileHash": "{15C7EBBD-2D17-37CF-24CF-AB3EB981F22B}"
+  "FileHash": "{7B2F832D-3CEB-4FA1-0F30-A7E8D1F492FD}"
  }
 }

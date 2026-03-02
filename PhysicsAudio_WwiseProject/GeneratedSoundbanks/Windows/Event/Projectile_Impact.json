@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{F47466CA-B9D9-49EC-B964-3A6BEC6DF42B}",
     "Language": "SFX",
-    "Hash": "{15E6771F-A338-5FFB-ADBD-1B6BE651E3C9}",
+    "Hash": "{64E869C8-7C72-09B8-28F0-8BE058BAD3B2}",
     "ObjectPath": "Projectile_Impact",
     "ShortName": "Projectile_Impact",
     "Path": "Event/Projectile_Impact.bnk",
@@ -22,7 +22,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Projectile-003.wav",
       "Path": "Media/306876787.wem",
-      "CachePath": "F5/{F5364E83-B55A-DF9B-BA73-53199478B4A5}.wem"
+      "CachePath": "08/{0839E6E1-AB31-DF89-6924-D0F4DA0170E6}.wem"
      },
      {
       "Id": "578608009",
@@ -31,7 +31,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Projectile-004.wav",
       "Path": "Media/578608009.wem",
-      "CachePath": "DA/{DAD271A7-1586-BE09-A5C1-726CE5581C4D}.wem"
+      "CachePath": "8D/{8D5F99C3-1D42-BBEB-19EF-373084BBC5EA}.wem"
      },
      {
       "Id": "624472246",
@@ -40,7 +40,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Projectile-006.wav",
       "Path": "Media/624472246.wem",
-      "CachePath": "F1/{F15AA0FC-F5DA-75CF-D57A-A8898FD1483E}.wem"
+      "CachePath": "64/{64015E2D-7BD2-F241-794D-723D50F2B926}.wem"
      },
      {
       "Id": "642702572",
@@ -49,7 +49,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Projectile-001.wav",
       "Path": "Media/642702572.wem",
-      "CachePath": "32/{32D390A8-BC37-7DCB-9458-B8807473CE7C}.wem"
+      "CachePath": "F3/{F381E003-BFB0-B018-0E96-6431946B3A03}.wem"
      },
      {
       "Id": "807139861",
@@ -58,7 +58,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Projectile-005.wav",
       "Path": "Media/807139861.wem",
-      "CachePath": "46/{46D0DE78-D9E3-51A5-4B80-F48474EBB7F6}.wem"
+      "CachePath": "35/{3551ADD1-5643-0BEC-8C7A-42C329B908FD}.wem"
      },
      {
       "Id": "912292679",
@@ -67,7 +67,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Projectile-002.wav",
       "Path": "Media/912292679.wem",
-      "CachePath": "35/{358DA741-2933-E1F0-6155-665BC96FF1F9}.wem"
+      "CachePath": "60/{60EDEECA-7A34-9413-BD93-D21BCE69742B}.wem"
      }
     ],
     "Events": [
@@ -78,8 +78,8 @@
       "GUID": "{F47466CA-B9D9-49EC-B964-3A6BEC6DF42B}",
       "MaxAttenuation": "4000",
       "DurationType": "OneShot",
-      "DurationMin": "0.52977777",
-      "DurationMax": "0.8733878",
+      "DurationMin": "0.3968849",
+      "DurationMax": "0.9253221",
       "MediaRefs": [
        {
         "Id": "306876787"
@@ -104,20 +104,20 @@
     ],
     "GameParameters": [
      {
-      "Id": "960181970",
-      "Name": "S_Velocity",
-      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Velocity",
-      "GUID": "{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}"
-     },
-     {
       "Id": "1217927383",
       "Name": "S_Mass",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
       "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
+     },
+     {
+      "Id": "4098934257",
+      "Name": "S_Impact",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Impact",
+      "GUID": "{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}"
      }
     ]
    }
   ],
-  "FileHash": "{554506A3-0738-E8C4-F349-485878E25A6E}"
+  "FileHash": "{973FB886-3725-2EC9-E232-15F8B78D32EF}"
  }
 }

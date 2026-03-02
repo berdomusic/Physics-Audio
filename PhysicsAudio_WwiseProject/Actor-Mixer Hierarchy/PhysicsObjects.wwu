@@ -232,7 +232,7 @@
 																</PropertyList>
 																<ReferenceList>
 																	<Reference Name="ControlInput">
-																		<ObjectRef Name="S_Velocity" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																		<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 																	</Reference>
 																	<Reference Name="Curve">
 																		<Custom>
@@ -247,7 +247,7 @@
 																						<Flags>5</Flags>
 																					</Point>
 																					<Point>
-																						<XPos>1</XPos>
+																						<XPos>100</XPos>
 																						<YPos>1</YPos>
 																						<Flags>37</Flags>
 																					</Point>
@@ -277,13 +277,13 @@
 																				</PropertyList>
 																				<PointList>
 																					<Point>
-																						<XPos>0</XPos>
+																						<XPos>0.1</XPos>
 																						<YPos>0.01</YPos>
 																						<Flags>5</Flags>
 																						<SegmentShape>Exp2</SegmentShape>
 																					</Point>
 																					<Point>
-																						<XPos>2</XPos>
+																						<XPos>500</XPos>
 																						<YPos>2</YPos>
 																						<Flags>37</Flags>
 																					</Point>
@@ -320,12 +320,12 @@
 																		</PropertyList>
 																		<PointList>
 																			<Point>
-																				<XPos>0</XPos>
+																				<XPos>0.1</XPos>
 																				<YPos>100</YPos>
 																				<Flags>5</Flags>
 																			</Point>
 																			<Point>
-																				<XPos>2</XPos>
+																				<XPos>500</XPos>
 																				<YPos>-100</YPos>
 																				<Flags>37</Flags>
 																			</Point>
@@ -345,7 +345,7 @@
 														</PropertyList>
 														<ReferenceList>
 															<Reference Name="ControlInput">
-																<ObjectRef Name="S_Velocity" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
@@ -361,7 +361,7 @@
 																				<SegmentShape>Log1</SegmentShape>
 																			</Point>
 																			<Point>
-																				<XPos>1</XPos>
+																				<XPos>100</XPos>
 																				<YPos>0</YPos>
 																				<Flags>37</Flags>
 																			</Point>
@@ -481,7 +481,7 @@
 														</PropertyList>
 														<ReferenceList>
 															<Reference Name="ControlInput">
-																<ObjectRef Name="S_Velocity" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
@@ -497,7 +497,7 @@
 																				<SegmentShape>Log2</SegmentShape>
 																			</Point>
 																			<Point>
-																				<XPos>1</XPos>
+																				<XPos>100</XPos>
 																				<YPos>0</YPos>
 																				<Flags>37</Flags>
 																			</Point>
@@ -527,12 +527,12 @@
 																		</PropertyList>
 																		<PointList>
 																			<Point>
-																				<XPos>0</XPos>
+																				<XPos>0.1</XPos>
 																				<YPos>100</YPos>
 																				<Flags>5</Flags>
 																			</Point>
 																			<Point>
-																				<XPos>2</XPos>
+																				<XPos>500</XPos>
 																				<YPos>-100</YPos>
 																				<Flags>37</Flags>
 																			</Point>
@@ -791,7 +791,7 @@
 												</PropertyList>
 												<ReferenceList>
 													<Reference Name="ControlInput">
-														<ObjectRef Name="S_Velocity" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+														<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
@@ -806,7 +806,7 @@
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
-																		<XPos>1</XPos>
+																		<XPos>100</XPos>
 																		<YPos>0</YPos>
 																		<Flags>37</Flags>
 																	</Point>
@@ -1070,7 +1070,7 @@
 														</PropertyList>
 														<ReferenceList>
 															<Reference Name="ControlInput">
-																<ObjectRef Name="S_Velocity" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
@@ -1085,7 +1085,7 @@
 																				<Flags>5</Flags>
 																			</Point>
 																			<Point>
-																				<XPos>1</XPos>
+																				<XPos>100</XPos>
 																				<YPos>-250</YPos>
 																				<Flags>37</Flags>
 																			</Point>
@@ -1105,7 +1105,7 @@
 														</PropertyList>
 														<ReferenceList>
 															<Reference Name="ControlInput">
-																<ObjectRef Name="S_Velocity" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
@@ -1120,7 +1120,7 @@
 																				<Flags>5</Flags>
 																			</Point>
 																			<Point>
-																				<XPos>1</XPos>
+																				<XPos>100</XPos>
 																				<YPos>0</YPos>
 																				<Flags>37</Flags>
 																			</Point>
@@ -1140,7 +1140,7 @@
 														</PropertyList>
 														<ReferenceList>
 															<Reference Name="ControlInput">
-																<ObjectRef Name="S_Velocity" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
@@ -1156,7 +1156,7 @@
 																				<SegmentShape>Log1</SegmentShape>
 																			</Point>
 																			<Point>
-																				<XPos>1</XPos>
+																				<XPos>100</XPos>
 																				<YPos>0</YPos>
 																				<Flags>37</Flags>
 																			</Point>
@@ -1186,12 +1186,12 @@
 																		</PropertyList>
 																		<PointList>
 																			<Point>
-																				<XPos>0</XPos>
+																				<XPos>0.1</XPos>
 																				<YPos>250</YPos>
 																				<Flags>5</Flags>
 																			</Point>
 																			<Point>
-																				<XPos>2</XPos>
+																				<XPos>500</XPos>
 																				<YPos>-250</YPos>
 																				<Flags>37</Flags>
 																			</Point>
@@ -1250,6 +1250,13 @@
 											</ReferenceList>
 											<ChildrenList>
 												<AudioFileSource Name="SLI_Sci-Fi_Container-001" ID="{BB18ACC7-C1B6-446F-9FFB-9A747242CB12}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0311578951383892"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0493333339691162"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.0765964922152067"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.306385959324084"/>
+													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>SLI_Sci-Fi_Container-001.wav</AudioFile>
 													<MediaIDList>
@@ -1272,10 +1279,17 @@
 											</ReferenceList>
 											<ChildrenList>
 												<AudioFileSource Name="SLI_Sci-Fi_Container-002" ID="{03CE4373-2E6F-43EB-80EA-344A5B1A3539}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.021175439734208"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0473333358764648"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.0199298256321957"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.19680698997096"/>
+													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>SLI_Sci-Fi_Container-002.wav</AudioFile>
 													<MediaIDList>
-														<MediaID ID="387697435"/>
+														<MediaID ID="215456511"/>
 													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
@@ -1294,10 +1308,17 @@
 											</ReferenceList>
 											<ChildrenList>
 												<AudioFileSource Name="SLI_Sci-Fi_Container-003" ID="{8F93A93E-E70C-4EB5-8B17-CB93F4A10DCD}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0197894723791825"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0494736809479563"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.0923508711028518"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.285628113328365"/>
+													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>SLI_Sci-Fi_Container-003.wav</AudioFile>
 													<MediaIDList>
-														<MediaID ID="6416374"/>
+														<MediaID ID="726484189"/>
 													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
@@ -1316,6 +1337,129 @@
 											</ReferenceList>
 											<ChildrenList>
 												<AudioFileSource Name="SLI_Sci-Fi_Container-004" ID="{BD49C5F2-50B7-4386-8E72-B35CFC38A341}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0200701747024268"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0328421040585166"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.0401403494048537"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.217731024312694"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>SLI_Sci-Fi_Container-004.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="664142442"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="SLI_Sci-Fi_Container-004" ID="{BD49C5F2-50B7-4386-8E72-B35CFC38A341}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="SLI_Sci-Fi_Container-001_01" ID="{6A616A2F-3E05-446F-8926-A782C5B6BFF6}" ShortID="176794019">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="SLI_Sci-Fi_Container-001" ID="{8BE91C3A-13B0-4161-A703-F783DE1F2493}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0311578951383892"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0493333339691162"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.302491231968529"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.533578954244915"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>SLI_Sci-Fi_Container-001.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="33048271"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="SLI_Sci-Fi_Container-001" ID="{8BE91C3A-13B0-4161-A703-F783DE1F2493}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="SLI_Sci-Fi_Container-002_01" ID="{ACA2F036-03E8-4760-BE47-7D980F65DF50}" ShortID="857852451">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="SLI_Sci-Fi_Container-002" ID="{2B40EA98-2341-4252-8038-4099498989C9}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.021175439734208"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0473333358764648"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.24538597809641"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.438456125761333"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>SLI_Sci-Fi_Container-002.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="387697435"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="SLI_Sci-Fi_Container-002" ID="{2B40EA98-2341-4252-8038-4099498989C9}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="SLI_Sci-Fi_Container-003_01" ID="{30256558-517E-4F13-A9AA-62CC91C58BB1}" ShortID="803568650">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="SLI_Sci-Fi_Container-003" ID="{5C78BC1A-96EF-46A2-A679-3BEAB9A76EAE}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0197894723791825"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0494736809479563"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.288706413709629"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.511228098451045"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>SLI_Sci-Fi_Container-003.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="6416374"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="SLI_Sci-Fi_Container-003" ID="{5C78BC1A-96EF-46A2-A679-3BEAB9A76EAE}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="SLI_Sci-Fi_Container-004_01" ID="{2AD8AD9C-D009-4318-A3EB-BE1E3C27CB7C}" ShortID="618563456">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="SLI_Sci-Fi_Container-004" ID="{4BEBA6B8-72E8-4806-88AD-371628B12A00}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0200701747024268"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0328421040585166"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.229651453564739"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.4488421269467"/>
+													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>SLI_Sci-Fi_Container-004.wav</AudioFile>
 													<MediaIDList>
@@ -1324,7 +1468,7 @@
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="SLI_Sci-Fi_Container-004" ID="{BD49C5F2-50B7-4386-8E72-B35CFC38A341}" Platform="Linked"/>
+												<ActiveSource Name="SLI_Sci-Fi_Container-004" ID="{4BEBA6B8-72E8-4806-88AD-371628B12A00}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
 									</ChildrenList>
@@ -1556,7 +1700,7 @@
 														</PropertyList>
 														<ReferenceList>
 															<Reference Name="ControlInput">
-																<ObjectRef Name="S_Velocity" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
@@ -1571,7 +1715,7 @@
 																				<Flags>5</Flags>
 																			</Point>
 																			<Point>
-																				<XPos>1</XPos>
+																				<XPos>100</XPos>
 																				<YPos>-250</YPos>
 																				<Flags>37</Flags>
 																			</Point>
@@ -1591,7 +1735,7 @@
 														</PropertyList>
 														<ReferenceList>
 															<Reference Name="ControlInput">
-																<ObjectRef Name="S_Velocity" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
@@ -1606,7 +1750,7 @@
 																				<Flags>5</Flags>
 																			</Point>
 																			<Point>
-																				<XPos>1</XPos>
+																				<XPos>100</XPos>
 																				<YPos>0</YPos>
 																				<Flags>37</Flags>
 																			</Point>
@@ -1626,7 +1770,7 @@
 														</PropertyList>
 														<ReferenceList>
 															<Reference Name="ControlInput">
-																<ObjectRef Name="S_Velocity" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
@@ -1642,7 +1786,7 @@
 																				<SegmentShape>Log1</SegmentShape>
 																			</Point>
 																			<Point>
-																				<XPos>1</XPos>
+																				<XPos>100</XPos>
 																				<YPos>0</YPos>
 																				<Flags>37</Flags>
 																			</Point>
@@ -1672,12 +1816,12 @@
 																		</PropertyList>
 																		<PointList>
 																			<Point>
-																				<XPos>0</XPos>
+																				<XPos>0.1</XPos>
 																				<YPos>250</YPos>
 																				<Flags>5</Flags>
 																			</Point>
 																			<Point>
-																				<XPos>2</XPos>
+																				<XPos>500</XPos>
 																				<YPos>-250</YPos>
 																				<Flags>37</Flags>
 																			</Point>
@@ -1703,7 +1847,7 @@
 												</PropertyList>
 												<ReferenceList>
 													<Reference Name="ControlInput">
-														<ObjectRef Name="S_Velocity" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+														<ObjectRef Name="S_Slide" ID="{4CFDFD1B-B48A-4537-B9F0-EFE1F9EC47A6}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
@@ -1719,7 +1863,7 @@
 																		<SegmentShape>Exp2</SegmentShape>
 																	</Point>
 																	<Point>
-																		<XPos>1</XPos>
+																		<XPos>100</XPos>
 																		<YPos>0</YPos>
 																		<Flags>37</Flags>
 																	</Point>
@@ -1739,7 +1883,7 @@
 												</PropertyList>
 												<ReferenceList>
 													<Reference Name="ControlInput">
-														<ObjectRef Name="S_Velocity" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+														<ObjectRef Name="S_Slide" ID="{4CFDFD1B-B48A-4537-B9F0-EFE1F9EC47A6}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
@@ -1754,7 +1898,7 @@
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
-																		<XPos>1</XPos>
+																		<XPos>100</XPos>
 																		<YPos>0</YPos>
 																		<Flags>37</Flags>
 																	</Point>
@@ -1774,7 +1918,7 @@
 												</PropertyList>
 												<ReferenceList>
 													<Reference Name="ControlInput">
-														<ObjectRef Name="S_Velocity" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+														<ObjectRef Name="S_Slide" ID="{4CFDFD1B-B48A-4537-B9F0-EFE1F9EC47A6}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
@@ -1789,7 +1933,7 @@
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
-																		<XPos>1</XPos>
+																		<XPos>100</XPos>
 																		<YPos>0</YPos>
 																		<Flags>37</Flags>
 																	</Point>
@@ -2338,12 +2482,12 @@
 																</PropertyList>
 																<PointList>
 																	<Point>
-																		<XPos>0</XPos>
+																		<XPos>0.1</XPos>
 																		<YPos>600</YPos>
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
-																		<XPos>2</XPos>
+																		<XPos>500</XPos>
 																		<YPos>0</YPos>
 																		<Flags>37</Flags>
 																	</Point>
@@ -2379,12 +2523,12 @@
 														</PropertyList>
 														<PointList>
 															<Point>
-																<XPos>0</XPos>
+																<XPos>0.1</XPos>
 																<YPos>600</YPos>
 																<Flags>5</Flags>
 															</Point>
 															<Point>
-																<XPos>2</XPos>
+																<XPos>500</XPos>
 																<YPos>0</YPos>
 																<Flags>37</Flags>
 															</Point>

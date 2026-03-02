@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{57FE86C3-0FBA-418E-8DFD-EA33F13E8B9B}",
     "Language": "SFX",
-    "Hash": "{001CB481-EF1A-5D8F-4D5D-ED4AE845F927}",
+    "Hash": "{91DE7CE1-90FE-C034-95C1-3D31286FC67E}",
     "ObjectPath": "WoodenBox_Impact",
     "ShortName": "WoodenBox_Impact",
     "Path": "Event/WoodenBox_Impact.bnk",
@@ -121,20 +121,20 @@
     ],
     "GameParameters": [
      {
-      "Id": "960181970",
-      "Name": "S_Velocity",
-      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Velocity",
-      "GUID": "{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}"
-     },
-     {
       "Id": "1217927383",
       "Name": "S_Mass",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
       "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
+     },
+     {
+      "Id": "4098934257",
+      "Name": "S_Impact",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Impact",
+      "GUID": "{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}"
      }
     ]
    }
   ],
-  "FileHash": "{BF6959CB-86CB-119B-469D-EA662403642E}"
+  "FileHash": "{7997B8F5-8C0E-3574-3A2F-564A8A74B47C}"
  }
 }

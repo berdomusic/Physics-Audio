@@ -62,7 +62,11 @@ class PHYSICSAUDIO_API UPAPhysicsRTPCs : public UDataAsset
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="RTPC")
-	UAkRtpc* VelocityRTPC = nullptr;
+	UAkRtpc* ImpactRTPC = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="RTPC")
+	UAkRtpc* SlideRTPC = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="RTPC")
+	UAkRtpc* RollRTPC = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="RTPC")
 	UAkRtpc* MassRTPC = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="RTPC")
@@ -80,6 +84,8 @@ struct FPAPhysicsActorAudioHandle : public FTableRowBase
 	TSoftObjectPtr<UAkAudioEvent> ImpactSound;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
 	TSoftObjectPtr<UAkAudioEvent> SlideSound;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
+	TSoftObjectPtr<UAkAudioEvent> RollSound;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
 	TSoftObjectPtr<UAkAudioEvent> ProjectileSound;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")

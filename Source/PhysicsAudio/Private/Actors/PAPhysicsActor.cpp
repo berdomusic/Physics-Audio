@@ -21,7 +21,6 @@ APAPhysicsActor::APAPhysicsActor()
 	
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("ActivationSphereCollision"));
 	SphereCollision->SetupAttachment(RootComponent);
-	SphereCollision->SetSphereRadius(250.f);
 	SphereCollision->SetCollisionProfileName(TEXT("OverlapPhysicsActors"));
 	
 	HealthComponent = CreateDefaultSubobject<UPAHealthComponent>(TEXT("HealthComponent"));
@@ -29,8 +28,7 @@ APAPhysicsActor::APAPhysicsActor()
 
 void APAPhysicsActor::OnHitByProjectile_Implementation(AActor* ProjectileActor, const FHitResult& Hit, const FVector& InProjectileImpulse)
 {	
-	/*if (!HealthComponent->IsAlive())
-		return;*/
+	RetriggerDeactivationTimer();
 	StaticMeshComponent->AddImpulseAtLocation(InProjectileImpulse, ProjectileActor->GetActorLocation());	
 	const TArray<USceneComponent*>& attachedChildren = StaticMeshComponent->GetAttachChildren();
 	
@@ -47,7 +45,8 @@ void APAPhysicsActor::OnDamageDealt_Implementation(AActor* Dealer, const FHitRes
 void APAPhysicsActor::OnPhysicsComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
                                             UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	RetriggerDeactivationTimer();
+	if (!ShouldDeactivatePhysicsAudio())
+		RetriggerDeactivationTimer();
 }
 
 void APAPhysicsActor::Init()
@@ -96,6 +95,9 @@ void APAPhysicsActor::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);	
 	GetDestructibleMeshes();
+	UStaticMesh* staticMeshAsset = StaticMeshComponent->GetStaticMesh();
+	if (staticMeshAsset != nullptr)
+		SphereCollision->SetSphereRadius(staticMeshAsset->GetBounds().SphereRadius * 1.1f);
 }
 
 void APAPhysicsActor::BeginPlay()
@@ -104,7 +106,14 @@ void APAPhysicsActor::BeginPlay()
 	if (!IsValid(GetWorld()))
 		return;
 	// ignore begin play overlaps
-	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUObject(this, &APAPhysicsActor::Init));
+	//GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUObject(this, &APAPhysicsActor::Init));
+	GetWorld()->GetTimerManager().SetTimer(
+		InitTimerHandle,
+		this,
+		&APAPhysicsActor::Init,
+		1.f,
+		false
+	);
 }
 
 void APAPhysicsActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -124,39 +133,29 @@ void APAPhysicsActor::OnActivationBeginOverlap(UPrimitiveComponent* OverlappedCo
 		return;
 	if (!IsValid(OtherComp))
 		return;
-	OverlappedActors.AddUnique(OtherActor);
 	
+	if (!ShouldActivatePhysicsAudio(OtherActor, OtherComp))
+		return;
+	
+	OverlappedActors.AddUnique(OtherActor);
 	UPAPhysicsAudioSubsystem* subsystem = UPAPhysicsAudioSubsystem::Get(GetWorld());
 	if (!IsValid(subsystem))
 		return;
 	subsystem->TryAddPhysicsAudioToPrimitive(StaticMeshComponent, PhysicsAudioProperties);
-	
 	RetriggerDeactivationTimer();
-}
-
-void APAPhysicsActor::RetriggerDeactivationTimer()
-{
-	GetWorld()->GetTimerManager().SetTimer(
-		DeactivationTimerHandle,
-		this,
-		&APAPhysicsActor::DeactivatePhysicsAudio,
-		PhysicsAudioSettings::PHYSICS_AUDIO_DEACTIVATION_DELAY,
-		false
-	);
 }
 
 void APAPhysicsActor::OnActivationEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{	
-	for (int i = 0; i < OverlappedActors.Num(); i++)
-		if (OverlappedActors[i] == OtherActor)
-		{
-			OverlappedActors.RemoveAt(i);
-			break;
-		}			
-	
-	if (ShouldDeactivatePhysicsAudio())
-		RetriggerDeactivationTimer();
+{
+	if (OverlappedActors.Contains(OtherActor))
+		for (int i = 0; i < OverlappedActors.Num(); i++)
+			if (OverlappedActors[i] == OtherActor)
+			{
+				OverlappedActors.RemoveAt(i);
+				break;
+			}	
+	RetriggerDeactivationTimer();
 }
 
 void APAPhysicsActor::OnDeath(AActor* Dealer, const FHitResult& Hit, const FVector& Impulse)
@@ -186,40 +185,39 @@ void APAPhysicsActor::OnDeath(AActor* Dealer, const FHitResult& Hit, const FVect
 		newPhysicsActor->StaticMeshComponent->SetStaticMesh(StaticMeshAsset);
 		newPhysicsActor->StaticMeshComponent->SetHiddenInGame(false);
 		newPhysicsActor->StaticMeshComponent->SetSimulatePhysics(true);
-		newPhysicsActor->StaticMeshComponent->SetMassOverrideInKg(NAME_None, StaticMeshComponent->GetMass() *.5f);
+		newPhysicsActor->StaticMeshComponent->SetMassOverrideInKg(NAME_None, StaticMeshComponent->GetMass() * 1.5f);
 		newPhysicsActor->StaticMeshComponent->PrimaryComponentTick.SetTickFunctionEnable(true);
 		newPhysicsActor->PhysicsAudioHandle = DestructionAudioHandle;
 		UGameplayStatics::FinishSpawningActor(newPhysicsActor, spawnTransform);
 		
-		subsystem->TryAddPhysicsAudioToPrimitive(newPhysicsActor->StaticMeshComponent, PhysicsAudioProperties);
-		
-		const float vectorDirectionRandomizer = FMath::RandRange(-10.f, 10.f);
-		const float vectorSizeRandomizer = FMath::RandRange(.5f, 1.f);
-		const FVector impulseRandomized = 
-			vectorSizeRandomizer * 
-			(Impulse + FVector(vectorDirectionRandomizer,vectorDirectionRandomizer,vectorDirectionRandomizer));
+		subsystem->TryAddPhysicsAudioToPrimitive(newPhysicsActor->StaticMeshComponent, PhysicsAudioProperties);		
 		newPhysicsActor->StaticMeshComponent->AddRadialImpulse(Hit.Location, 100.f, 1000.f, RIF_Linear, true );
 	}
 	Destroy();
 }
 
+bool APAPhysicsActor::ShouldActivatePhysicsAudio(const AActor* OtherActor, UPrimitiveComponent* OtherComp)
+{
+	if (OtherActor->IsA(ACharacter::StaticClass()))
+		return true;
+	if (OtherComp->GetPhysicsLinearVelocity().SizeSquared() > PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY_SQUARED)
+		return true;		
+	return false;
+}
+
 bool APAPhysicsActor::ShouldDeactivatePhysicsAudio() const
 {
 	if (!OverlappedActors.IsEmpty())
-	{
 		for (const AActor* const overlappedActor : OverlappedActors)
 			if (IsValid(overlappedActor) && overlappedActor->IsA(ACharacter::StaticClass()))
-				return false; //if there are controllable characters nearby we want to preserve physics audio
-	}
-	else if (StaticMeshComponent->GetPhysicsLinearVelocity().SizeSquared() > FMath::Square(PhysicsAudioSettings::PHYSICS_AUDIO_ACTIVATION_VELOCITY))
-		return false;	
+				return false;
+	if (StaticMeshComponent->GetPhysicsLinearVelocity().SizeSquared() > PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY_SQUARED)
+		return false;
 	return true;
 }
 
 void APAPhysicsActor::DeactivatePhysicsAudio()
 {
-	if (!bAllowPhysicsSounds)
-		return;
 	if (ShouldDeactivatePhysicsAudio())
 	{
 		UPAPhysicsAudioSubsystem* subsystem = UPAPhysicsAudioSubsystem::Get(GetWorld());
@@ -229,4 +227,15 @@ void APAPhysicsActor::DeactivatePhysicsAudio()
 		return;
 	}
 	RetriggerDeactivationTimer();
+}
+
+void APAPhysicsActor::RetriggerDeactivationTimer()
+{
+	GetWorld()->GetTimerManager().SetTimer(
+		DeactivationTimerHandle,
+		this,
+		&APAPhysicsActor::DeactivatePhysicsAudio,
+		PhysicsAudioSettings::PHYSICS_AUDIO_DEACTIVATION_DELAY,
+		false
+	);
 }

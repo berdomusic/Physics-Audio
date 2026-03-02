@@ -40,9 +40,11 @@ namespace AK
 
     namespace GAME_PARAMETERS
     {
+        static const AkUniqueID S_IMPACT = 4098934257U;
         static const AkUniqueID S_MASS = 1217927383U;
         static const AkUniqueID S_PROJECTILESPEED = 2667713947U;
-        static const AkUniqueID S_VELOCITY = 960181970U;
+        static const AkUniqueID S_ROLL = 1205658230U;
+        static const AkUniqueID S_SLIDE = 3874927894U;
     } // namespace GAME_PARAMETERS
 
     namespace BUSSES

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{D251E098-393C-4FB2-94C7-6314153D88C2}",
     "Language": "SFX",
-    "Hash": "{A82D1BC3-6EF0-B8ED-F568-2DA11EB1C180}",
+    "Hash": "{C79F886B-B335-86A7-0098-E35DA18D66FB}",
     "ObjectPath": "Sci_fi_Container_Projectile",
     "ShortName": "Sci_fi_Container_Projectile",
     "Path": "Event/Sci_fi_Container_Projectile.bnk",
@@ -31,7 +31,7 @@
       "Location": "Loose",
       "ShortName": "PRO_Sci-Fi_Container-003.wav",
       "Path": "Media/566156717.wem",
-      "CachePath": "E3/{E3962D30-8773-5EDE-E7A4-832914535689}.wem"
+      "CachePath": "38/{38A5C081-0D20-9F1B-9058-1793434408BF}.wem"
      },
      {
       "Id": "773384674",
@@ -40,7 +40,7 @@
       "Location": "Loose",
       "ShortName": "PRO_Sci-Fi_Container-002.wav",
       "Path": "Media/773384674.wem",
-      "CachePath": "60/{600949E2-7926-E48E-7348-7F11D8A26F66}.wem"
+      "CachePath": "E5/{E5F3793D-F9D8-6898-4E02-C6366F5A8658}.wem"
      },
      {
       "Id": "874213248",
@@ -49,7 +49,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Sci-Fi_Container-008.wav",
       "Path": "Media/874213248.wem",
-      "CachePath": "AE/{AE5E2DB2-42E4-B405-55D3-8CD01F901108}.wem"
+      "CachePath": "EE/{EED70061-E0C4-FF57-344D-0C366525A71E}.wem"
      },
      {
       "Id": "954276250",
@@ -106,6 +106,6 @@
     ]
    }
   ],
-  "FileHash": "{048DEC06-3EE2-ABF3-3F7B-F314C104FAF5}"
+  "FileHash": "{005BAF63-5702-81C1-1D69-C38B998FF0EB}"
  }
 }
