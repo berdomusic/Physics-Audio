@@ -25,6 +25,7 @@ public:
 	UFUNCTION()
 	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 		UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	FORCEINLINE void SetSquaredDistanceToClosestListener(float InDistance) { DistanceToClosestListenerSquared = InDistance; }
 protected:	
 	UFUNCTION()
 	virtual void OnHitByProjectile_Implementation(AActor* ProjectileActor, const FHitResult& Hit,
@@ -61,7 +62,8 @@ protected:
 	float CurrentAngularSpeed;
 	float PreviousAngularSpeed;
 	
-	// Audio events
+	// Audio properties
+	FPAPhysicsActorAudioHandle PhysicsActorAudioProperties;
 	UPROPERTY()
 	UAkAudioEvent* ImpactSound;
 	UPROPERTY()
@@ -84,15 +86,12 @@ protected:
 	float CurrentRollRTPCValue;
 	
 	// Audibility
-	float AudibilityRangeSquared = 0.f;
-	void SetAudibilityRange();
-	bool bIsAudible;
-	bool IsAudible() const;
+	float DistanceToClosestListenerSquared;
+	bool IsAkEventValidAndAudible(const UAkAudioEvent* InEvent) const;
 	
 	// Component references
 	UPROPERTY()
 	UPrimitiveComponent* ParentComponent;
-	FPAPhysicsActorAudioHandle PhysicsActorAudioProperties;
 	
 	// Cooldowns
 	float ImpactCooldown;

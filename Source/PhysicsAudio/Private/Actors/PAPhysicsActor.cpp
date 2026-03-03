@@ -196,8 +196,10 @@ void APAPhysicsActor::OnDeath(AActor* Dealer, const FHitResult& Hit, const FVect
 	Destroy();
 }
 
-bool APAPhysicsActor::ShouldActivatePhysicsAudio(const AActor* OtherActor, UPrimitiveComponent* OtherComp)
+bool APAPhysicsActor::ShouldActivatePhysicsAudio(const AActor* OtherActor, UPrimitiveComponent* OtherComp) const
 {
+	if (!UPAFunctionLibrary::IsAudioHandleNotEmpty(PhysicsAudioProperties))
+		return false; 
 	if (OtherActor->IsA(ACharacter::StaticClass()))
 		return true;
 	if (OtherComp->GetPhysicsLinearVelocity().SizeSquared() > PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY_SQUARED)

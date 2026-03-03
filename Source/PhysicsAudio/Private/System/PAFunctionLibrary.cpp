@@ -39,10 +39,12 @@ UPAPhysicsRTPCs* UPAFunctionLibrary::GetRTPC_Assets()
 bool UPAFunctionLibrary::IsAudioHandleNotEmpty(const FPAPhysicsActorAudioHandle& InHandle)
 {
 	// Returns true if any sound asset is assigned
-	return !InHandle.ImpactSound.IsNull() ||
+	return 
+		!InHandle.ImpactSound.IsNull() ||
 		!InHandle.SlideSound.IsNull() ||
+		!InHandle.RollSound.IsNull() ||
 		!InHandle.ProjectileSound.IsNull() ||
-		!InHandle.DestructionSound.IsNull();
+		!InHandle.DestructionSound.IsNull();	
 }
 
 bool UPAFunctionLibrary::ResolveAudioHandle(const FDataTableRowHandle& InRowHandle, FPAPhysicsActorAudioHandle& OutHandle)

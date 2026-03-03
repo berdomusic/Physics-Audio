@@ -102,6 +102,7 @@ private:
 	
 	TArray<FVector> ListenersPositions;
 	void CacheListenersPositions();
+	void UpdateDistanceToListeners();
 	
 	bool CanAddComponentToPool() const;
 	FTSTicker::FDelegateHandle TickHandle;

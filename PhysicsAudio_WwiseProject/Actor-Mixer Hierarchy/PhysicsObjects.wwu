@@ -1985,6 +1985,9 @@
 								<RandomSequenceContainer Name="WoodenBox_Projectile" ID="{17C2660B-A4F6-4181-A067-C72519AF4C63}" ShortID="696791395">
 									<PropertyList>
 										<Property Name="Highpass" Type="int16">
+											<ValueList>
+												<Value>10</Value>
+											</ValueList>
 											<ModifierList>
 												<ModifierInfo>
 													<Modifier Name="" ID="{9B712D5E-10BC-4A41-A2D5-D8EE3BD1EE69}">
@@ -1996,7 +1999,25 @@
 												</ModifierInfo>
 											</ModifierList>
 										</Property>
+										<Property Name="Lowpass" Type="int16">
+											<ValueList>
+												<Value>10</Value>
+											</ValueList>
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{6FA4C4A1-6067-4646-8C31-ACAF406D2456}">
+														<PropertyList>
+															<Property Name="Enabled" Type="bool" Value="True"/>
+															<Property Name="Max" Type="Real64" Value="15"/>
+														</PropertyList>
+													</Modifier>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
 										<Property Name="Pitch" Type="int32">
+											<ValueList>
+												<Value>600</Value>
+											</ValueList>
 											<ModifierList>
 												<ModifierInfo>
 													<Modifier Name="" ID="{B22DA92E-B3BA-471F-AC2E-12E2ABF7B448}">
@@ -2011,6 +2032,9 @@
 										</Property>
 										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="4"/>
 										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-3</Value>
+											</ValueList>
 											<ModifierList>
 												<ModifierInfo>
 													<Modifier Name="" ID="{55A5B8F6-5691-4643-A064-97299940779A}">
@@ -2042,6 +2066,12 @@
 											</ReferenceList>
 											<ChildrenList>
 												<AudioFileSource Name="PRO_WoodenBox-001" ID="{B2D35A38-454A-4422-9321-B77FBFFFF389}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.177366770803928"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.031739316880703"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.442483447262354"/>
+													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>PRO_WoodenBox-001.wav</AudioFile>
 													<MediaIDList>
@@ -2064,6 +2094,12 @@
 											</ReferenceList>
 											<ChildrenList>
 												<AudioFileSource Name="PRO_WoodenBox-002" ID="{299ECE14-9B78-4C71-9080-71F7B7F91468}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.100103823762191"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.00729923714932643"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.444210763822729"/>
+													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>PRO_WoodenBox-002.wav</AudioFile>
 													<MediaIDList>
@@ -2086,6 +2122,12 @@
 											</ReferenceList>
 											<ChildrenList>
 												<AudioFileSource Name="PRO_WoodenBox-003" ID="{B6C09CAE-12FE-4BF5-B4C9-80B7C127BE62}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0869971076516728"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.0139523663214947"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.405439340476614"/>
+													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>PRO_WoodenBox-003.wav</AudioFile>
 													<MediaIDList>
@@ -2108,6 +2150,12 @@
 											</ReferenceList>
 											<ChildrenList>
 												<AudioFileSource Name="PRO_WoodenBox-004" ID="{12140404-800C-4D71-85C6-E267E84D7CB6}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.131385608723289"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.00821160054520557"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.405105619090086"/>
+													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>PRO_WoodenBox-004.wav</AudioFile>
 													<MediaIDList>
@@ -2130,6 +2178,12 @@
 											</ReferenceList>
 											<ChildrenList>
 												<AudioFileSource Name="PRO_WoodenBox-005" ID="{07DF6551-A7A3-4C64-93D7-E12AE89D3C34}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0903007544969258"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.018543904941333"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.328952734316714"/>
+													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>PRO_WoodenBox-005.wav</AudioFile>
 													<MediaIDList>
@@ -2152,6 +2206,12 @@
 											</ReferenceList>
 											<ChildrenList>
 												<AudioFileSource Name="PRO_WoodenBox-006" ID="{6315072C-40F1-417E-BFAE-1F96EF376DD3}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.10481337575536"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.0177376482047533"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.343465355575149"/>
+													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>PRO_WoodenBox-006.wav</AudioFile>
 													<MediaIDList>

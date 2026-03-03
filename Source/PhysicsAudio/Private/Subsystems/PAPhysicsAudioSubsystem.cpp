@@ -167,6 +167,28 @@ void UPAPhysicsAudioSubsystem::CacheListenersPositions()
 	}
 }
 
+void UPAPhysicsAudioSubsystem::UpdateDistanceToListeners()
+{
+	CacheListenersPositions();
+	if (!ListenersPositions.IsEmpty() && !ActivePhysicsAudioObjectsPool.IsEmpty())
+		for (const FPAActivePhysicsAudioObject& object : ActivePhysicsAudioObjectsPool)
+		{
+			if (!IsValid(object.AudioComponent))
+				continue;
+			const FVector componentLocation = object.AudioComponent->GetComponentLocation();
+
+			float distanceToClosestListenerSquared = TNumericLimits<float>::Max();
+
+			for (const FVector& ListenerPosition : ListenersPositions)
+			{
+				const float distSq = FVector::DistSquared(componentLocation, ListenerPosition);
+				if (distSq < distanceToClosestListenerSquared)
+					distanceToClosestListenerSquared = distSq;
+			}
+			object.AudioComponent->SetSquaredDistanceToClosestListener(distanceToClosestListenerSquared);
+		}
+}
+
 bool UPAPhysicsAudioSubsystem::CanAddComponentToPool() const
 {
 	return ActivePhysicsAudioObjectsPool.Num() + AvailablePhysicsAudioComponentsPool.Num() < PhysicsAudioSettings::PHYSICS_AUDIO_POOL_SIZE;
@@ -216,8 +238,8 @@ void UPAPhysicsAudioSubsystem::PopulatePoolAsync()
 bool UPAPhysicsAudioSubsystem::Tick(float DeltaTime)
 {
 	if (CanAddComponentToPool())
-		PopulatePoolAsync();
-	CacheListenersPositions();
+		PopulatePoolAsync();	
 	RunQueue(true);
+	UpdateDistanceToListeners();
 	return true;
 }

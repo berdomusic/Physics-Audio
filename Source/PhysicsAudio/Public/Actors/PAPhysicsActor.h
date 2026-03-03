@@ -74,7 +74,7 @@ protected:
 	UFUNCTION()
 	void OnDeath(AActor* Dealer, const FHitResult& Hit, const FVector& Impulse);
 
-	static bool ShouldActivatePhysicsAudio(const AActor* OtherActor, UPrimitiveComponent* OtherComp);
+	bool ShouldActivatePhysicsAudio(const AActor* OtherActor, UPrimitiveComponent* OtherComp) const;
 	bool ShouldDeactivatePhysicsAudio() const;
 	void DeactivatePhysicsAudio();
 	void RetriggerDeactivationTimer();

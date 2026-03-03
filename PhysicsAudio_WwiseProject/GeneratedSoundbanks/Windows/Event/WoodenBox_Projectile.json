@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{28CD8541-B999-478C-AB49-0C851561B3DF}",
     "Language": "SFX",
-    "Hash": "{D3FF7618-2A3E-89C6-95DC-688AA734C918}",
+    "Hash": "{E0EB0BFC-7C3C-745C-5A2F-352244D5B964}",
     "ObjectPath": "WoodenBox_Projectile",
     "ShortName": "WoodenBox_Projectile",
     "Path": "Event/WoodenBox_Projectile.bnk",
@@ -22,7 +22,7 @@
       "Location": "Loose",
       "ShortName": "PRO_WoodenBox-001.wav",
       "Path": "Media/215358890.wem",
-      "CachePath": "22/{2265F1AB-0D44-9C12-EF16-5F577CD3FA58}.wem"
+      "CachePath": "E7/{E7BCF209-D9FE-48FD-7E9C-A76E23CE821C}.wem"
      },
      {
       "Id": "334349114",
@@ -31,7 +31,7 @@
       "Location": "Loose",
       "ShortName": "PRO_WoodenBox-004.wav",
       "Path": "Media/334349114.wem",
-      "CachePath": "5B/{5B1060EA-DC0E-2857-1D89-B6643A70F9AE}.wem"
+      "CachePath": "8D/{8D0D102F-F0D9-EE2C-84DC-FCC458166BE2}.wem"
      },
      {
       "Id": "540911090",
@@ -40,7 +40,7 @@
       "Location": "Loose",
       "ShortName": "PRO_WoodenBox-006.wav",
       "Path": "Media/540911090.wem",
-      "CachePath": "93/{932A0E21-3813-74F5-B1FA-87AC43B95BA9}.wem"
+      "CachePath": "57/{57127EF1-62E0-3D43-E17B-0FA84B1A4E88}.wem"
      },
      {
       "Id": "781817094",
@@ -49,7 +49,7 @@
       "Location": "Loose",
       "ShortName": "PRO_WoodenBox-003.wav",
       "Path": "Media/781817094.wem",
-      "CachePath": "6C/{6CC9101F-D81C-84B6-98D0-9F1B6904DFCD}.wem"
+      "CachePath": "87/{87EB8B4A-77F7-0C18-D302-0810141F8AA4}.wem"
      },
      {
       "Id": "827791030",
@@ -58,7 +58,7 @@
       "Location": "Loose",
       "ShortName": "PRO_WoodenBox-005.wav",
       "Path": "Media/827791030.wem",
-      "CachePath": "21/{21E0C125-7817-B9D8-96CA-49D6EA1CF622}.wem"
+      "CachePath": "18/{1869C938-EF33-381C-3B04-B74509BC8E24}.wem"
      },
      {
       "Id": "970909688",
@@ -67,7 +67,7 @@
       "Location": "Loose",
       "ShortName": "PRO_WoodenBox-002.wav",
       "Path": "Media/970909688.wem",
-      "CachePath": "C8/{C85C2BB2-ED33-EAE8-0373-3DC8F59777E4}.wem"
+      "CachePath": "3F/{3F8D2869-7A1F-E2E2-D605-A01A659AD918}.wem"
      }
     ],
     "Events": [
@@ -78,8 +78,8 @@
       "GUID": "{28CD8541-B999-478C-AB49-0C851561B3DF}",
       "MaxAttenuation": "4000",
       "DurationType": "OneShot",
-      "DurationMin": "0.38907525",
-      "DurationMax": "0.79877853",
+      "DurationMin": "0.17421107",
+      "DurationMax": "0.3892439",
       "MediaRefs": [
        {
         "Id": "215358890"
@@ -118,6 +118,6 @@
     ]
    }
   ],
-  "FileHash": "{639C196C-8A30-90E5-D593-B5A52129A570}"
+  "FileHash": "{80DE7CFB-CC17-D099-7231-E7254DD23D9A}"
  }
 }

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{8C97A3B4-D029-460E-8317-8E7C504B068E}",
     "Language": "SFX",
-    "Hash": "{D9C48078-BF6C-025F-5298-B172336B2CAA}",
+    "Hash": "{48DAFDFE-0BA8-3884-706E-C0F3876B1035}",
     "ObjectPath": "Sci_fi_Container_Slide",
     "ShortName": "Sci_fi_Container_Slide",
     "Path": "Event/Sci_fi_Container_Slide.bnk",
@@ -22,7 +22,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Sci-Fi_Container-003.wav",
       "Path": "Media/6416374.wem",
-      "CachePath": "C6/{C62AB3FB-68A8-4E2C-C9F7-F9B55CA17A76}.wem"
+      "CachePath": "D8/{D8F63512-1097-9A4A-ED47-5FC11E404E2F}.wem"
      },
      {
       "Id": "33048271",
@@ -31,7 +31,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Sci-Fi_Container-001.wav",
       "Path": "Media/33048271.wem",
-      "CachePath": "98/{98560B67-9C1D-CCAE-80B2-89C72FD531F9}.wem"
+      "CachePath": "84/{84BBB408-FA32-D416-B981-45D3821293B3}.wem"
      },
      {
       "Id": "215456511",
@@ -40,7 +40,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Sci-Fi_Container-002.wav",
       "Path": "Media/215456511.wem",
-      "CachePath": "E4/{E438730A-4437-95B8-EF93-474E890755DD}.wem"
+      "CachePath": "F4/{F45D5191-DD42-6794-3A10-E0A52B8F0714}.wem"
      },
      {
       "Id": "387697435",
@@ -49,7 +49,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Sci-Fi_Container-002.wav",
       "Path": "Media/387697435.wem",
-      "CachePath": "45/{4574A7F6-EDB9-70EF-EEEE-964F52FCCF82}.wem"
+      "CachePath": "A3/{A365C3E0-3BE8-2DE3-4C8C-C90116B64E4D}.wem"
      },
      {
       "Id": "664142442",
@@ -58,7 +58,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Sci-Fi_Container-004.wav",
       "Path": "Media/664142442.wem",
-      "CachePath": "87/{871FD87B-0293-6DE7-F14D-7E0FE487FD7A}.wem"
+      "CachePath": "95/{95DD7D6F-6D79-B418-98DC-87923CC7C5EE}.wem"
      },
      {
       "Id": "726484189",
@@ -67,7 +67,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Sci-Fi_Container-003.wav",
       "Path": "Media/726484189.wem",
-      "CachePath": "31/{31F1CC26-056D-3EEB-6D18-F66126B78063}.wem"
+      "CachePath": "70/{70852524-CFAC-A353-9020-DDDD8BBEED2A}.wem"
      },
      {
       "Id": "776870288",
@@ -76,7 +76,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Sci-Fi_Container-004.wav",
       "Path": "Media/776870288.wem",
-      "CachePath": "82/{82C2A0CF-8CE3-E82A-22CE-7F740CB26117}.wem"
+      "CachePath": "69/{69DF1B43-E647-5FD3-35BC-656F78C020FB}.wem"
      },
      {
       "Id": "934552411",
@@ -85,7 +85,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Sci-Fi_Container-001.wav",
       "Path": "Media/934552411.wem",
-      "CachePath": "C7/{C76E05CA-946B-BAD8-C381-38274A61C62F}.wem"
+      "CachePath": "C6/{C61B1449-AD49-B6B1-ACEF-3C97AB4A02C1}.wem"
      }
     ],
     "Events": [
@@ -142,6 +142,6 @@
     ]
    }
   ],
-  "FileHash": "{99C472D6-49C6-306D-0767-DD7A88A4671D}"
+  "FileHash": "{CA18273A-41C7-1A3D-CB15-7A4DAB6AABD8}"
  }
 }
