@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/PAPhysicsAudioComponent.h"
 #include "GameFramework/Actor.h"
+#include "Misc/MapErrors.h"
 #include "PhysicsAudioProjectile.generated.h"
 
 class USphereComponent;
@@ -25,10 +26,14 @@ class APhysicsAudioProjectile : public AActor
 
 public:
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PhysicsAudio")
 	UPAPhysicsAudioComponent* AudioComponent;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PhysicsAudio")
+	FDataTableRowHandle PhysicsAudioHandle;
+	UPROPERTY(BlueprintReadOnly, Category = "PhysicsAudio")
 	FPAPhysicsActorAudioHandle ProjectileAudioProperties;
+	UPROPERTY()
+	UStaticMeshComponent* StaticMeshComponent;
 	
 	APhysicsAudioProjectile();
 
@@ -40,7 +45,8 @@ public:
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }
 	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
-	
+	/** Returns StaticMeshComponent subobject **/
+	UStaticMeshComponent* GetStaticMeshComponent() const;
 protected:
 	virtual void BeginPlay() override;
 };

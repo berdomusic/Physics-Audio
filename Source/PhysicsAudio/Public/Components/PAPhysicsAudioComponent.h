@@ -88,6 +88,8 @@ protected:
 	// Audibility
 	float DistanceToClosestListenerSquared;
 	bool IsAkEventValidAndAudible(const UAkAudioEvent* InEvent) const;
+	bool bSlideAudible;
+	bool bRollAudible;
 	
 	// Component references
 	UPROPERTY()
@@ -100,11 +102,12 @@ protected:
 	
 	// Helper functions
 	void UpdatePhysicsState(float DeltaTime);
-	void CalculateRollingState(float DeltaTime);
+	bool bPhysicsStateUpdated;
 	void UpdateRTPCValues();
 	static float NormalizeByMass(float InValue, float InMass, float InExponent = .5f);
 	bool ShouldPlayImpact(float InImpulseMagnitude, float InVelocityMagnitude, float InVelocityDelta) const;
-	bool IsOnGround() const;
+	bool bGrounded = true;
+	const float GroundedThreshold = 10.f;
 	
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

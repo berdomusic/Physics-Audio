@@ -25,13 +25,13 @@ public:
 	UPROPERTY()
 	UPAHealthComponent* HealthComponent;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PhysicsAudio")
 	FDataTableRowHandle PhysicsAudioHandle;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PhysicsAudio")
 	FDataTableRowHandle DestructionAudioHandle;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category = "PhysicsAudio")
 	FPAPhysicsActorAudioHandle PhysicsAudioProperties;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category = "PhysicsAudio")
 	FPAPhysicsActorAudioHandle DestructionAudioProperties;	
 	
 	UPROPERTY(BlueprintReadWrite)

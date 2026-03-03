@@ -3,6 +3,7 @@
 #include "PhysicsAudioProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "System/PAFunctionLibrary.h"
 #include "System/PhysicsAudioStructs.h"
 
 APhysicsAudioProjectile::APhysicsAudioProjectile() 
@@ -37,25 +38,39 @@ APhysicsAudioProjectile::APhysicsAudioProjectile()
 
 void APhysicsAudioProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	FVector impulse = GetVelocity() * 100.f;
 	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
-	{
-		FVector impulse = GetVelocity() * 100.f;
+	if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
+	{		
 		if (OtherActor->GetClass()->ImplementsInterface(UProjectileInterface::StaticClass()))
 			IProjectileInterface::Execute_OnHitByProjectile(OtherActor, this, Hit, impulse);
-		else
+		else if (OtherComp->IsSimulatingPhysics())
 			OtherComp->AddImpulseAtLocation(impulse, GetActorLocation());
 		
 		if (OtherActor->GetClass()->ImplementsInterface(UDamageInterface::StaticClass()))
 			IDamageInterface::Execute_OnDamageDealt(OtherActor, this, Hit, impulse);		
 	}
-	if (IsValid(AudioComponent))
-		AudioComponent->OnComponentHit(HitComp, OtherActor, OtherComp, NormalImpulse, Hit);
+	if (IsValid(AudioComponent) && IsValid(StaticMeshComponent)) // Call manually to avoid enabling simulation on static mesh
+		AudioComponent->OnComponentHit(StaticMeshComponent, OtherActor, OtherComp, impulse, Hit);
+}
+
+UStaticMeshComponent* APhysicsAudioProjectile::GetStaticMeshComponent() const
+{
+	const TArray<USceneComponent*>& attachedChildren = RootComponent->GetAttachChildren();
+	for (USceneComponent* child : attachedChildren)
+	{
+		UStaticMeshComponent* staticMeshComp = Cast<UStaticMeshComponent>(child);
+		if (staticMeshComp)
+			return staticMeshComp;
+	}
+	return nullptr;
 }
 
 void APhysicsAudioProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	if (IsValid(AudioComponent))
-		AudioComponent->OnAttachedToPhysicsComponent(CollisionComp, ProjectileAudioProperties, 100.f);
+	StaticMeshComponent = GetStaticMeshComponent();
+	if (IsValid(AudioComponent) && IsValid(StaticMeshComponent))
+		if (UPAFunctionLibrary::ResolveAudioHandle(PhysicsAudioHandle, ProjectileAudioProperties))
+			AudioComponent->OnAttachedToPhysicsComponent(StaticMeshComponent, ProjectileAudioProperties, 100.f);
 }

@@ -3,7 +3,6 @@
 
 #include "Actors/PAPhysicsActor.h"
 
-#include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/PAPhysicsAudioSubsystem.h"
 #include "System/PAFunctionLibrary.h"
@@ -200,7 +199,7 @@ bool APAPhysicsActor::ShouldActivatePhysicsAudio(const AActor* OtherActor, UPrim
 {
 	if (!UPAFunctionLibrary::IsAudioHandleNotEmpty(PhysicsAudioProperties))
 		return false; 
-	if (OtherActor->IsA(ACharacter::StaticClass()))
+	if (OtherActor->IsA(APawn::StaticClass()))
 		return true;
 	if (OtherComp->GetPhysicsLinearVelocity().SizeSquared() > PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY_SQUARED)
 		return true;		
@@ -211,7 +210,7 @@ bool APAPhysicsActor::ShouldDeactivatePhysicsAudio() const
 {
 	if (!OverlappedActors.IsEmpty())
 		for (const AActor* const overlappedActor : OverlappedActors)
-			if (IsValid(overlappedActor) && overlappedActor->IsA(ACharacter::StaticClass()))
+			if (IsValid(overlappedActor) && overlappedActor->IsA(APawn::StaticClass()))
 				return false;
 	if (StaticMeshComponent->GetPhysicsLinearVelocity().SizeSquared() > PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY_SQUARED)
 		return false;
