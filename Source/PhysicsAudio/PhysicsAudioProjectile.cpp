@@ -72,5 +72,5 @@ void APhysicsAudioProjectile::BeginPlay()
 	StaticMeshComponent = GetStaticMeshComponent();
 	if (IsValid(AudioComponent) && IsValid(StaticMeshComponent))
 		if (UPAFunctionLibrary::ResolveAudioHandle(PhysicsAudioHandle, ProjectileAudioProperties))
-			AudioComponent->OnAttachedToPhysicsComponent(StaticMeshComponent, ProjectileAudioProperties, 100.f);
+			AudioComponent->OnAttachedToPhysicsComponent(StaticMeshComponent, ProjectileAudioProperties, 500.f);
 }

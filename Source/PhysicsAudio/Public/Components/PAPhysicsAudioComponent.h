@@ -38,26 +38,18 @@ protected:
 	
 	// Detection thresholds (mass-normalized)
 	float ImpactThreshold;
-	float SlideThreshold;
 	float RollThreshold;
-	float VelocityDeltaThreshold;
 	
 	// State tracking
 	bool bIsSliding;
 	bool bIsRolling;
-	bool bWasRolling;
 	float TimeSinceLastRollDetection;
 	
 	// Velocity tracking
-	FVector PreviousVelocity;
-	FVector CurrentVelocity;
 	float PreviousVelocityMagnitude;
 	float CurrentVelocityMagnitude;
-	float VelocityDeltaMagnitude;
 	
 	// Rolling specific
-	FVector PreviousAngularVelocity;
-	FVector CurrentAngularVelocity;
 	float AngularSpeed;
 	float CurrentAngularSpeed;
 	float PreviousAngularSpeed;
@@ -105,9 +97,9 @@ protected:
 	bool bPhysicsStateUpdated;
 	void UpdateRTPCValues();
 	static float NormalizeByMass(float InValue, float InMass, float InExponent = .5f);
-	bool ShouldPlayImpact(float InImpulseMagnitude, float InVelocityMagnitude, float InVelocityDelta) const;
+	bool ShouldPlayImpact(float InImpulseMagnitude) const;
 	bool bGrounded = true;
-	const float GroundedThreshold = 10.f;
+	const float GroundedThreshold = 50.f;
 	
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

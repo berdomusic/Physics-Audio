@@ -21,7 +21,6 @@ UPAPhysicsAudioComponent::UPAPhysicsAudioComponent(const FObjectInitializer& Obj
 	RollCooldown = 0.f;
 	bIsSliding = false;
 	bIsRolling = false;
-	bWasRolling = false;
 	TimeSinceLastRollDetection = 0.f;
 }
 
@@ -80,33 +79,28 @@ void UPAPhysicsAudioComponent::SetMassData()
 {
 	if (ObjectMassOverride > 0.f)
 		ObjectMass = ObjectMassOverride;
+	else if (ParentComponent->IsSimulatingPhysics())
+		ObjectMass = ParentComponent->GetMass();
+	ensure(ObjectMass > 0.f);
 	
 	// Calculate mass-normalized thresholds
-	// Using square root scaling for more natural perception
 	ObjectMassSqrt = FMath::Sqrt(ObjectMass);
 	SetRTPCValue(RTPCAssets->MassRTPC, FMath::Clamp(ObjectMass, 0.f, 500.f), 0, FString());
 	
-	// Impact threshold: heavier objects need more force for impact sounds
-	ImpactThreshold = FMath::GetMappedRangeValueClamped(
-		FVector2D(1.f, 1000.f),
-		FVector2D(25.f, 500.f),
+	// Desired minimum impact velocity to produce sound
+	float minVelocity = FMath::GetMappedRangeValueClamped(
+		FVector2D(1.f, 500.f), 
+		FVector2D(1.4f, .6f),
 		ObjectMass
 	);
-	
-	// Slide threshold: normalize by sqrt(mass) so perceived speed is similar
-	SlideThreshold = 50.f * ObjectMassSqrt;
+
+	// Convert velocity to impulse threshold
+	ImpactThreshold = ObjectMass * minVelocity;
 	
 	// Roll threshold: angular velocity needed to detect rolling
 	RollThreshold = FMath::GetMappedRangeValueClamped(
 		FVector2D(1.f, 1000.f),
 		FVector2D(5.f, 20.f),
-		ObjectMass
-	);
-	
-	// Velocity change needed to trigger impact
-	VelocityDeltaThreshold = FMath::GetMappedRangeValueClamped(
-		FVector2D(1.f, 1000.f),
-		FVector2D(10.f, 100.f),
 		ObjectMass
 	);
 }
@@ -119,14 +113,17 @@ float UPAPhysicsAudioComponent::NormalizeByMass(float InValue, float InMass, flo
 	return InValue / FMath::Pow(InMass, InExponent);
 }
 
-bool UPAPhysicsAudioComponent::ShouldPlayImpact(float InImpulseMagnitude, float InVelocityMagnitude, float InVelocityDelta) const
+bool UPAPhysicsAudioComponent::ShouldPlayImpact(float InImpulseMagnitude) const
 {
-	const float currentImpactThreshold = bGrounded ? ImpactThreshold * 5.f : ImpactThreshold;
-	const float currentVelocityDeltaThreshold = bGrounded ? VelocityDeltaThreshold * 5.f : VelocityDeltaThreshold;
+	const float energyThreshold = 
+		.5f * 
+			ObjectMass * 
+				FMath::Square(ImpactThreshold);
+	const float currentImpactThreshold = bGrounded ? ImpactThreshold * 100.f : ImpactThreshold;
 	return ImpactCooldown >= PhysicsAudioSettings::PHYSICS_AUDIO_COOLDOWN_TIME
-			&& InVelocityMagnitude > PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY
-			&& InImpulseMagnitude > currentImpactThreshold
-			&& InVelocityDelta > currentVelocityDeltaThreshold;
+			&& CurrentVelocityMagnitude > PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY
+			&& InImpulseMagnitude > currentImpactThreshold;
+			//&& InImpulseMagnitude > energyThreshold;
 }
 
 void UPAPhysicsAudioComponent::LoadAkAudioEvents()
@@ -191,17 +188,14 @@ void UPAPhysicsAudioComponent::UpdatePhysicsState(float DeltaTime)
 		return;
 	}
 	// Update velocity tracking
-	PreviousVelocity = CurrentVelocity;
 	PreviousVelocityMagnitude = CurrentVelocityMagnitude;
-	
-	CurrentVelocity = ParentComponent->GetPhysicsLinearVelocity();
-	CurrentVelocityMagnitude = CurrentVelocity.Size();
+	CurrentVelocityMagnitude = ParentComponent->GetPhysicsLinearVelocity().Size();
 	
 	// Calculate velocity delta
-	VelocityDeltaMagnitude = FMath::Abs(CurrentVelocityMagnitude - PreviousVelocityMagnitude);
+	const float velocityMagnitudeDelta = FMath::Abs(CurrentVelocityMagnitude - PreviousVelocityMagnitude);
 	
 	// Update grounded state
-	if (VelocityDeltaMagnitude >= GroundedThreshold)
+	if (velocityMagnitudeDelta >= GroundedThreshold)
 		bGrounded = false;
 	
 	// Update rolling state
@@ -227,9 +221,6 @@ void UPAPhysicsAudioComponent::UpdatePhysicsState(float DeltaTime)
 		bIsRolling = bShouldBeRolling;
 	else
 		bIsRolling = true; // Maintain rolling state during cooldown
-	
-	// Track if rolling state changed for event triggering
-	bWasRolling = bIsRolling != bShouldBeRolling ? bIsRolling : bWasRolling;
 	
 	bPhysicsStateUpdated = true;
 }
@@ -295,16 +286,24 @@ void UPAPhysicsAudioComponent::OnComponentHit(UPrimitiveComponent* HitComponent,
 	if (Hit.PhysMaterial.Get())
 		SetSwitch(UPAFunctionLibrary::GetAkSwitchFromSurface(Hit.PhysMaterial->SurfaceType));
 	
-	// --- IMPACT DETECTION ---
-	float impulseMagnitude = NormalImpulse.Size();
+	// Want stronger impulse if wasn't grounded before
+	float impulseMagnitude = NormalImpulse.Size() * bGrounded ? 1.f : NormalImpulse.Size();
 	
-	if (ShouldPlayImpact(impulseMagnitude, CurrentVelocityMagnitude, VelocityDeltaMagnitude))
+	if (ShouldPlayImpact(impulseMagnitude))
 	{
+		UKismetSystemLibrary::DrawDebugString(
+			GetWorld(), 
+			Hit.Location,
+			FString::SanitizeFloat(impulseMagnitude),
+			0,
+			FLinearColor::Green,
+			5.f);
+
 		ImpactCooldown = 0.f;
 		
 		// Calculate impact RTPC (0-100) based on impulse and mass
 		// Normalize impulse by mass for consistent feel
-		float normalizedImpulse = impulseMagnitude / ObjectMassSqrt;
+		float normalizedImpulse = impulseMagnitude / ObjectMass;
 		float impactRTPCValue = FMath::GetMappedRangeValueClamped(
 		FVector2D(50.f, 2000.f),
 		FVector2D(0.f, 100.f),
