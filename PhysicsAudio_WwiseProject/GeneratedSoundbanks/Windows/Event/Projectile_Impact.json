@@ -10,11 +10,29 @@
     "Type": "Event",
     "GUID": "{F47466CA-B9D9-49EC-B964-3A6BEC6DF42B}",
     "Language": "SFX",
-    "Hash": "{64E869C8-7C72-09B8-28F0-8BE058BAD3B2}",
+    "Hash": "{D9D4E9FC-C83F-CA7E-625C-7C3720383006}",
     "ObjectPath": "Projectile_Impact",
     "ShortName": "Projectile_Impact",
     "Path": "Event/Projectile_Impact.bnk",
     "Media": [
+     {
+      "Id": "136236821",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Projectile-010.wav",
+      "Path": "Media/136236821.wem",
+      "CachePath": "4F/{4F6B6E49-AE11-B458-40FE-032BADA1AA77}.wem"
+     },
+     {
+      "Id": "182909730",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Projectile-011.wav",
+      "Path": "Media/182909730.wem",
+      "CachePath": "13/{137AC01C-3D77-0891-228D-EB449A760446}.wem"
+     },
      {
       "Id": "306876787",
       "Language": "SFX",
@@ -22,7 +40,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Projectile-003.wav",
       "Path": "Media/306876787.wem",
-      "CachePath": "08/{0839E6E1-AB31-DF89-6924-D0F4DA0170E6}.wem"
+      "CachePath": "D8/{D868B990-6D94-19FE-82AC-9EB5BF175927}.wem"
      },
      {
       "Id": "578608009",
@@ -31,7 +49,16 @@
       "Location": "Loose",
       "ShortName": "IMP_Projectile-004.wav",
       "Path": "Media/578608009.wem",
-      "CachePath": "8D/{8D5F99C3-1D42-BBEB-19EF-373084BBC5EA}.wem"
+      "CachePath": "1D/{1D6D7A5C-F9CB-873E-C233-4011705C7CF7}.wem"
+     },
+     {
+      "Id": "624413932",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Projectile-008.wav",
+      "Path": "Media/624413932.wem",
+      "CachePath": "ED/{ED3FA568-83C3-0FDB-838D-F25D38B3DC6F}.wem"
      },
      {
       "Id": "624472246",
@@ -40,7 +67,16 @@
       "Location": "Loose",
       "ShortName": "IMP_Projectile-006.wav",
       "Path": "Media/624472246.wem",
-      "CachePath": "64/{64015E2D-7BD2-F241-794D-723D50F2B926}.wem"
+      "CachePath": "06/{0635E2F7-945D-1357-CE1E-1F2FDDAFD591}.wem"
+     },
+     {
+      "Id": "640142798",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_Projectile-009.wav",
+      "Path": "Media/640142798.wem",
+      "CachePath": "FB/{FB0B254C-690B-9731-8D21-F2D102888ED6}.wem"
      },
      {
       "Id": "642702572",
@@ -49,7 +85,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Projectile-001.wav",
       "Path": "Media/642702572.wem",
-      "CachePath": "F3/{F381E003-BFB0-B018-0E96-6431946B3A03}.wem"
+      "CachePath": "A2/{A26BAD74-D3C7-EE17-07CA-D86A60082B3A}.wem"
      },
      {
       "Id": "807139861",
@@ -58,7 +94,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Projectile-005.wav",
       "Path": "Media/807139861.wem",
-      "CachePath": "35/{3551ADD1-5643-0BEC-8C7A-42C329B908FD}.wem"
+      "CachePath": "4A/{4A36FEAA-7E94-1551-4B5E-C384FF1148DC}.wem"
      },
      {
       "Id": "912292679",
@@ -67,7 +103,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Projectile-002.wav",
       "Path": "Media/912292679.wem",
-      "CachePath": "60/{60EDEECA-7A34-9413-BD93-D21BCE69742B}.wem"
+      "CachePath": "D5/{D5725CA2-7712-41FF-8404-F7CFBFDF8F1D}.wem"
      }
     ],
     "Events": [
@@ -76,11 +112,17 @@
       "Name": "Projectile_Impact",
       "ObjectPath": "\\Events\\PhysicsObjects\\Projectile\\Projectile_Impact",
       "GUID": "{F47466CA-B9D9-49EC-B964-3A6BEC6DF42B}",
-      "MaxAttenuation": "4000",
+      "MaxAttenuation": "2000",
       "DurationType": "OneShot",
-      "DurationMin": "0.3968849",
-      "DurationMax": "0.9253221",
+      "DurationMin": "0.33113676",
+      "DurationMax": "0.9659528",
       "MediaRefs": [
+       {
+        "Id": "136236821"
+       },
+       {
+        "Id": "182909730"
+       },
        {
         "Id": "306876787"
        },
@@ -88,7 +130,13 @@
         "Id": "578608009"
        },
        {
+        "Id": "624413932"
+       },
+       {
         "Id": "624472246"
+       },
+       {
+        "Id": "640142798"
        },
        {
         "Id": "642702572"
@@ -118,6 +166,6 @@
     ]
    }
   ],
-  "FileHash": "{973FB886-3725-2EC9-E232-15F8B78D32EF}"
+  "FileHash": "{6F1BABDC-841C-5E3B-FE93-25C0468DF873}"
  }
 }

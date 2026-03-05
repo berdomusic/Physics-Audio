@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{8C97A3B4-D029-460E-8317-8E7C504B068E}",
     "Language": "SFX",
-    "Hash": "{48DAFDFE-0BA8-3884-706E-C0F3876B1035}",
+    "Hash": "{CEED5DA0-552B-E28A-6003-C94B4275D8C4}",
     "ObjectPath": "Sci_fi_Container_Slide",
     "ShortName": "Sci_fi_Container_Slide",
     "Path": "Event/Sci_fi_Container_Slide.bnk",
@@ -142,6 +142,6 @@
     ]
    }
   ],
-  "FileHash": "{CA18273A-41C7-1A3D-CB15-7A4DAB6AABD8}"
+  "FileHash": "{D6091C21-13CE-33DB-A939-3A2BEDEBDD79}"
  }
 }

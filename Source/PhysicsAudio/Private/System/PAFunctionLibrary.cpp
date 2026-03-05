@@ -40,11 +40,11 @@ bool UPAFunctionLibrary::IsAudioHandleNotEmpty(const FPAPhysicsActorAudioHandle&
 {
 	// Returns true if any sound asset is assigned
 	return 
-		!InHandle.ImpactSound.IsNull() ||
-		!InHandle.SlideSound.IsNull() ||
-		!InHandle.RollSound.IsNull() ||
-		!InHandle.ProjectileSound.IsNull() ||
-		!InHandle.DestructionSound.IsNull();	
+		!InHandle.ImpactSound.AkEventSoft.IsNull() ||
+		!InHandle.SlideSound.AkEventSoft.IsNull() ||
+		!InHandle.RollSound.AkEventSoft.IsNull() ||
+		!InHandle.ProjectileSound.AkEventSoft.IsNull() ||
+		!InHandle.DestructionSound.AkEventSoft.IsNull();	
 }
 
 bool UPAFunctionLibrary::ResolveAudioHandle(const FDataTableRowHandle& InRowHandle, FPAPhysicsActorAudioHandle& OutHandle)

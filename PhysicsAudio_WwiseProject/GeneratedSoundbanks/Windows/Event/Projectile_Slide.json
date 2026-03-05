@@ -10,82 +10,118 @@
     "Type": "Event",
     "GUID": "{CADE1FFB-6157-4066-B689-6DDC61FD7840}",
     "Language": "SFX",
-    "Hash": "{1329E020-E001-1C36-B144-5F2BB0D02EE9}",
+    "Hash": "{03D3DF73-3F2A-0539-945E-1BFF0B92EB6E}",
     "ObjectPath": "Projectile_Slide",
     "ShortName": "Projectile_Slide",
     "Path": "Event/Projectile_Slide.bnk",
     "Media": [
      {
-      "Id": "57595219",
+      "Id": "60261620",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "SLI_Projectile-001.wav",
-      "Path": "Media/57595219.wem",
-      "CachePath": "03/{03BFD1C8-4660-7BD2-7A5B-B9527007C657}.wem"
+      "ShortName": "SLI_Projectile1.wav",
+      "Path": "Media/60261620.wem",
+      "CachePath": "72/{72321345-82DB-E1C5-C10B-75A760D147DF}.wem"
      },
      {
-      "Id": "118890625",
+      "Id": "177556807",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "SLI_Projectile-008.wav",
-      "Path": "Media/118890625.wem",
-      "CachePath": "44/{44C70BD1-110A-625F-BF7F-7CE141086BFB}.wem"
+      "ShortName": "SLI_Projectile3.wav",
+      "Path": "Media/177556807.wem",
+      "CachePath": "40/{40A5548A-CBA3-F45B-45BF-3D7399E16CE8}.wem"
      },
      {
-      "Id": "238753855",
+      "Id": "323772763",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "SLI_Projectile-005.wav",
-      "Path": "Media/238753855.wem",
-      "CachePath": "BE/{BEB96BB3-13DC-7C5B-3BE8-101C4983DC39}.wem"
+      "ShortName": "SLI_Projectile2.wav",
+      "Path": "Media/323772763.wem",
+      "CachePath": "A0/{A0DD8206-25F4-3C2B-4F57-97EC9686C6B0}.wem"
      },
      {
-      "Id": "399458784",
+      "Id": "372513540",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "SLI_Projectile-006.wav",
-      "Path": "Media/399458784.wem",
-      "CachePath": "ED/{ED843D69-34FA-8BE0-A123-C3760A231A46}.wem"
+      "ShortName": "SLI_Projectile1.wav",
+      "Path": "Media/372513540.wem",
+      "CachePath": "F1/{F18C8681-A7A6-E2EF-B4CD-D9363C37C319}.wem"
      },
      {
-      "Id": "581403322",
+      "Id": "427450958",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "SLI_Projectile-003.wav",
-      "Path": "Media/581403322.wem",
-      "CachePath": "84/{84C921DB-3974-808C-02C4-4D496F69366C}.wem"
+      "ShortName": "SLI_Projectile3.wav",
+      "Path": "Media/427450958.wem",
+      "CachePath": "F1/{F13C62A6-ACE7-C3EE-5D44-97A36E8FDD99}.wem"
      },
      {
-      "Id": "670944742",
+      "Id": "492006925",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "SLI_Projectile-004.wav",
-      "Path": "Media/670944742.wem",
-      "CachePath": "83/{83E91C09-2282-D294-7808-EE5E52142784}.wem"
+      "ShortName": "SLI_Projectile2.wav",
+      "Path": "Media/492006925.wem",
+      "CachePath": "90/{90EDA1B9-9972-93EC-BE33-C62C198FED68}.wem"
      },
      {
-      "Id": "743733984",
+      "Id": "499187730",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "SLI_Projectile-007.wav",
-      "Path": "Media/743733984.wem",
-      "CachePath": "A9/{A939CE7C-DB46-3C63-BDFB-0312091A09C5}.wem"
+      "ShortName": "SLI_Projectile3.wav",
+      "Path": "Media/499187730.wem",
+      "CachePath": "89/{89252333-6AED-DAB7-A3CC-5CC0ADFB2AD2}.wem"
      },
      {
-      "Id": "1012858167",
+      "Id": "552464852",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "SLI_Projectile-002.wav",
-      "Path": "Media/1012858167.wem",
-      "CachePath": "E2/{E20B905E-5203-DF4B-3DC2-30386630B69A}.wem"
+      "ShortName": "SLI_Projectile1.wav",
+      "Path": "Media/552464852.wem",
+      "CachePath": "E6/{E66E3875-EF09-5F7F-EF2A-B14D0F8F1A05}.wem"
+     },
+     {
+      "Id": "636085913",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile3.wav",
+      "Path": "Media/636085913.wem",
+      "CachePath": "42/{4230F45C-5CE7-5CD6-85A9-3314FD6935EA}.wem"
+     },
+     {
+      "Id": "697517577",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile2.wav",
+      "Path": "Media/697517577.wem",
+      "CachePath": "B0/{B049A185-99BD-74C0-1E26-4CED24892D91}.wem"
+     },
+     {
+      "Id": "812603799",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile3.wav",
+      "Path": "Media/812603799.wem",
+      "CachePath": "64/{64B14EE0-CEDF-E755-7B35-CE53D4236F3B}.wem"
+     },
+     {
+      "Id": "825169097",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile1.wav",
+      "Path": "Media/825169097.wem",
+      "CachePath": "D3/{D3713818-4BBA-395D-68E0-241A4844AB65}.wem"
      }
     ],
     "Events": [
@@ -96,32 +132,44 @@
       "GUID": "{CADE1FFB-6157-4066-B689-6DDC61FD7840}",
       "MaxAttenuation": "2500",
       "DurationType": "OneShot",
-      "DurationMin": "0.27481508",
-      "DurationMax": "0.47719085",
+      "DurationMin": "0.3433516",
+      "DurationMax": "0.57193804",
       "MediaRefs": [
        {
-        "Id": "57595219"
+        "Id": "60261620"
        },
        {
-        "Id": "118890625"
+        "Id": "177556807"
        },
        {
-        "Id": "238753855"
+        "Id": "323772763"
        },
        {
-        "Id": "399458784"
+        "Id": "372513540"
        },
        {
-        "Id": "581403322"
+        "Id": "427450958"
        },
        {
-        "Id": "670944742"
+        "Id": "492006925"
        },
        {
-        "Id": "743733984"
+        "Id": "499187730"
        },
        {
-        "Id": "1012858167"
+        "Id": "552464852"
+       },
+       {
+        "Id": "636085913"
+       },
+       {
+        "Id": "697517577"
+       },
+       {
+        "Id": "812603799"
+       },
+       {
+        "Id": "825169097"
        }
       ]
      }
@@ -148,6 +196,6 @@
     ]
    }
   ],
-  "FileHash": "{780FC009-9FB6-829E-E347-3F8D07E0C443}"
+  "FileHash": "{20496DCE-361E-319F-BACF-0669E0D3857F}"
  }
 }

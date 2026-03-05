@@ -1,0 +1,59 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "348963605",
+    "Type": "Bus",
+    "GUID": "{CE96B12A-32EE-4774-BFA1-CD57A86BD6E6}",
+    "Language": "SFX",
+    "Hash": "{F27EB40B-7299-B2E7-EA05-E1D6FE264AE4}",
+    "ObjectPath": "Reverb",
+    "ShortName": "Reverb",
+    "Path": "Bus/Reverb.bnk",
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "2891462749",
+       "Name": "Room_Medium_High_Absorbtion",
+       "ObjectPath": "\\Effects\\Factory Effects\\RoomVerb\\Rooms\\Room_Medium_High_Absorbtion",
+       "GUID": "{E22DBBB6-7656-4B93-A28D-C003FD416889}",
+       "LibName": "Wwise RoomVerb",
+       "LibId": "7733251"
+      },
+      {
+       "Id": "3673681183",
+       "Name": "Large_Bright_Chamber1",
+       "ObjectPath": "\\Effects\\Factory Effects\\Matrix Reverb\\Large_Bright_Chamber1",
+       "GUID": "{0BFA2291-5716-4759-AC24-F59D29E8F2E4}",
+       "LibName": "Wwise Matrix Reverb",
+       "LibId": "7536643"
+      }
+     ]
+    },
+    "AuxBusses": [
+     {
+      "Id": "348963605",
+      "Name": "Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Reverb",
+      "GUID": "{CE96B12A-32EE-4774-BFA1-CD57A86BD6E6}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "2891462749"
+        },
+        {
+         "Id": "3673681183"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{B0EEF27F-C586-A1EF-7CE2-C76318C8404A}"
+ }
+}

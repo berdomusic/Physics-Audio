@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AkComponent.h"
 #include "AkAudioEvent.h"
+#include "System/PhysicsAudioSettings.h"
 #include "System/PhysicsAudioStructs.h"
 #include "PAPhysicsAudioComponent.generated.h"
 
@@ -18,18 +19,28 @@ class PHYSICSAUDIO_API UPAPhysicsAudioComponent : public UAkComponent, public IP
 	GENERATED_BODY()
 	
 	UPAPhysicsAudioComponent(const FObjectInitializer& ObjectInitializer);
-	
+	void TryReturnComponentToPool();
+
 public:
-	void OnAttachedToPhysicsComponent(UPrimitiveComponent* InPhysicsComponent, const FPAPhysicsActorAudioHandle& InAudioProperties, float InMassOverride);
+	void OnAttachedToSimulatingComponent(UPrimitiveComponent* InComponent,
+	                                     const FPAPhysicsActorAudioHandle& InAudioProperties);
+	void OnAttachedToNonSimulatingComponent(UPrimitiveComponent* InComponent,
+	                                        const FPAPhysicsActorAudioHandle& InAudioProperties);
 	void OnDetachedFromPhysicsComponent();	
 	UFUNCTION()
 	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 		UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-	FORCEINLINE void SetSquaredDistanceToClosestListener(float InDistance) { DistanceToClosestListenerSquared = InDistance; }
-protected:	
+	FORCEINLINE void SetSquaredDistanceToClosestListener(float InDistance)
+	{
+		DistanceToClosestListenerSquared = InDistance;
+	}
+protected:
 	UFUNCTION()
 	virtual void OnHitByProjectile_Implementation(AActor* ProjectileActor, const FHitResult& Hit,
 	                                              const FVector& InProjectileImpulse) override;	
+	void OnAttachedToComponent_Internal(UPrimitiveComponent* InComponent, 
+		const FPAPhysicsActorAudioHandle& InAudioProperties);	
+	
 	// Mass and physics properties
 	void SetMassData();
 	float ObjectMass;
@@ -57,25 +68,24 @@ protected:
 	// Audio properties
 	FPAPhysicsActorAudioHandle PhysicsActorAudioProperties;
 	UPROPERTY()
-	UAkAudioEvent* ImpactSound;
+	TArray<FPAPhysicsAudioEvent> AudioEventsSoftRefs;
 	UPROPERTY()
-	UAkAudioEvent* SlideSound;
-	UPROPERTY()
-	UAkAudioEvent* RollSound;
-	UPROPERTY()
-	UAkAudioEvent* ProjectileSound;
-	UPROPERTY()
-	UAkAudioEvent* DestructionSound;
+	TArray<UAkAudioEvent*> AudioEvents;
 	
+	FORCEINLINE UAkAudioEvent* GetAkEventByType(EPAEventType InType)
+	{
+		const int32 idx = static_cast<int32>(InType);
+		return AudioEvents.IsValidIndex(idx) ? AudioEvents[idx] : nullptr;
+	}
 	void LoadAkAudioEvents();
 	void OnAkAudioEventsLoaded();
-	bool bAkAudioEventsReady;
 	
 	// RTPC assets
 	UPROPERTY()
 	UPAPhysicsRTPCs* RTPCAssets;
-	float CurrentSlideRTPCValue;
-	float CurrentRollRTPCValue;
+	float PreviousImpactRTPCValue;
+	float PreviousSlideRTPCValue;
+	float PreviousRollRTPCValue;
 	
 	// Audibility
 	float DistanceToClosestListenerSquared;
@@ -88,9 +98,9 @@ protected:
 	UPrimitiveComponent* ParentComponent;
 	
 	// Cooldowns
-	float ImpactCooldown;
-	float SlideCooldown;
-	float RollCooldown;
+	float ImpactCooldown = PhysicsAudioSettings::PHYSICS_AUDIO_COOLDOWN_TIME;
+	float SlideCooldown = PhysicsAudioSettings::PHYSICS_AUDIO_COOLDOWN_TIME;
+	float RollCooldown = PhysicsAudioSettings::PHYSICS_AUDIO_COOLDOWN_TIME;
 	
 	// Helper functions
 	void UpdatePhysicsState(float DeltaTime);
@@ -98,7 +108,7 @@ protected:
 	void UpdateRTPCValues();
 	static float NormalizeByMass(float InValue, float InMass, float InExponent = .5f);
 	bool ShouldPlayImpact(float InImpulseMagnitude) const;
-	bool bGrounded = true;
+	bool bGrounded;
 	const float GroundedThreshold = 50.f;
 	
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

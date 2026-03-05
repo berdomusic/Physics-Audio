@@ -92,6 +92,7 @@
 										<Value>2</Value>
 									</ValueList>
 								</Property>
+								<Property Name="OverrideOutput" Type="bool" Value="True"/>
 								<Property Name="Pitch" Type="int32">
 									<ModifierList>
 										<ModifierInfo>
@@ -109,13 +110,18 @@
 										<Value>True</Value>
 									</ValueList>
 								</Property>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>3</Value>
+									</ValueList>
+								</Property>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
 								</Reference>
 								<Reference Name="OutputBus">
-									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+									<ObjectRef Name="Impact" ID="{37974C39-7D0A-4CB1-A25B-75C396EBB209}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
@@ -468,6 +474,81 @@
 													</MediaIDList>
 												</PluginMediaSource>
 											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{5D802E9C-F721-48A5-8285-98FBB60477FB}" ShortID="261113749">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Velocity"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{32C0CFB6-791F-4FD4-B853-D650989DA910}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="1"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>0.05</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>1</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{90994FB9-4652-42CB-A49B-50C5F8E8EF13}" ShortID="437683135">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Mass"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="S_Mass" ID="{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{3F7EA356-F4C7-422F-9796-35409D82C2ED}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="1"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0.1</XPos>
+																						<YPos>0.01</YPos>
+																						<Flags>5</Flags>
+																						<SegmentShape>Exp2</SegmentShape>
+																					</Point>
+																					<Point>
+																						<XPos>500</XPos>
+																						<YPos>2</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
 											<Language>SFX</Language>
 										</SourcePlugin>
 									</ChildrenList>
@@ -550,15 +631,16 @@
 										<ActiveSource Name="Impacter" ID="{6A775AD7-000D-4C36-83FA-D1680BD6FB15}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
-								<RandomSequenceContainer Name="Projectile_Impact" ID="{F3136D30-939D-4A54-BB38-FEE159EE90B4}" ShortID="298175926">
+								<RandomSequenceContainer Name="Projectile_Impact" ID="{AE88817C-07C4-49D4-9F76-3E87CE457AE9}" ShortID="657991348">
 									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
 										<Property Name="Highpass" Type="int16">
 											<ValueList>
-												<Value>25</Value>
+												<Value>5</Value>
 											</ValueList>
 											<ModifierList>
 												<ModifierInfo>
-													<Modifier Name="" ID="{58F5E371-C94E-4DF2-B423-DD8028679E3B}">
+													<Modifier Name="" ID="{6876D277-9C91-4A19-B351-913120D6B235}">
 														<PropertyList>
 															<Property Name="Enabled" Type="bool" Value="True"/>
 															<Property Name="Max" Type="Real64" Value="15"/>
@@ -568,31 +650,42 @@
 											</ModifierList>
 										</Property>
 										<Property Name="Lowpass" Type="int16">
-											<ValueList>
-												<Value>20</Value>
-											</ValueList>
 											<ModifierList>
 												<ModifierInfo>
-													<Modifier Name="" ID="{26F543F5-C576-468B-947B-3A3AA942BD97}">
+													<Modifier Name="" ID="{62881975-EE35-40BF-8E38-F9D1460F4F4F}">
 														<PropertyList>
 															<Property Name="Enabled" Type="bool" Value="True"/>
-															<Property Name="Max" Type="Real64" Value="10"/>
+															<Property Name="Max" Type="Real64" Value="15"/>
 														</PropertyList>
 													</Modifier>
 												</ModifierInfo>
 											</ModifierList>
 										</Property>
+										<Property Name="OverrideEffect" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
 										<Property Name="Pitch" Type="int32">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{EC6D5D5F-B551-4E54-AA2E-9335908F27D7}">
+														<PropertyList>
+															<Property Name="Enabled" Type="bool" Value="True"/>
+															<Property Name="Max" Type="Real64" Value="100"/>
+															<Property Name="Min" Type="Real64" Value="-100"/>
+														</PropertyList>
+													</Modifier>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-100</Value>
+												<Value>-3</Value>
 											</ValueList>
 											<ModifierList>
 												<ModifierInfo>
-													<Modifier Name="" ID="{97BCAE75-0605-4FAD-8D71-5D92DF9542BF}">
+													<Modifier Name="" ID="{1A56F84F-A0EC-4882-917E-84940E8A7594}">
 														<PropertyList>
 															<Property Name="Enabled" Type="bool" Value="True"/>
-															<Property Name="Max" Type="Real64" Value="500"/>
-															<Property Name="Min" Type="Real64" Value="-100"/>
+															<Property Name="Min" Type="Real64" Value="-6"/>
 														</PropertyList>
 													</Modifier>
 												</ModifierInfo>
@@ -600,6 +693,9 @@
 										</Property>
 									</PropertyList>
 									<ReferenceList>
+										<Reference Name="Attenuation">
+											<ObjectRef Name="ATT_Projectile" ID="{A2C21C2B-1B00-431F-89F9-E5911862D5CF}" WorkUnitID="{D0B4EF31-0BAB-4AFC-AC2E-036AB39C5AAF}"/>
+										</Reference>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
 										</Reference>
@@ -608,7 +704,350 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<Sound Name="IMP_Projectile-001" ID="{E8493AB0-8273-462B-85AC-8BAF70692060}" ShortID="433099950">
+										<Sound Name="Projectile_Impact" ID="{1FCD3A28-C41A-484F-8B5A-C3F7E8AE3464}" ShortID="630084987">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="GameAuxSendVolume" Type="Real64">
+													<ValueList>
+														<Value>-9</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Highpass" Type="int16">
+													<ValueList>
+														<Value>10</Value>
+													</ValueList>
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{228A7905-08F5-45D0-AFBA-E260E0B6FDCE}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Max" Type="Real64" Value="15"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+												<Property Name="Inclusion" Type="bool">
+													<ValueList>
+														<Value>False</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Lowpass" Type="int16">
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{61C80B01-2B08-4CD7-B91C-3201C9160800}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Max" Type="Real64" Value="15"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+												<Property Name="Pitch" Type="int32">
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{D77EB6BF-6981-436F-B22C-D02840ECF196}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Max" Type="Real64" Value="300"/>
+																	<Property Name="Min" Type="Real64" Value="-300"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+												<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-6</Value>
+													</ValueList>
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{5BBAB496-F5F6-4D35-80EB-40EC1B4DF67F}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Min" Type="Real64" Value="-6"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="ATT_PhysicsImpact" ID="{222699AC-63CD-496A-9143-BC11BEFE995B}" WorkUnitID="{D0B4EF31-0BAB-4AFC-AC2E-036AB39C5AAF}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Impact" ID="{37974C39-7D0A-4CB1-A25B-75C396EBB209}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<SourcePlugin Name="Impacter" ID="{400433F1-96B5-4884-8149-A3E4068679F0}" ShortID="733298119" PluginName="Impacter" CompanyID="0" PluginID="184">
+													<PropertyList>
+														<Property Name="ExcitationMask" Type="Uint64" Value="18446744073709550592"/>
+														<Property Name="FMDepthRandom" Type="Real32" Value="1"/>
+														<Property Name="FileExcitation" Type="int32" Value="9"/>
+														<Property Name="FileModel" Type="int32" Value="9"/>
+														<Property Name="Mass" Type="Real32" Value="0.5"/>
+														<Property Name="ModelMask" Type="Uint64" Value="18446744073709550600"/>
+														<Property Name="NumFiles" Type="int32" Value="10"/>
+														<Property Name="Velocity" Type="Real32" Value="0.5"/>
+													</PropertyList>
+													<ChildrenList>
+														<PluginMediaSource Name="IMP_Projectile-010" ID="{5FDC4A5C-C4E7-4130-A280-C40BBC989DA1}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_Projectile-010.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="995484807"/>
+															</MediaIDList>
+														</PluginMediaSource>
+														<PluginMediaSource Name="IMP_Projectile-009" ID="{6751E9B4-4844-4181-8CFC-ED5F1FE2E36C}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_Projectile-009.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="701293114"/>
+															</MediaIDList>
+														</PluginMediaSource>
+														<PluginMediaSource Name="IMP_Projectile-008" ID="{6BC51A0E-349F-46CC-AFA7-65A9BF7D015E}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_Projectile-008.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="487413117"/>
+															</MediaIDList>
+														</PluginMediaSource>
+														<PluginMediaSource Name="IMP_Projectile-007" ID="{3210976C-6CE8-4535-964A-A528AEE59CE7}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_Projectile-007.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="564166514"/>
+															</MediaIDList>
+														</PluginMediaSource>
+														<PluginMediaSource Name="IMP_Projectile-006" ID="{5F8A5C6D-5432-4F65-9661-1907AD04CDDF}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_Projectile-006.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="164284788"/>
+															</MediaIDList>
+														</PluginMediaSource>
+														<PluginMediaSource Name="IMP_Projectile-005" ID="{29CD5893-E3C2-4C94-B4D6-878AE07778CF}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_Projectile-005.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="158873193"/>
+															</MediaIDList>
+														</PluginMediaSource>
+														<PluginMediaSource Name="IMP_Projectile-004" ID="{58C35BFB-6F07-4009-8139-70240948BD71}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_Projectile-004.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="40793692"/>
+															</MediaIDList>
+														</PluginMediaSource>
+														<PluginMediaSource Name="IMP_Projectile-003" ID="{1E5CF30E-9429-4510-B600-DB57346E955C}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_Projectile-003.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="760452930"/>
+															</MediaIDList>
+														</PluginMediaSource>
+														<PluginMediaSource Name="IMP_Projectile-002" ID="{F730D20E-7C0C-4B75-AC94-DE2AAA18F7A5}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_Projectile-002.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="874939297"/>
+															</MediaIDList>
+														</PluginMediaSource>
+														<PluginMediaSource Name="IMP_Projectile-001" ID="{194B364A-CCF6-4400-8E62-6987558E129C}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_Projectile-001.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="952917637"/>
+															</MediaIDList>
+														</PluginMediaSource>
+													</ChildrenList>
+													<ObjectLists>
+														<ObjectList Name="RTPC">
+															<Reference>
+																<Local>
+																	<RTPC Name="" ID="{C907E798-85F5-4479-ABB5-15B31E40DFDA}" ShortID="662783989">
+																		<PropertyList>
+																			<Property Name="PropertyName" Type="string" Value="Velocity"/>
+																		</PropertyList>
+																		<ReferenceList>
+																			<Reference Name="ControlInput">
+																				<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																			</Reference>
+																			<Reference Name="Curve">
+																				<Custom>
+																					<Curve Name="" ID="{AD1CEE7D-90E7-4FA8-8D8A-029E4B9E282D}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>0.25</YPos>
+																								<Flags>5</Flags>
+																								<SegmentShape>Log1</SegmentShape>
+																							</Point>
+																							<Point>
+																								<XPos>100</XPos>
+																								<YPos>1</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</Custom>
+																			</Reference>
+																		</ReferenceList>
+																	</RTPC>
+																</Local>
+															</Reference>
+														</ObjectList>
+													</ObjectLists>
+													<Language>SFX</Language>
+												</SourcePlugin>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{8F02FB24-248E-4E91-AD17-F72D20950427}" ShortID="189045519">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Pitch"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{A87751B7-C98B-4430-A145-85B100060340}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>600</YPos>
+																						<Flags>5</Flags>
+																						<SegmentShape>Exp1</SegmentShape>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>-100</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{E6E821ED-7892-4823-82AD-D8DF44A2ECB7}" ShortID="463140157">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Highpass"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{5B886103-BA19-4746-A6C7-DC64A08758B8}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>10</YPos>
+																						<Flags>5</Flags>
+																						<SegmentShape>Log2</SegmentShape>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{C6E8144F-EA58-48F4-A8E3-CC2B32E1F500}" ShortID="875499793">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{DB0FA15C-5929-4874-A73F-1AA432C2539C}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-9</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="Impacter" ID="{400433F1-96B5-4884-8149-A3E4068679F0}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="IMP_Projectile-001" ID="{D97A981D-90AC-4181-B4B2-F24DC919E5DB}" ShortID="8110320">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
@@ -618,12 +1057,12 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="IMP_Projectile-001" ID="{2CAB16CB-0127-4F96-89B4-0CAC725DB75B}">
+												<AudioFileSource Name="IMP_Projectile-001" ID="{97A18E29-2CE7-4192-B2ED-6B5D54125730}">
 													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.518922144906563"/>
-														<Property Name="FadeOutShape" Type="int16" Value="1"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0996097564697266"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.405554008483887"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.715450013872404"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.490933794294085"/>
 													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>IMP_Projectile-001.wav</AudioFile>
@@ -633,10 +1072,10 @@
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="IMP_Projectile-001" ID="{2CAB16CB-0127-4F96-89B4-0CAC725DB75B}" Platform="Linked"/>
+												<ActiveSource Name="IMP_Projectile-001" ID="{97A18E29-2CE7-4192-B2ED-6B5D54125730}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="IMP_Projectile-002" ID="{6F105C62-AC00-4810-926B-7BAE56C19652}" ShortID="480642142">
+										<Sound Name="IMP_Projectile-002" ID="{28303CBD-183F-4CC5-9DEB-5ECBD2CA210E}" ShortID="133880965">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
@@ -646,12 +1085,12 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="IMP_Projectile-002" ID="{9FE8BDF7-769B-4AAE-BE99-7F100AE2751A}">
+												<AudioFileSource Name="IMP_Projectile-002" ID="{3C93DE9C-5A55-4C62-AEB3-E7D141085A38}">
 													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.51637541369388"/>
-														<Property Name="FadeOutShape" Type="int16" Value="2"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.118214695628096"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.136685741819986"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.778100065383156"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.421139915780244"/>
 													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>IMP_Projectile-002.wav</AudioFile>
@@ -661,10 +1100,10 @@
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="IMP_Projectile-002" ID="{9FE8BDF7-769B-4AAE-BE99-7F100AE2751A}" Platform="Linked"/>
+												<ActiveSource Name="IMP_Projectile-002" ID="{3C93DE9C-5A55-4C62-AEB3-E7D141085A38}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="IMP_Projectile-003" ID="{7C4A5B1B-6340-422E-9AF6-95E79AED03DB}" ShortID="228083669">
+										<Sound Name="IMP_Projectile-003" ID="{AA54696E-C50C-40F3-9611-AD0DE1CC135E}" ShortID="1009744502">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
@@ -674,12 +1113,12 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="IMP_Projectile-003" ID="{C3320291-2CB4-466C-894C-2DCE1B4059BB}">
+												<AudioFileSource Name="IMP_Projectile-003" ID="{AF22F89C-1DDF-48A0-850D-7C7CB591DDD3}">
 													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.286222218630607"/>
-														<Property Name="FadeOutShape" Type="int16" Value="2"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.102251529693604"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.143152141571045"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.5297777838456"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.432864878280363"/>
 													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>IMP_Projectile-003.wav</AudioFile>
@@ -689,10 +1128,10 @@
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="IMP_Projectile-003" ID="{C3320291-2CB4-466C-894C-2DCE1B4059BB}" Platform="Linked"/>
+												<ActiveSource Name="IMP_Projectile-003" ID="{AF22F89C-1DDF-48A0-850D-7C7CB591DDD3}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="IMP_Projectile-004" ID="{C7F66E04-B603-47C0-BB06-AE0F1E7384DE}" ShortID="672615682">
+										<Sound Name="IMP_Projectile-004" ID="{CE1FED7E-C75E-45D9-905B-73725E3532A0}" ShortID="348392499">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
@@ -702,13 +1141,12 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="IMP_Projectile-004" ID="{3A17796A-BD8A-4B04-99ED-267440396A63}">
+												<AudioFileSource Name="IMP_Projectile-004" ID="{9452A1C6-44CA-466C-A267-A985DC71B4BD}">
 													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.346051286396227"/>
-														<Property Name="FadeOutShape" Type="int16" Value="1"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.117431888929227"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.213512525325868"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimBegin" Type="Real64" Value="0.0225685621562757"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.692102706523113"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.533781324494934"/>
 													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>IMP_Projectile-004.wav</AudioFile>
@@ -718,10 +1156,10 @@
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="IMP_Projectile-004" ID="{3A17796A-BD8A-4B04-99ED-267440396A63}" Platform="Linked"/>
+												<ActiveSource Name="IMP_Projectile-004" ID="{9452A1C6-44CA-466C-A267-A985DC71B4BD}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="IMP_Projectile-005" ID="{4F1D64D8-9C82-4CC5-BD09-786B2A9B8FCC}" ShortID="215783582">
+										<Sound Name="IMP_Projectile-005" ID="{3479E8E1-D4F6-4134-8277-D11BF1336D97}" ShortID="51146311">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
@@ -731,12 +1169,13 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="IMP_Projectile-005" ID="{B6E122FA-564F-42DC-A629-0C3989B9B9B2}">
+												<AudioFileSource Name="IMP_Projectile-005" ID="{4E09C368-8AAC-49C0-9A4A-EED2CB2A6D5F}">
 													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.331415210690415"/>
-														<Property Name="FadeOutShape" Type="int16" Value="1"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.063516844772711"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.206429745511311"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.546619870704516"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.0416829293820916"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.440648060769847"/>
 													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>IMP_Projectile-005.wav</AudioFile>
@@ -746,10 +1185,10 @@
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="IMP_Projectile-005" ID="{B6E122FA-564F-42DC-A629-0C3989B9B9B2}" Platform="Linked"/>
+												<ActiveSource Name="IMP_Projectile-005" ID="{4E09C368-8AAC-49C0-9A4A-EED2CB2A6D5F}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="IMP_Projectile-006" ID="{4DC51B3C-8BC4-4572-9C93-90E2023E3019}" ShortID="309790661">
+										<Sound Name="IMP_Projectile-006" ID="{25CCF046-C285-4670-855E-8B31E94AB7F4}" ShortID="616217099">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
@@ -759,13 +1198,13 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="IMP_Projectile-006" ID="{106E5A2B-441D-4BBF-ACF8-877DB1808768}">
+												<AudioFileSource Name="IMP_Projectile-006" ID="{6D78E22C-14B8-4B92-8CC9-9CD16B25326B}">
 													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.493434614884226"/>
-														<Property Name="FadeOutShape" Type="int16" Value="1"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0507595783326684"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.207268278191729"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimBegin" Type="Real64" Value="0.0215578229803788"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.699431599458685"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.0465296134716127"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.626034860062683"/>
 													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>IMP_Projectile-006.wav</AudioFile>
@@ -775,10 +1214,264 @@
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="IMP_Projectile-006" ID="{106E5A2B-441D-4BBF-ACF8-877DB1808768}" Platform="Linked"/>
+												<ActiveSource Name="IMP_Projectile-006" ID="{6D78E22C-14B8-4B92-8CC9-9CD16B25326B}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="IMP_Projectile-008" ID="{FA35934D-68D0-497B-B761-1529777B804A}" ShortID="25235359">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="IMP_Projectile-008" ID="{AD948FA2-B1E2-4CF8-9A76-52F3CD313882}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.110830485530016"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.332491456590048"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.0130388806505901"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.873604997675026"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>IMP_Projectile-008.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="624413932"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="IMP_Projectile-008" ID="{AD948FA2-B1E2-4CF8-9A76-52F3CD313882}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="IMP_Projectile-009" ID="{E1503631-69FA-4823-AEB8-E42B636F1D56}" ShortID="202592626">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="IMP_Projectile-009" ID="{08C11E55-F806-4F6A-B3F4-F314D697D675}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0325679450500302"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.348226489381092"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.0450940777615803"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.661379781965595"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>IMP_Projectile-009.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="640142798"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="IMP_Projectile-009" ID="{08C11E55-F806-4F6A-B3F4-F314D697D675}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="IMP_Projectile-010" ID="{52826960-7931-4B53-8814-29D92071951F}" ShortID="136802769">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="IMP_Projectile-010" ID="{CEFEBDE6-DEE2-4F0C-8CEC-B50D9082599D}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.06337603185235"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.268416134904071"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.0484640243576794"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.574112245964666"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>IMP_Projectile-010.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="136236821"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="IMP_Projectile-010" ID="{CEFEBDE6-DEE2-4F0C-8CEC-B50D9082599D}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="IMP_Projectile-011" ID="{0B6E80CD-0B17-43E2-9963-9433149C271C}" ShortID="411847022">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="IMP_Projectile-011" ID="{87759B8F-4B71-4489-8BA1-E550466C5D1B}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0624436733199329"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0713641980799233"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.0624436733199329"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.434132143116308"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>IMP_Projectile-011.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="182909730"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="IMP_Projectile-011" ID="{87759B8F-4B71-4489-8BA1-E550466C5D1B}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
 									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="Effects">
+											<Reference>
+												<Local>
+													<EffectSlot Name="" ID="{CD45BC55-58F1-47A4-9017-764EAEC0DB70}" ShortID="178732518">
+														<PropertyList>
+															<Property Name="Render" Type="bool" Value="True"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="Effect">
+																<Custom>
+																	<Effect Name="Harmonizer (Custom)" ID="{97B01DAD-150A-42F2-AEB4-1E6BC4C5DF69}" ShortID="979907038" PluginName="Wwise Harmonizer" CompanyID="0" PluginID="138" PluginType="3">
+																		<PropertyList>
+																			<Property Name="Voice1Gain" Type="Real32" Value="-6"/>
+																			<Property Name="Voice1Pitch" Type="Real32" Value="-300"/>
+																			<Property Name="Voice2Enable" Type="bool" Value="True"/>
+																			<Property Name="Voice2Gain" Type="Real32" Value="-6"/>
+																			<Property Name="Voice2Pitch" Type="Real32" Value="300"/>
+																		</PropertyList>
+																	</Effect>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</EffectSlot>
+												</Local>
+											</Reference>
+										</ObjectList>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{AE1A2665-74A2-4AB7-AB47-80231076A43B}" ShortID="690627278">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Highpass"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{61F926A0-E015-408E-9E62-F53E807766EB}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="65537"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>15</YPos>
+																				<Flags>5</Flags>
+																				<SegmentShape>Exp2</SegmentShape>
+																			</Point>
+																			<Point>
+																				<XPos>100</XPos>
+																				<YPos>0</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{698B9225-5B42-4A70-A37A-CB439AE474D4}" ShortID="786953926">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Pitch"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{9346178C-70BA-4F8C-83C7-8E7CFEDA8A88}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="65537"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>900</YPos>
+																				<Flags>5</Flags>
+																				<SegmentShape>Exp2</SegmentShape>
+																			</Point>
+																			<Point>
+																				<XPos>100</XPos>
+																				<YPos>-100</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{2755B2B9-903E-4F08-85F5-12679AE2D307}" ShortID="108862841">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{CB14FFCE-0E8F-4FB5-AF74-C7C6F39065B7}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																				<SegmentShape>Log2</SegmentShape>
+																			</Point>
+																			<Point>
+																				<XPos>100</XPos>
+																				<YPos>0</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
 								</RandomSequenceContainer>
 							</ChildrenList>
 							<ObjectLists>
@@ -802,7 +1495,7 @@
 																<PointList>
 																	<Point>
 																		<XPos>0</XPos>
-																		<YPos>-9</YPos>
+																		<YPos>-6</YPos>
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
@@ -831,6 +1524,7 @@
 										<Value>25</Value>
 									</ValueList>
 								</Property>
+								<Property Name="OverrideOutput" Type="bool" Value="True"/>
 								<Property Name="OverridePositioning" Type="bool" Value="True"/>
 								<Property Name="UseMaxSoundPerInstance" Type="bool">
 									<ValueList>
@@ -846,7 +1540,7 @@
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
 								</Reference>
 								<Reference Name="OutputBus">
-									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+									<ObjectRef Name="Continous" ID="{7D8557FC-0ADD-4358-BABC-703577A3E7EC}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
@@ -865,11 +1559,6 @@
 										</Property>
 										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="6"/>
 										<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>-6</Value>
-											</ValueList>
-										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">
@@ -1497,7 +2186,7 @@
 										<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-6</Value>
+												<Value>6</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -1513,7 +2202,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<Sound Name="SLI_Projectile-001" ID="{5726F0E0-C0DB-4BE8-B5DD-AC2C26D2CB6C}" ShortID="350670005">
+										<Sound Name="SLI_Projectile1" ID="{C08872F8-8960-4DFE-93BE-5278C10332E1}" ShortID="866030301">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
@@ -1523,25 +2212,26 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="SLI_Projectile-001" ID="{2655F964-1920-4AB7-BF75-349D803CF4F3}">
+												<AudioFileSource Name="SLI_Projectile1" ID="{14FBC226-B68F-4B11-A49D-447058DB8648}">
 													<PropertyList>
-														<Property Name="FadeInDuration" Type="Real64" Value="0.0176579848323998"/>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0149413717812613"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0769509994669965"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0699554540609059"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.161638462837723"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.160897544340084"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.580630268705519"/>
 													</PropertyList>
 													<Language>SFX</Language>
-													<AudioFile>SLI_Projectile-001.wav</AudioFile>
+													<AudioFile>SLI_Projectile1.wav</AudioFile>
 													<MediaIDList>
-														<MediaID ID="57595219"/>
+														<MediaID ID="372513540"/>
 													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="SLI_Projectile-001" ID="{2655F964-1920-4AB7-BF75-349D803CF4F3}" Platform="Linked"/>
+												<ActiveSource Name="SLI_Projectile1" ID="{14FBC226-B68F-4B11-A49D-447058DB8648}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="SLI_Projectile-002" ID="{7086B907-AD78-4EEA-9ADA-3427699C6E1E}" ShortID="888894995">
+										<Sound Name="SLI_Projectile2" ID="{48F5FE09-8F53-4483-ACBF-D5B2A6342EF4}" ShortID="450179200">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
@@ -1551,25 +2241,33 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="SLI_Projectile-002" ID="{0FE26969-03DD-47DD-8A71-A782F5DD0F17}">
+												<AudioFileSource Name="SLI_Projectile2" ID="{7B820C41-2BAB-45F8-A503-E65E41FB6383}">
 													<PropertyList>
-														<Property Name="FadeInDuration" Type="Real64" Value="0.0170384666049167"/>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0414849621684928"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0633813080034758"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0633813080034757"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.182237514961835"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.538741118029544"/>
+														<Property Name="TrimEnd" Type="Real64" Value="1.0774819944616"/>
 													</PropertyList>
 													<Language>SFX</Language>
-													<AudioFile>SLI_Projectile-002.wav</AudioFile>
+													<AudioFile>SLI_Projectile2.wav</AudioFile>
 													<MediaIDList>
-														<MediaID ID="1012858167"/>
+														<MediaID ID="697517577"/>
 													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="SLI_Projectile-002" ID="{0FE26969-03DD-47DD-8A71-A782F5DD0F17}" Platform="Linked"/>
+												<ActiveSource Name="SLI_Projectile2" ID="{7B820C41-2BAB-45F8-A503-E65E41FB6383}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="SLI_Projectile-004" ID="{7A236998-4A03-4B28-BDAD-420EC8FDD519}" ShortID="828125430">
+										<Sound Name="SLI_Projectile3" ID="{5BC57303-1E55-409E-ADB7-15BA850EBE78}" ShortID="248544714">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-3</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
@@ -1579,26 +2277,25 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="SLI_Projectile-004" ID="{86DA989B-514F-409C-A917-290909A2CD97}">
+												<AudioFileSource Name="SLI_Projectile3" ID="{EE3593DB-9754-47AA-9A60-71C1370FD669}">
 													<PropertyList>
-														<Property Name="FadeInDuration" Type="Real64" Value="0.00622538506592575"/>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0143662732290594"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0642663789422889"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0514131031538311"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimBegin" Type="Real64" Value="0.00478875774301981"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.108225916801677"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.488424473603568"/>
 													</PropertyList>
 													<Language>SFX</Language>
-													<AudioFile>SLI_Projectile-004.wav</AudioFile>
+													<AudioFile>SLI_Projectile3.wav</AudioFile>
 													<MediaIDList>
-														<MediaID ID="670944742"/>
+														<MediaID ID="177556807"/>
 													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="SLI_Projectile-004" ID="{86DA989B-514F-409C-A917-290909A2CD97}" Platform="Linked"/>
+												<ActiveSource Name="SLI_Projectile3" ID="{EE3593DB-9754-47AA-9A60-71C1370FD669}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="SLI_Projectile-005" ID="{C9A09688-B246-4D8D-A480-B686A06B3D8F}" ShortID="771273823">
+										<Sound Name="SLI_Projectile1_01" ID="{CC25B5C7-EE9F-410A-A9DC-881209546C78}" ShortID="1071736117">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
@@ -1608,25 +2305,26 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="SLI_Projectile-005" ID="{9FED1905-B6E7-4EA9-863A-1EF0DCDDA47E}">
+												<AudioFileSource Name="SLI_Projectile1" ID="{3D03F4B8-40A7-4250-BF27-77B5C8B44625}">
 													<PropertyList>
-														<Property Name="FadeInDuration" Type="Real64" Value="0.035347184656482"/>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0185427853935643"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0769509994669965"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0699554540609059"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.157613678537643"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.650585722766425"/>
+														<Property Name="TrimEnd" Type="Real64" Value="1.01435408388314"/>
 													</PropertyList>
 													<Language>SFX</Language>
-													<AudioFile>SLI_Projectile-005.wav</AudioFile>
+													<AudioFile>SLI_Projectile1.wav</AudioFile>
 													<MediaIDList>
-														<MediaID ID="238753855"/>
+														<MediaID ID="552464852"/>
 													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="SLI_Projectile-005" ID="{9FED1905-B6E7-4EA9-863A-1EF0DCDDA47E}" Platform="Linked"/>
+												<ActiveSource Name="SLI_Projectile1" ID="{3D03F4B8-40A7-4250-BF27-77B5C8B44625}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="SLI_Projectile-006" ID="{5036532C-1BDA-477E-890D-89B786B216CD}" ShortID="112742653">
+										<Sound Name="SLI_Projectile1_02" ID="{0D72E62D-7551-4931-BBC0-510EE384764D}" ShortID="887616560">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
@@ -1636,25 +2334,26 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="SLI_Projectile-006" ID="{BB5E1AB1-274E-4452-9E35-E9CE767E3205}">
+												<AudioFileSource Name="SLI_Projectile1" ID="{8226E0D0-2393-4079-9338-4800315EC140}">
 													<PropertyList>
-														<Property Name="FadeInDuration" Type="Real64" Value="0.0164066406064912"/>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0140628348055639"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0769509994669965"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0699554540609059"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.14765978711883"/>
+														<Property Name="TrimBegin" Type="Real64" Value="1.14027390119277"/>
+														<Property Name="TrimEnd" Type="Real64" Value="1.54601553474602"/>
 													</PropertyList>
 													<Language>SFX</Language>
-													<AudioFile>SLI_Projectile-006.wav</AudioFile>
+													<AudioFile>SLI_Projectile1.wav</AudioFile>
 													<MediaIDList>
-														<MediaID ID="399458784"/>
+														<MediaID ID="825169097"/>
 													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="SLI_Projectile-006" ID="{BB5E1AB1-274E-4452-9E35-E9CE767E3205}" Platform="Linked"/>
+												<ActiveSource Name="SLI_Projectile1" ID="{8226E0D0-2393-4079-9338-4800315EC140}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="SLI_Projectile-007" ID="{49F0AEB6-5E27-47B6-85EE-48F75ED5E8CC}" ShortID="19928599">
+										<Sound Name="SLI_Projectile1_03" ID="{5CE133C5-21A2-4179-A4D5-7B72F3AAE4C6}" ShortID="334068083">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
@@ -1664,25 +2363,26 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="SLI_Projectile-007" ID="{DD4F9497-CA39-41C0-83D6-6B3C0DA9803B}">
+												<AudioFileSource Name="SLI_Projectile1" ID="{AAA2E387-65B0-46EF-9247-9F80208CEF44}">
 													<PropertyList>
-														<Property Name="FadeInDuration" Type="Real64" Value="0.0301002514989753"/>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0150501257494876"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0769509994669965"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0699554540609059"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.163401355808284"/>
+														<Property Name="TrimBegin" Type="Real64" Value="1.61597098880693"/>
+														<Property Name="TrimEnd" Type="Real64" Value="2.04969480398454"/>
 													</PropertyList>
 													<Language>SFX</Language>
-													<AudioFile>SLI_Projectile-007.wav</AudioFile>
+													<AudioFile>SLI_Projectile1.wav</AudioFile>
 													<MediaIDList>
-														<MediaID ID="743733984"/>
+														<MediaID ID="60261620"/>
 													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="SLI_Projectile-007" ID="{DD4F9497-CA39-41C0-83D6-6B3C0DA9803B}" Platform="Linked"/>
+												<ActiveSource Name="SLI_Projectile1" ID="{AAA2E387-65B0-46EF-9247-9F80208CEF44}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="SLI_Projectile-008" ID="{5FE532C2-8B18-4CB8-ABE2-80044EE78BE3}" ShortID="993123260">
+										<Sound Name="SLI_Projectile2_01" ID="{808E0723-0A26-4CEA-9374-B018615F271B}" ShortID="546762765">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
@@ -1692,22 +2392,196 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="SLI_Projectile-008" ID="{B2230054-85C1-4C10-B37B-BEBA9E30892D}">
+												<AudioFileSource Name="SLI_Projectile2" ID="{3963377A-90C7-4F19-9543-E136E4523208}">
 													<PropertyList>
-														<Property Name="FadeInDuration" Type="Real64" Value="0.0461340879923419"/>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0109843066648433"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0633813080034758"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0633813080034757"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.165863010522228"/>
+														<Property Name="TrimBegin" Type="Real64" Value="1.06163690905822"/>
+														<Property Name="TrimEnd" Type="Real64" Value="1.44192475707907"/>
 													</PropertyList>
 													<Language>SFX</Language>
-													<AudioFile>SLI_Projectile-008.wav</AudioFile>
+													<AudioFile>SLI_Projectile2.wav</AudioFile>
 													<MediaIDList>
-														<MediaID ID="118890625"/>
+														<MediaID ID="492006925"/>
 													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="SLI_Projectile-008" ID="{B2230054-85C1-4C10-B37B-BEBA9E30892D}" Platform="Linked"/>
+												<ActiveSource Name="SLI_Projectile2" ID="{3963377A-90C7-4F19-9543-E136E4523208}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="SLI_Projectile2_02" ID="{A2614F1C-FA32-4859-B261-0B76EA2DB503}" ShortID="300968473">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="SLI_Projectile2" ID="{590EFA36-73E4-4485-9626-C7E281F5D740}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0633813080034758"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0633813080034757"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="1.47361541108081"/>
+														<Property Name="TrimEnd" Type="Real64" Value="1.91728456710514"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>SLI_Projectile2.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="323772763"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="SLI_Projectile2" ID="{590EFA36-73E4-4485-9626-C7E281F5D740}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="SLI_Projectile3_01" ID="{5414F3A8-52C6-4B47-B5B3-F30501B25447}" ShortID="383769950">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-3</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="SLI_Projectile3" ID="{57A7CDB1-458C-481D-B32D-FB1F344514A4}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0642663789422889"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0514131031538311"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.526984307326769"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.989702235711248"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>SLI_Projectile3.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="636085913"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="SLI_Projectile3" ID="{57A7CDB1-458C-481D-B32D-FB1F344514A4}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="SLI_Projectile3_02" ID="{F727715A-F4CF-42ED-983A-308F7EE0B02B}" ShortID="303851897">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-3</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="SLI_Projectile3" ID="{1F055BE8-943A-410C-9A28-4F3357B275FB}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0642663789422889"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0514131031538311"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.951142408345874"/>
+														<Property Name="TrimEnd" Type="Real64" Value="1.38815378515344"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>SLI_Projectile3.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="499187730"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="SLI_Projectile3" ID="{1F055BE8-943A-410C-9A28-4F3357B275FB}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="SLI_Projectile3_03" ID="{75948C5F-5D25-4D25-AD2C-6B65B36A38AD}" ShortID="996139828">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-3</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="SLI_Projectile3" ID="{EF863698-988D-460E-89B2-0A81F877FE01}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0642663789422889"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0514131031538311"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="1.37530050936498"/>
+														<Property Name="TrimEnd" Type="Real64" Value="1.825165161961"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>SLI_Projectile3.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="812603799"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="SLI_Projectile3" ID="{EF863698-988D-460E-89B2-0A81F877FE01}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="SLI_Projectile3_04" ID="{51C03CC4-0C12-439D-92FC-EADF917B3A03}" ShortID="1037670178">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-3</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="SLI_Projectile3" ID="{DBA10964-ED09-476C-9509-3D98649DC171}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0642663789422889"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0514131031538311"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="1.79945861038408"/>
+														<Property Name="TrimEnd" Type="Real64" Value="2.33929619349931"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>SLI_Projectile3.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="427450958"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="SLI_Projectile3" ID="{DBA10964-ED09-476C-9509-3D98649DC171}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
 									</ChildrenList>
@@ -1971,6 +2845,7 @@
 						</ActorMixer>
 						<ActorMixer Name="Projectile" ID="{DB832C67-50ED-495F-9B13-8496F33FF249}" ShortID="531157693">
 							<PropertyList>
+								<Property Name="OverrideOutput" Type="bool" Value="True"/>
 								<Property Name="Pitch" Type="int32">
 									<ModifierList>
 										<ModifierInfo>
@@ -1999,253 +2874,10 @@
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
 								</Reference>
 								<Reference Name="OutputBus">
-									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+									<ObjectRef Name="Projectile" ID="{AA0CA1C1-5DE9-4619-BDF2-9E0B7175224D}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
-								<RandomSequenceContainer Name="WoodenBox_Projectile" ID="{17C2660B-A4F6-4181-A067-C72519AF4C63}" ShortID="696791395">
-									<PropertyList>
-										<Property Name="Highpass" Type="int16">
-											<ValueList>
-												<Value>10</Value>
-											</ValueList>
-											<ModifierList>
-												<ModifierInfo>
-													<Modifier Name="" ID="{9B712D5E-10BC-4A41-A2D5-D8EE3BD1EE69}">
-														<PropertyList>
-															<Property Name="Enabled" Type="bool" Value="True"/>
-															<Property Name="Max" Type="Real64" Value="10"/>
-														</PropertyList>
-													</Modifier>
-												</ModifierInfo>
-											</ModifierList>
-										</Property>
-										<Property Name="Lowpass" Type="int16">
-											<ValueList>
-												<Value>10</Value>
-											</ValueList>
-											<ModifierList>
-												<ModifierInfo>
-													<Modifier Name="" ID="{6FA4C4A1-6067-4646-8C31-ACAF406D2456}">
-														<PropertyList>
-															<Property Name="Enabled" Type="bool" Value="True"/>
-															<Property Name="Max" Type="Real64" Value="15"/>
-														</PropertyList>
-													</Modifier>
-												</ModifierInfo>
-											</ModifierList>
-										</Property>
-										<Property Name="Pitch" Type="int32">
-											<ValueList>
-												<Value>600</Value>
-											</ValueList>
-											<ModifierList>
-												<ModifierInfo>
-													<Modifier Name="" ID="{B22DA92E-B3BA-471F-AC2E-12E2ABF7B448}">
-														<PropertyList>
-															<Property Name="Enabled" Type="bool" Value="True"/>
-															<Property Name="Max" Type="Real64" Value="300"/>
-															<Property Name="Min" Type="Real64" Value="-300"/>
-														</PropertyList>
-													</Modifier>
-												</ModifierInfo>
-											</ModifierList>
-										</Property>
-										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="4"/>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>-3</Value>
-											</ValueList>
-											<ModifierList>
-												<ModifierInfo>
-													<Modifier Name="" ID="{55A5B8F6-5691-4643-A064-97299940779A}">
-														<PropertyList>
-															<Property Name="Min" Type="Real64" Value="-3"/>
-														</PropertyList>
-													</Modifier>
-												</ModifierInfo>
-											</ModifierList>
-										</Property>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<Sound Name="PRO_WoodenBox-001" ID="{AB7464A0-873D-457B-8345-2D2A4E5321FB}" ShortID="481998409">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PRO_WoodenBox-001" ID="{B2D35A38-454A-4422-9321-B77FBFFFF389}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.177366770803928"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimBegin" Type="Real64" Value="0.031739316880703"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.442483447262354"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PRO_WoodenBox-001.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="215358890"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="PRO_WoodenBox-001" ID="{B2D35A38-454A-4422-9321-B77FBFFFF389}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="PRO_WoodenBox-002" ID="{12349B6A-3D79-4D16-A580-56A6F357CBCC}" ShortID="901004672">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PRO_WoodenBox-002" ID="{299ECE14-9B78-4C71-9080-71F7B7F91468}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.100103823762191"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimBegin" Type="Real64" Value="0.00729923714932643"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.444210763822729"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PRO_WoodenBox-002.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="970909688"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="PRO_WoodenBox-002" ID="{299ECE14-9B78-4C71-9080-71F7B7F91468}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="PRO_WoodenBox-003" ID="{61318269-3054-4E27-BC26-08C505436762}" ShortID="704570022">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PRO_WoodenBox-003" ID="{B6C09CAE-12FE-4BF5-B4C9-80B7C127BE62}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0869971076516728"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimBegin" Type="Real64" Value="0.0139523663214947"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.405439340476614"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PRO_WoodenBox-003.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="781817094"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="PRO_WoodenBox-003" ID="{B6C09CAE-12FE-4BF5-B4C9-80B7C127BE62}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="PRO_WoodenBox-004" ID="{B3A40777-FD31-4AF1-B5E8-C74EA4A9F259}" ShortID="824589484">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PRO_WoodenBox-004" ID="{12140404-800C-4D71-85C6-E267E84D7CB6}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.131385608723289"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimBegin" Type="Real64" Value="0.00821160054520557"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.405105619090086"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PRO_WoodenBox-004.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="334349114"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="PRO_WoodenBox-004" ID="{12140404-800C-4D71-85C6-E267E84D7CB6}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="PRO_WoodenBox-005" ID="{442D755C-A62E-4C5F-8F6A-3B1E2FC15DF3}" ShortID="785679606">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PRO_WoodenBox-005" ID="{07DF6551-A7A3-4C64-93D7-E12AE89D3C34}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0903007544969258"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimBegin" Type="Real64" Value="0.018543904941333"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.328952734316714"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PRO_WoodenBox-005.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="827791030"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="PRO_WoodenBox-005" ID="{07DF6551-A7A3-4C64-93D7-E12AE89D3C34}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="PRO_WoodenBox-006" ID="{2C11A695-0ABE-43E7-A418-437F4AFC0D45}" ShortID="261956400">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PRO_WoodenBox-006" ID="{6315072C-40F1-417E-BFAE-1F96EF376DD3}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.10481337575536"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-														<Property Name="TrimBegin" Type="Real64" Value="0.0177376482047533"/>
-														<Property Name="TrimEnd" Type="Real64" Value="0.343465355575149"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PRO_WoodenBox-006.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="540911090"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="PRO_WoodenBox-006" ID="{6315072C-40F1-417E-BFAE-1F96EF376DD3}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-									</ChildrenList>
-								</RandomSequenceContainer>
 								<RandomSequenceContainer Name="Sci_fi_Container_Projectile" ID="{0066BC4D-A6B1-4B7B-AC35-511795903940}" ShortID="902111625">
 									<PropertyList>
 										<Property Name="Pitch" Type="int32">
@@ -2313,7 +2945,7 @@
 											<ChildrenList>
 												<AudioFileSource Name="PRO_Sci-Fi_Container-003" ID="{30066883-2AF9-415F-B211-4307A3C8BE43}">
 													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.144778766186041"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.623767884209964"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
 														<Property Name="TrimEnd" Type="Real64" Value="0.900523984011335"/>
 													</PropertyList>
@@ -2339,6 +2971,11 @@
 											</ReferenceList>
 											<ChildrenList>
 												<AudioFileSource Name="IMP_Sci-Fi_Container-004" ID="{AA838D47-99BE-45A4-8499-D7A316C9B71A}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.869110320743762"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimEnd" Type="Real64" Value="1.5443420799633"/>
+													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>IMP_Sci-Fi_Container-004.wav</AudioFile>
 													<MediaIDList>
@@ -2361,6 +2998,11 @@
 											</ReferenceList>
 											<ChildrenList>
 												<AudioFileSource Name="IMP_Sci-Fi_Container-005" ID="{C62FA840-A76F-43D4-9A70-180C7EAAA337}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.746988356113434"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimEnd" Type="Real64" Value="1.53329196109281"/>
+													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>IMP_Sci-Fi_Container-005.wav</AudioFile>
 													<MediaIDList>
@@ -2384,7 +3026,7 @@
 											<ChildrenList>
 												<AudioFileSource Name="IMP_Sci-Fi_Container-008" ID="{843E8619-84B4-4580-9812-FC3D77279754}">
 													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.31618228096739"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.662889137205605"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
 														<Property Name="TrimEnd" Type="Real64" Value="1.61444598290588"/>
 													</PropertyList>
@@ -2401,6 +3043,445 @@
 										</Sound>
 									</ChildrenList>
 								</RandomSequenceContainer>
+								<BlendContainer Name="WoodenBox_Projectile" ID="{0D5D7F02-25A1-4F03-A4B8-FA60EA9F4D21}" ShortID="826966950">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<RandomSequenceContainer Name="Core" ID="{17C2660B-A4F6-4181-A067-C72519AF4C63}" ShortID="696791395">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="GameAuxSendVolume" Type="Real64">
+													<ValueList>
+														<Value>-9</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Highpass" Type="int16">
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{9B712D5E-10BC-4A41-A2D5-D8EE3BD1EE69}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Max" Type="Real64" Value="10"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+												<Property Name="Lowpass" Type="int16">
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{6FA4C4A1-6067-4646-8C31-ACAF406D2456}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Max" Type="Real64" Value="15"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+												<Property Name="OutputBusVolume" Type="Real64">
+													<ValueList>
+														<Value>-6</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Pitch" Type="int32">
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{B22DA92E-B3BA-471F-AC2E-12E2ABF7B448}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Max" Type="Real64" Value="500"/>
+																	<Property Name="Min" Type="Real64" Value="-500"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+												<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="4"/>
+												<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+												<Property Name="Volume" Type="Real64">
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{55A5B8F6-5691-4643-A064-97299940779A}">
+																<PropertyList>
+																	<Property Name="Min" Type="Real64" Value="-3"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="ATT_PhysicsImpact" ID="{222699AC-63CD-496A-9143-BC11BEFE995B}" WorkUnitID="{D0B4EF31-0BAB-4AFC-AC2E-036AB39C5AAF}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Physics" ID="{A9E67370-553A-4A2E-A554-F721CB7E8C3F}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<Sound Name="PRO_WoodenBox1" ID="{0C7E6AE5-A1EC-4CC9-B27A-6E13E19C3999}" ShortID="442866936">
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="PRO_WoodenBox1" ID="{9866D273-A344-46EB-A118-0D0A441BD8CB}">
+															<PropertyList>
+																<Property Name="FadeInDuration" Type="Real64" Value="0.00656311723746751"/>
+																<Property Name="FadeOutDuration" Type="Real64" Value="0.227521397565541"/>
+																<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+																<Property Name="TrimBegin" Type="Real64" Value="0.0557864965184739"/>
+																<Property Name="TrimEnd" Type="Real64" Value="0.51629850928407"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>PRO_WoodenBox1.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="747694306"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="PRO_WoodenBox1" ID="{9866D273-A344-46EB-A118-0D0A441BD8CB}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="PRO_WoodenBox2" ID="{78FB8300-5F94-4926-B486-7BAD4E83C2D8}" ShortID="435936453">
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="PRO_WoodenBox2" ID="{A8C6F106-35C6-4429-BA0D-14523461E0E6}">
+															<PropertyList>
+																<Property Name="FadeInDuration" Type="Real64" Value="0.0113601639474693"/>
+																<Property Name="FadeOutDuration" Type="Real64" Value="0.211299049422929"/>
+																<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+																<Property Name="TrimBegin" Type="Real64" Value="0.0817931804217791"/>
+																<Property Name="TrimEnd" Type="Real64" Value="0.50439122792817"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>PRO_WoodenBox2.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="782217783"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="PRO_WoodenBox2" ID="{A8C6F106-35C6-4429-BA0D-14523461E0E6}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="PRO_WoodenBox3" ID="{459FED76-803C-4D89-BC36-55C1B3158648}" ShortID="848674305">
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="PRO_WoodenBox3" ID="{75520BEC-59B3-4930-BDFD-C6851FDD1374}">
+															<PropertyList>
+																<Property Name="FadeOutDuration" Type="Real64" Value="0.0568265144370104"/>
+																<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+																<Property Name="TrimBegin" Type="Real64" Value="0.0636456961694517"/>
+																<Property Name="TrimEnd" Type="Real64" Value="0.370508875241928"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>PRO_WoodenBox3.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="455632930"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="PRO_WoodenBox3" ID="{75520BEC-59B3-4930-BDFD-C6851FDD1374}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="PRO_WoodenBox4" ID="{EC3B2DE7-2BED-4DCE-AECD-2D8457B917F2}" ShortID="93652433">
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="PRO_WoodenBox4" ID="{494028D3-F9DC-4BE0-A614-4CA62EB15686}">
+															<PropertyList>
+																<Property Name="FadeOutDuration" Type="Real64" Value="0.0678634914128404"/>
+																<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+																<Property Name="TrimBegin" Type="Real64" Value="0.0492557598964164"/>
+																<Property Name="TrimEnd" Type="Real64" Value="0.422504917844346"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>PRO_WoodenBox4.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="272843777"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="PRO_WoodenBox4" ID="{494028D3-F9DC-4BE0-A614-4CA62EB15686}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+											</ChildrenList>
+										</RandomSequenceContainer>
+										<Sound Name="Additionals" ID="{BA219A7A-591D-4E21-888A-22D88FD22858}" ShortID="310205286">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="2"/>
+												<Property Name="GameAuxSendVolume" Type="Real64">
+													<ValueList>
+														<Value>-9</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Highpass" Type="int16">
+													<ValueList>
+														<Value>15</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Lowpass" Type="int16">
+													<ValueList>
+														<Value>10</Value>
+													</ValueList>
+												</Property>
+												<Property Name="OutputBusVolume" Type="Real64">
+													<ValueList>
+														<Value>-6</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Pitch" Type="int32">
+													<ValueList>
+														<Value>300</Value>
+													</ValueList>
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{C6D21312-1C7F-43DD-8491-8E03C317DEA3}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Max" Type="Real64" Value="400"/>
+																	<Property Name="Min" Type="Real64" Value="-100"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+												<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="ATT_PhysicsImpact" ID="{222699AC-63CD-496A-9143-BC11BEFE995B}" WorkUnitID="{D0B4EF31-0BAB-4AFC-AC2E-036AB39C5AAF}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Physics" ID="{A9E67370-553A-4A2E-A554-F721CB7E8C3F}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<SourcePlugin Name="Impacter" ID="{A10B4EB8-1BA1-4D11-9CFE-D950D2FC3494}" ShortID="408394947" PluginName="Impacter" CompanyID="0" PluginID="184">
+													<PropertyList>
+														<Property Name="NumFiles" Type="int32" Value="6"/>
+													</PropertyList>
+													<ChildrenList>
+														<PluginMediaSource Name="IMP_WoodenBox-006" ID="{F7B97963-6E12-4A75-8803-C44F8D9053A5}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-006.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="913535671"/>
+															</MediaIDList>
+														</PluginMediaSource>
+														<PluginMediaSource Name="IMP_WoodenBox-005" ID="{3AA9FA41-85A8-439E-AA57-B9F28FA9C43C}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-005.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="986466163"/>
+															</MediaIDList>
+														</PluginMediaSource>
+														<PluginMediaSource Name="IMP_WoodenBox-004" ID="{BD2259E1-2082-4F75-B4F5-8DA4900B194D}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-004.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="463898344"/>
+															</MediaIDList>
+														</PluginMediaSource>
+														<PluginMediaSource Name="IMP_WoodenBox-003" ID="{5456E8C1-87F0-44D5-8F86-D485D9521C10}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-003.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="286476534"/>
+															</MediaIDList>
+														</PluginMediaSource>
+														<PluginMediaSource Name="IMP_WoodenBox-002" ID="{68034171-3157-406E-BFC1-5E9C0085397E}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-002.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="394891647"/>
+															</MediaIDList>
+														</PluginMediaSource>
+														<PluginMediaSource Name="IMP_WoodenBox-001" ID="{30662271-F3C6-4F58-AAD4-FB9281089491}">
+															<ParentPluginID>12058626</ParentPluginID>
+															<PropertyList>
+																<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-001.wav"/>
+															</PropertyList>
+															<MediaIDList>
+																<MediaID ID="34113978"/>
+															</MediaIDList>
+														</PluginMediaSource>
+													</ChildrenList>
+													<ObjectLists>
+														<ObjectList Name="RTPC">
+															<Reference>
+																<Local>
+																	<RTPC Name="" ID="{3269AD41-F6F4-4FA2-A371-245521A646A7}" ShortID="370929610">
+																		<PropertyList>
+																			<Property Name="PropertyName" Type="string" Value="Mass"/>
+																		</PropertyList>
+																		<ReferenceList>
+																			<Reference Name="ControlInput">
+																				<ObjectRef Name="S_Mass" ID="{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																			</Reference>
+																			<Reference Name="Curve">
+																				<Custom>
+																					<Curve Name="" ID="{6A2BE0E9-BED6-4130-92BE-8503441BA5A7}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0.1</XPos>
+																								<YPos>0.01</YPos>
+																								<Flags>5</Flags>
+																								<SegmentShape>Exp2</SegmentShape>
+																							</Point>
+																							<Point>
+																								<XPos>500</XPos>
+																								<YPos>1</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</Custom>
+																			</Reference>
+																		</ReferenceList>
+																	</RTPC>
+																</Local>
+															</Reference>
+														</ObjectList>
+													</ObjectLists>
+													<Language>SFX</Language>
+												</SourcePlugin>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{12F3EFD8-38CE-45F6-9BD8-8B9B45FC47A1}" ShortID="458007542">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Pitch"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="S_Mass" ID="{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{19162DF4-CF34-4028-A2D7-803AF5A74178}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0.1</XPos>
+																						<YPos>100</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>500</XPos>
+																						<YPos>-100</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{65C8B0E3-FF07-4AC6-AF7F-677460D738F7}" ShortID="226508691">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Highpass"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{E885F2F0-0471-46F4-8F73-0901062BBDA6}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>15</YPos>
+																						<Flags>5</Flags>
+																						<SegmentShape>Log1</SegmentShape>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="Impacter" ID="{A10B4EB8-1BA1-4D11-9CFE-D950D2FC3494}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</BlendContainer>
 							</ChildrenList>
 							<ObjectLists>
 								<ObjectList Name="RTPC">

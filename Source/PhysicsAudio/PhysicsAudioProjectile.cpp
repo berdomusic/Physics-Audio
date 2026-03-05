@@ -39,7 +39,7 @@ APhysicsAudioProjectile::APhysicsAudioProjectile()
 void APhysicsAudioProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	FVector impulse = GetVelocity() * 100.f;
-	// Only add impulse and destroy projectile if we hit a physics
+	
 	if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
 	{		
 		if (OtherActor->GetClass()->ImplementsInterface(UProjectileInterface::StaticClass()))
@@ -72,5 +72,5 @@ void APhysicsAudioProjectile::BeginPlay()
 	StaticMeshComponent = GetStaticMeshComponent();
 	if (IsValid(AudioComponent) && IsValid(StaticMeshComponent))
 		if (UPAFunctionLibrary::ResolveAudioHandle(PhysicsAudioHandle, ProjectileAudioProperties))
-			AudioComponent->OnAttachedToPhysicsComponent(StaticMeshComponent, ProjectileAudioProperties, 500.f);
+			AudioComponent->OnAttachedToNonSimulatingComponent(StaticMeshComponent, ProjectileAudioProperties);
 }

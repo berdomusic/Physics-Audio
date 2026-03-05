@@ -96,7 +96,7 @@ void APAPhysicsActor::OnConstruction(const FTransform& Transform)
 	GetDestructibleMeshes();
 	UStaticMesh* staticMeshAsset = StaticMeshComponent->GetStaticMesh();
 	if (staticMeshAsset != nullptr)
-		SphereCollision->SetSphereRadius(staticMeshAsset->GetBounds().SphereRadius * 1.1f);
+		SphereCollision->SetSphereRadius(staticMeshAsset->GetBounds().SphereRadius * 1.25f);
 }
 
 void APAPhysicsActor::BeginPlay()
@@ -201,8 +201,16 @@ bool APAPhysicsActor::ShouldActivatePhysicsAudio(const AActor* OtherActor, UPrim
 		return false; 
 	if (OtherActor->IsA(APawn::StaticClass()))
 		return true;
+	UKismetSystemLibrary::DrawDebugString(
+			GetWorld(),
+			GetActorLocation(),
+			FString::SanitizeFloat(OtherComp->GetPhysicsLinearVelocity().SizeSquared()),
+			nullptr,
+			FLinearColor::Green,
+			1.f);
+		
 	if (OtherComp->GetPhysicsLinearVelocity().SizeSquared() > PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY_SQUARED)
-		return true;		
+		return true;
 	return false;
 }
 

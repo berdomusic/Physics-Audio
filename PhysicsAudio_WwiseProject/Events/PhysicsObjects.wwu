@@ -32,7 +32,7 @@
 								<Action Name="" ID="{DE1CF361-FECA-4C9E-9E2F-3EC2C667CC2F}" ShortID="994868114">
 									<ReferenceList>
 										<Reference Name="Target">
-											<ObjectRef Name="WoodenBox_Projectile" ID="{17C2660B-A4F6-4181-A067-C72519AF4C63}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+											<ObjectRef Name="WoodenBox_Projectile" ID="{0D5D7F02-25A1-4F03-A4B8-FA60EA9F4D21}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -81,10 +81,10 @@
 					<ChildrenList>
 						<Event Name="Projectile_Impact" ID="{F47466CA-B9D9-49EC-B964-3A6BEC6DF42B}">
 							<ChildrenList>
-								<Action Name="" ID="{745BD120-9FDB-439E-9E64-D983627D54A3}" ShortID="655563256">
+								<Action Name="" ID="{C0FA3FFB-5F62-48D4-BEE0-0E60FDC507F1}" ShortID="1007078705">
 									<ReferenceList>
 										<Reference Name="Target">
-											<ObjectRef Name="Projectile_Impact" ID="{F3136D30-939D-4A54-BB38-FEE159EE90B4}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+											<ObjectRef Name="Projectile_Impact" ID="{AE88817C-07C4-49D4-9F76-3E87CE457AE9}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

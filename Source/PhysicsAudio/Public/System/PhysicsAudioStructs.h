@@ -73,6 +73,28 @@ public:
 	UAkRtpc* ProjectileRTPC = nullptr;
 };
 
+UENUM()
+enum class EPAEventType : uint8
+{
+	Impact,
+	Slide,
+	Roll,
+	Projectile,
+	Destruction,
+	Count
+};
+
+USTRUCT(BlueprintType)
+struct FPAPhysicsAudioEvent
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
+	TSoftObjectPtr<UAkAudioEvent> AkEventSoft;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
+	bool bLoadSynchronously;
+};
+
 USTRUCT(BlueprintType)
 struct FPAPhysicsActorAudioHandle : public FTableRowBase
 {
@@ -81,15 +103,15 @@ struct FPAPhysicsActorAudioHandle : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mass")
 	float ObjectMassOverride = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
-	TSoftObjectPtr<UAkAudioEvent> ImpactSound;
+	FPAPhysicsAudioEvent ImpactSound;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
-	TSoftObjectPtr<UAkAudioEvent> SlideSound;
+	FPAPhysicsAudioEvent SlideSound;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
-	TSoftObjectPtr<UAkAudioEvent> RollSound;
+	FPAPhysicsAudioEvent RollSound;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
-	TSoftObjectPtr<UAkAudioEvent> ProjectileSound;
+	FPAPhysicsAudioEvent ProjectileSound;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
-	TSoftObjectPtr<UAkAudioEvent> DestructionSound;
+	FPAPhysicsAudioEvent DestructionSound;
 };
 
 USTRUCT(BlueprintType)
