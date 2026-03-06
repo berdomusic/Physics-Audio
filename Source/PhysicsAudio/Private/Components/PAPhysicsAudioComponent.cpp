@@ -331,14 +331,6 @@ void UPAPhysicsAudioComponent::OnComponentHit(UPrimitiveComponent* HitComponent,
 	
 	if (ShouldPlayImpact(impulseMagnitude))
 	{
-		/*UKismetSystemLibrary::DrawDebugString(
-			GetWorld(), 
-			Hit.Location,
-			FString::SanitizeFloat(impulseMagnitude),
-			nullptr,
-			FLinearColor::Green,
-			5.f);*/
-
 		ImpactCooldown = 0.f;
 		
 		// Normalize impulse by mass for consistent feel
@@ -348,14 +340,6 @@ void UPAPhysicsAudioComponent::OnComponentHit(UPrimitiveComponent* HitComponent,
 		FVector2D(0.f, 100.f),
 		normalizedImpulse
 		);
-		
-		UKismetSystemLibrary::DrawDebugString(
-			GetWorld(),
-			Hit.Location,
-			FString::SanitizeFloat(impactRTPCValue),
-			nullptr,
-			FLinearColor::Green,
-			1.f);
 		
 		if (!FMath::IsNearlyEqual(PreviousImpactRTPCValue, impactRTPCValue, PhysicsAudioSettings::PHYSICS_AUDIO_RTPC_TOLERANCE)) // Set RTPC only when it changed
 		{

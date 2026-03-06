@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{28CD8541-B999-478C-AB49-0C851561B3DF}",
     "Language": "SFX",
-    "Hash": "{EBF42177-3986-50F1-F4BA-1F36D6429519}",
+    "Hash": "{4DDE8BFE-B478-A3A1-90E3-068E5C29EA44}",
     "ObjectPath": "WoodenBox_Projectile",
     "ShortName": "WoodenBox_Projectile",
     "Path": "Event/WoodenBox_Projectile.bnk",
@@ -31,7 +31,7 @@
       "Location": "Loose",
       "ShortName": "PRO_WoodenBox4.wav",
       "Path": "Media/272843777.wem",
-      "CachePath": "4E/{4E04478D-6608-E673-5B2B-9D3D389B23A6}.wem"
+      "CachePath": "1A/{1A2E16D2-7AC5-1182-9F32-2D72A8303056}.wem"
      },
      {
       "Id": "286476534",
@@ -58,7 +58,7 @@
       "Location": "Loose",
       "ShortName": "PRO_WoodenBox3.wav",
       "Path": "Media/455632930.wem",
-      "CachePath": "CE/{CED92A37-5D48-CFE2-0F5D-9862E4F39914}.wem"
+      "CachePath": "91/{91712C48-AD64-FDFC-ED97-E5267F84D7B2}.wem"
      },
      {
       "Id": "463898344",
@@ -76,7 +76,7 @@
       "Location": "Loose",
       "ShortName": "PRO_WoodenBox1.wav",
       "Path": "Media/747694306.wem",
-      "CachePath": "72/{72E5AADF-749B-4A1C-791A-F68344A46A96}.wem"
+      "CachePath": "A1/{A1FF4E42-687F-D4BA-A3AC-9D28A1ABFF47}.wem"
      },
      {
       "Id": "782217783",
@@ -85,7 +85,7 @@
       "Location": "Loose",
       "ShortName": "PRO_WoodenBox2.wav",
       "Path": "Media/782217783.wem",
-      "CachePath": "AA/{AA2A6D3D-DC09-FD8E-7FF2-C214B6C22F7A}.wem"
+      "CachePath": "60/{601EDE73-2D4C-34C4-ABAA-B07A5A1BED7D}.wem"
      },
      {
       "Id": "913535671",
@@ -191,6 +191,6 @@
     ]
    }
   ],
-  "FileHash": "{68874C04-8AEF-4CD1-5254-BA231E06C040}"
+  "FileHash": "{BFFB1483-230E-8F50-CA99-60734B62EBF3}"
  }
 }

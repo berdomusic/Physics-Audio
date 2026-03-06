@@ -44,6 +44,7 @@ protected:
 	
 	bool bAllowPhysicsSounds;
 	bool bAllowDestructionSounds;
+	bool bPhysicsAudioActivated;
 	
 	virtual void OnHitByProjectile_Implementation(AActor* ProjectileActor, const FHitResult& Hit,
 	                                              const FVector& InProjectileImpulse) override;

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{CADE1FFB-6157-4066-B689-6DDC61FD7840}",
     "Language": "SFX",
-    "Hash": "{03D3DF73-3F2A-0539-945E-1BFF0B92EB6E}",
+    "Hash": "{4378332A-D2E1-DB30-9004-736D698514BE}",
     "ObjectPath": "Projectile_Slide",
     "ShortName": "Projectile_Slide",
     "Path": "Event/Projectile_Slide.bnk",
@@ -22,7 +22,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Projectile1.wav",
       "Path": "Media/60261620.wem",
-      "CachePath": "72/{72321345-82DB-E1C5-C10B-75A760D147DF}.wem"
+      "CachePath": "1D/{1D9E2652-C537-9502-0D21-70E0E37A2D54}.wem"
      },
      {
       "Id": "177556807",
@@ -31,7 +31,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Projectile3.wav",
       "Path": "Media/177556807.wem",
-      "CachePath": "40/{40A5548A-CBA3-F45B-45BF-3D7399E16CE8}.wem"
+      "CachePath": "13/{13F7641F-9453-0F37-A960-8B4D62238EAC}.wem"
      },
      {
       "Id": "323772763",
@@ -40,7 +40,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Projectile2.wav",
       "Path": "Media/323772763.wem",
-      "CachePath": "A0/{A0DD8206-25F4-3C2B-4F57-97EC9686C6B0}.wem"
+      "CachePath": "0E/{0EFC53D7-E7A0-3570-F3CC-31ED8622004E}.wem"
      },
      {
       "Id": "372513540",
@@ -49,7 +49,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Projectile1.wav",
       "Path": "Media/372513540.wem",
-      "CachePath": "F1/{F18C8681-A7A6-E2EF-B4CD-D9363C37C319}.wem"
+      "CachePath": "23/{230C1A2B-ADD2-DB9F-6F39-2C389532A841}.wem"
      },
      {
       "Id": "427450958",
@@ -58,7 +58,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Projectile3.wav",
       "Path": "Media/427450958.wem",
-      "CachePath": "F1/{F13C62A6-ACE7-C3EE-5D44-97A36E8FDD99}.wem"
+      "CachePath": "01/{01ADD8CD-23F4-1749-7490-D4A303692F7F}.wem"
      },
      {
       "Id": "492006925",
@@ -67,7 +67,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Projectile2.wav",
       "Path": "Media/492006925.wem",
-      "CachePath": "90/{90EDA1B9-9972-93EC-BE33-C62C198FED68}.wem"
+      "CachePath": "7C/{7CA956EF-50E2-6ACD-549F-3D13341F7092}.wem"
      },
      {
       "Id": "499187730",
@@ -76,7 +76,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Projectile3.wav",
       "Path": "Media/499187730.wem",
-      "CachePath": "89/{89252333-6AED-DAB7-A3CC-5CC0ADFB2AD2}.wem"
+      "CachePath": "D2/{D2942999-EA4B-E1B9-F6E0-8AF57932E644}.wem"
      },
      {
       "Id": "552464852",
@@ -85,7 +85,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Projectile1.wav",
       "Path": "Media/552464852.wem",
-      "CachePath": "E6/{E66E3875-EF09-5F7F-EF2A-B14D0F8F1A05}.wem"
+      "CachePath": "16/{1690E4E2-8A88-A1C3-4D00-4A0EE00CFD55}.wem"
      },
      {
       "Id": "636085913",
@@ -94,7 +94,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Projectile3.wav",
       "Path": "Media/636085913.wem",
-      "CachePath": "42/{4230F45C-5CE7-5CD6-85A9-3314FD6935EA}.wem"
+      "CachePath": "8D/{8D0DD9ED-B072-CA42-4668-3F468E3419DD}.wem"
      },
      {
       "Id": "697517577",
@@ -103,7 +103,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Projectile2.wav",
       "Path": "Media/697517577.wem",
-      "CachePath": "B0/{B049A185-99BD-74C0-1E26-4CED24892D91}.wem"
+      "CachePath": "2C/{2C75994A-1014-AC3F-7808-A795F6E17E8A}.wem"
      },
      {
       "Id": "812603799",
@@ -112,7 +112,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Projectile3.wav",
       "Path": "Media/812603799.wem",
-      "CachePath": "64/{64B14EE0-CEDF-E755-7B35-CE53D4236F3B}.wem"
+      "CachePath": "7E/{7E1764C5-CF96-90F0-7208-5F08E7BB7BE8}.wem"
      },
      {
       "Id": "825169097",
@@ -121,7 +121,7 @@
       "Location": "Loose",
       "ShortName": "SLI_Projectile1.wav",
       "Path": "Media/825169097.wem",
-      "CachePath": "D3/{D3713818-4BBA-395D-68E0-241A4844AB65}.wem"
+      "CachePath": "FE/{FE6DAA95-83BD-C421-8BEE-1AB55AAD45A4}.wem"
      }
     ],
     "Events": [
@@ -196,6 +196,6 @@
     ]
    }
   ],
-  "FileHash": "{20496DCE-361E-319F-BACF-0669E0D3857F}"
+  "FileHash": "{706A71DC-D4DA-EC03-85ED-51D6A4A553D3}"
  }
 }

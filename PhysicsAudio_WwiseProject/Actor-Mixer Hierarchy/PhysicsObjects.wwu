@@ -1495,8 +1495,9 @@
 																<PointList>
 																	<Point>
 																		<XPos>0</XPos>
-																		<YPos>-6</YPos>
+																		<YPos>-30</YPos>
 																		<Flags>5</Flags>
+																		<SegmentShape>Log3</SegmentShape>
 																	</Point>
 																	<Point>
 																		<XPos>100</XPos>
