@@ -56,9 +56,11 @@ public:
     UFUNCTION(BlueprintCallable, Category = "PhysicsAudio")
     void ReturnPhysicsAudioComponentToPool(UPrimitiveComponent* InComponent);
 
-    void ReturnOrphanedAudioComponentToPool(UPAPhysicsAudioComponent* InComponent);
+    void ReturnOrphanedAudioComponentToPool(const UPAPhysicsAudioComponent* InComponent);
+private:
     void ProcessQueueItem(const FPAPhysicsAudioQueueInfo& QueueItem);
-
+    void ProcessPendingReturn();
+public:
     UFUNCTION(BlueprintPure, Category = "PhysicsAudio")
     TArray<FVector> GetListenersPositions() const { return ListenersPositions; }
 
@@ -85,14 +87,16 @@ private:
     void FlushQueue();
 
     bool CheckIfCanAttachAudioComponent(const UPrimitiveComponent* InComponent) const;
-    UPAPhysicsAudioComponent* GetAudioComponentFromPrimitive(const UPrimitiveComponent* InComponent);
-    void RemoveAudioObjectFromActivePool(const UPrimitiveComponent* InComponent);
+    void AddAudioObjectToReturnQueue(const FPAActivePhysicsAudioObject& InAudioObject);
 
     TArray<FVector> ListenersPositions;
     void CacheListenersPositions();
     void UpdateDistanceToListeners();
 
     bool CanAddComponentToPool() const;
+    
+    FPAActivePhysicsAudioObject GetActiveAudioObject(bool& bSuccess, const UPrimitiveComponent* InComponent,
+        const UPAPhysicsAudioComponent* InAudioComponent);
 
     FTSTicker::FDelegateHandle TickHandle;
     bool Tick(float DeltaTime);

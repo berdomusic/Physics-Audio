@@ -44,14 +44,11 @@ protected:
 	
 	bool bAllowPhysicsSounds;
 	bool bAllowDestructionSounds;
-	bool bPhysicsAudioActivated;
 	
 	virtual void OnHitByProjectile_Implementation(AActor* ProjectileActor, const FHitResult& Hit,
 	                                              const FVector& InProjectileImpulse) override;
 	virtual void OnDamageDealt_Implementation(AActor* Dealer, const FHitResult& Hit, const FVector& InImpulse) override;
-	UFUNCTION()
-	void OnPhysicsComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-	
+		
 	UFUNCTION(BlueprintCallable)
 	void Init();
 	void GetDestructibleMeshes();
@@ -76,7 +73,8 @@ protected:
 	void OnDeath(AActor* Dealer, const FHitResult& Hit, const FVector& Impulse);
 
 	bool ShouldActivatePhysicsAudio(const AActor* OtherActor, UPrimitiveComponent* OtherComp) const;
-	bool ShouldDeactivatePhysicsAudio() const;
+	bool ShouldDeactivatePhysicsAudio();
+	static bool IsPhysicsTriggerActor(const AActor* InActor);
 	void DeactivatePhysicsAudio();
-	void RetriggerDeactivationTimer();
+	void TriggerDeactivationTimer();
 };
