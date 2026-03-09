@@ -19,6 +19,6 @@ public:
 	static UAkSwitchValue* GetAkSwitchFromSurface(const TEnumAsByte<EPhysicalSurface> InSurface);
 	static UPAPhysicsRTPCs* GetRTPC_Assets();
 	UFUNCTION(BlueprintPure)
-	static bool IsAudioHandleNotEmpty(const FPAPhysicsActorAudioHandle& InHandle);
-	static bool ResolveAudioHandle(const FDataTableRowHandle& InRowHandle, FPAPhysicsActorAudioHandle& OutHandle);
+	static bool IsAudioHandleNotEmpty(const FPAPhysicsActorAudioProperties& InHandle);
+	static bool ResolveAudioHandle(const FDataTableRowHandle& InRowHandle, FPAPhysicsActorAudioProperties& OutHandle);
 };

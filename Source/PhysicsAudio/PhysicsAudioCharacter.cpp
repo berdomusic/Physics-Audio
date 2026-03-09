@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "System/PhysicsAudioStructs.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -74,6 +75,12 @@ void APhysicsAudioCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	}
 }
 
+void APhysicsAudioCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	UpdateLookAt();
+}
+
 
 void APhysicsAudioCharacter::Move(const FInputActionValue& Value)
 {
@@ -98,5 +105,50 @@ void APhysicsAudioCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void APhysicsAudioCharacter::UpdateLookAt()
+{
+	const APlayerController* playerController = Cast<APlayerController>(this->GetInstigatorController());
+	if (!IsValid(playerController))
+		return;
+
+	FVector cameraLocation;
+	FRotator cameraRotation;
+	playerController->GetPlayerViewPoint(cameraLocation, cameraRotation);
+
+	const FVector start = cameraLocation;
+	const FVector end = start + cameraRotation.Vector() * 500.f;
+
+	const FCollisionQueryParams queryParams(SCENE_QUERY_STAT(LookAtTrace), false, this);
+	FHitResult hitResult;
+
+	const bool bHit = GetWorld()->SweepSingleByChannel(
+		hitResult, start, end, FQuat::Identity,
+		ECC_GameTraceChannel2, FCollisionShape::MakeSphere(10.f), queryParams
+	);
+
+	AActor* hitActor = hitResult.GetActor();
+	if (bHit && IsValid(hitActor))
+	{
+		if (hitActor->GetClass()->ImplementsInterface(ULookAtInterface::StaticClass()))
+		{
+			if (hitActor != CurrentLookedAtActor)
+			{
+				if (IsValid(CurrentLookedAtActor))
+				{
+					ILookAtInterface::Execute_OnLookAtFinished(CurrentLookedAtActor);
+				}
+				CurrentLookedAtActor = hitActor;
+				ILookAtInterface::Execute_OnLookAtStarted(CurrentLookedAtActor);
+			}
+			return;
+		}
+	}
+	if (IsValid(CurrentLookedAtActor))
+	{
+		ILookAtInterface::Execute_OnLookAtFinished(CurrentLookedAtActor);
+		CurrentLookedAtActor = nullptr;
 	}
 }

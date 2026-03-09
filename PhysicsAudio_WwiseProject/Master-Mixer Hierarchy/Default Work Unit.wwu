@@ -12,7 +12,11 @@
 					<ChildrenList>
 						<Bus Name="Physics" ID="{A9E67370-553A-4A2E-A554-F721CB7E8C3F}">
 							<ChildrenList>
-								<Bus Name="Impact" ID="{37974C39-7D0A-4CB1-A25B-75C396EBB209}"/>
+								<Bus Name="Impact" ID="{37974C39-7D0A-4CB1-A25B-75C396EBB209}">
+									<PropertyList>
+										<Property Name="RecoveryTime" Type="Real64" Value="0"/>
+									</PropertyList>
+								</Bus>
 								<Bus Name="Projectile" ID="{AA0CA1C1-5DE9-4619-BDF2-9E0B7175224D}">
 									<PropertyList>
 										<Property Name="RecoveryTime" Type="Real64" Value="0.1"/>
@@ -31,13 +35,14 @@
 								</Bus>
 								<Bus Name="Continous" ID="{7D8557FC-0ADD-4358-BABC-703577A3E7EC}">
 									<PropertyList>
+										<Property Name="MaxDuckVolume" Type="Real64" Value="-6"/>
 										<Property Name="RecoveryTime" Type="Real64" Value="0.2"/>
 									</PropertyList>
 									<DuckingList>
 										<DuckItem>
 											<BusRef Name="Impact" ID="{37974C39-7D0A-4CB1-A25B-75C396EBB209}"/>
 											<DuckingParam>
-												<Volume>-3</Volume>
+												<Volume>-2</Volume>
 												<FadeInTime>0.200000002980232</FadeInTime>
 												<FadeOutTime>0.100000001490116</FadeOutTime>
 												<FadeCurve>FadeLinear</FadeCurve>

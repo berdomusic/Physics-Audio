@@ -1,0 +1,196 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "2447290727",
+    "Type": "Event",
+    "GUID": "{00ED8E22-CB7B-4FCE-BB62-88BA581F346F}",
+    "Language": "SFX",
+    "Hash": "{89112E41-5BDE-B1CA-0B2F-53B44777F999}",
+    "ObjectPath": "WoodenBoxDebris_Projectile",
+    "ShortName": "WoodenBoxDebris_Projectile",
+    "Path": "Event/WoodenBoxDebris_Projectile.bnk",
+    "Media": [
+     {
+      "Id": "34113978",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-001.wav",
+      "Path": "Media/34113978.wem",
+      "CachePath": "23/{2393E8AB-3A72-1807-DD37-0EE154D783A5}.wem"
+     },
+     {
+      "Id": "272843777",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "PRO_WoodenBox4.wav",
+      "Path": "Media/272843777.wem",
+      "CachePath": "1A/{1A2E16D2-7AC5-1182-9F32-2D72A8303056}.wem"
+     },
+     {
+      "Id": "286476534",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-003.wav",
+      "Path": "Media/286476534.wem",
+      "CachePath": "38/{384F6603-F75F-22CB-4BB7-F846A9E375E2}.wem"
+     },
+     {
+      "Id": "394891647",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-002.wav",
+      "Path": "Media/394891647.wem",
+      "CachePath": "66/{667867DF-DA1A-7E2D-EEF2-59A35944B573}.wem"
+     },
+     {
+      "Id": "455632930",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "PRO_WoodenBox3.wav",
+      "Path": "Media/455632930.wem",
+      "CachePath": "91/{91712C48-AD64-FDFC-ED97-E5267F84D7B2}.wem"
+     },
+     {
+      "Id": "463898344",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-004.wav",
+      "Path": "Media/463898344.wem",
+      "CachePath": "BC/{BC56750C-2889-B2C8-932F-EE85936CD0BE}.wem"
+     },
+     {
+      "Id": "747694306",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "PRO_WoodenBox1.wav",
+      "Path": "Media/747694306.wem",
+      "CachePath": "A1/{A1FF4E42-687F-D4BA-A3AC-9D28A1ABFF47}.wem"
+     },
+     {
+      "Id": "782217783",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "PRO_WoodenBox2.wav",
+      "Path": "Media/782217783.wem",
+      "CachePath": "60/{601EDE73-2D4C-34C4-ABAA-B07A5A1BED7D}.wem"
+     },
+     {
+      "Id": "913535671",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-006.wav",
+      "Path": "Media/913535671.wem",
+      "CachePath": "DA/{DA340536-6444-3DFB-9649-8A1DB91A74D5}.wem"
+     },
+     {
+      "Id": "986466163",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-005.wav",
+      "Path": "Media/986466163.wem",
+      "CachePath": "28/{28E5E9EE-9816-0740-4B3F-7EF4C9E7960D}.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "408394947",
+       "Name": "Impacter",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\Projectile\\WoodenBox_Projectile\\Additionals\\Impacter",
+       "GUID": "{A10B4EB8-1BA1-4D11-9CFE-D950D2FC3494}",
+       "LibName": "Impacter",
+       "LibId": "12058626",
+       "MediaRefs": [
+        {
+         "Id": "34113978"
+        },
+        {
+         "Id": "286476534"
+        },
+        {
+         "Id": "394891647"
+        },
+        {
+         "Id": "463898344"
+        },
+        {
+         "Id": "913535671"
+        },
+        {
+         "Id": "986466163"
+        }
+       ]
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "2447290727",
+      "Name": "WoodenBoxDebris_Projectile",
+      "ObjectPath": "\\Events\\PhysicsObjects\\WoodenBox\\WoodenBoxDebris_Projectile",
+      "GUID": "{00ED8E22-CB7B-4FCE-BB62-88BA581F346F}",
+      "MaxAttenuation": "4000",
+      "DurationType": "Unknown",
+      "MediaRefs": [
+       {
+        "Id": "272843777"
+       },
+       {
+        "Id": "455632930"
+       },
+       {
+        "Id": "747694306"
+       },
+       {
+        "Id": "782217783"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "408394947"
+        }
+       ]
+      }
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1217927383",
+      "Name": "S_Mass",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
+      "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
+     },
+     {
+      "Id": "2667713947",
+      "Name": "S_ProjectileSpeed",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_ProjectileSpeed",
+      "GUID": "{2A573DD8-4FCF-473F-BB3F-E2188568AB17}"
+     },
+     {
+      "Id": "4098934257",
+      "Name": "S_Impact",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Impact",
+      "GUID": "{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{8809F330-8BB6-87FF-B633-650CCC513277}"
+ }
+}

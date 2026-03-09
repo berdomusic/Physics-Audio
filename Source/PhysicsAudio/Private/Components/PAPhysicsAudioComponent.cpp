@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Components/PAPhysicsAudioComponent.h"
+
+#include "AkGameplayStatics.h"
 #include "Engine/AssetManager.h"
 #include "Engine/StreamableManager.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -13,7 +15,9 @@ UPAPhysicsAudioComponent::UPAPhysicsAudioComponent(const FObjectInitializer& Obj
 	Super(ObjectInitializer)
 {
 	PrimaryComponentTick.bStartWithTickEnabled = false;
-	PrimaryComponentTick.TickGroup = TG_PrePhysics;
+	PrimaryComponentTick.TickGroup = TG_PostPhysics;
+
+	bAutoActivate = false;
 	
 	bIsSliding = false;
 	bIsRolling = false;
@@ -28,14 +32,14 @@ void UPAPhysicsAudioComponent::TryReturnComponentToPool()
 	UPAPhysicsAudioSubsystem* subsystem = UPAPhysicsAudioSubsystem::Get(GetWorld());
 	if (IsValid(subsystem))
 	{
-		subsystem->ReturnOrphanedAudioComponentToPool(this);
+		subsystem->ReturnPhysicsAudioObjectToPool(nullptr,this, false);
 	}
 	else
 		DestroyComponent();
 }
 
 void UPAPhysicsAudioComponent::OnAttachedToSimulatingComponent(UPrimitiveComponent* InComponent,
-                                                               const FPAPhysicsActorAudioHandle& InAudioProperties)
+                                                               const FPAPhysicsActorAudioProperties& InAudioProperties)
 {
 	ensure(InComponent);
 	if(!InComponent->IsSimulatingPhysics())
@@ -48,7 +52,7 @@ void UPAPhysicsAudioComponent::OnAttachedToSimulatingComponent(UPrimitiveCompone
 }
 
 void UPAPhysicsAudioComponent::OnAttachedToNonSimulatingComponent(UPrimitiveComponent* InComponent,
-                                                                  const FPAPhysicsActorAudioHandle& InAudioProperties)
+                                                                  const FPAPhysicsActorAudioProperties& InAudioProperties)
 {
 	ensure(InComponent);
 	if(InAudioProperties.ObjectMassOverride <= 0.f)
@@ -62,15 +66,20 @@ void UPAPhysicsAudioComponent::OnAttachedToNonSimulatingComponent(UPrimitiveComp
 
 void UPAPhysicsAudioComponent::OnDetachedFromPhysicsComponent()
 {
-	if (IsValid(ParentComponent))
-		ParentComponent->OnComponentHit.RemoveAll(this);
-	ParentComponent = nullptr;
-	
-	PrimaryComponentTick.SetTickFunctionEnable(false);	
-	
-	// Let GC do it's work
-	AudioEvents.Empty();
-	AudioEvents.SetNum(static_cast<int32>(EPAEventType::Count));
+	Deactivate();
+}
+
+void UPAPhysicsAudioComponent::OnParentDestroyed()
+{
+	if (!IsValid(GetWorld()) || !IsAkEventValidAndAudible(GetAkEventByType(EPAEventType::Destruction)))
+		return;
+	// Posting at location so we can immediately reuse this component or return it to pool
+	UAkGameplayStatics::PostEventAtLocation(
+		GetAkEventByType(EPAEventType::Destruction), 
+		GetComponentLocation(),
+		GetComponentRotation(),
+		GetWorld()
+		);	
 }
 
 void UPAPhysicsAudioComponent::OnHitByProjectile_Implementation(AActor* ProjectileActor, const FHitResult& Hit,
@@ -91,7 +100,7 @@ void UPAPhysicsAudioComponent::OnHitByProjectile_Implementation(AActor* Projecti
 }
 
 void UPAPhysicsAudioComponent::OnAttachedToComponent_Internal(UPrimitiveComponent* InComponent,
-	const FPAPhysicsActorAudioHandle& InAudioProperties)
+	const FPAPhysicsActorAudioProperties& InAudioProperties)
 {
 	ParentComponent = InComponent;
 	PhysicsActorAudioProperties = InAudioProperties;
@@ -103,14 +112,12 @@ void UPAPhysicsAudioComponent::OnAttachedToComponent_Internal(UPrimitiveComponen
 	}
 	
 	ObjectMassOverride = InAudioProperties.ObjectMassOverride;
-	ParentComponent->OnComponentHit.AddUniqueDynamic(this, &UPAPhysicsAudioComponent::OnComponentHit);
 	
 	RTPCAssets = UPAFunctionLibrary::GetRTPC_Assets();
 	
 	SetMassData();
+	SetCooldownVariables();
 	LoadAkAudioEvents();
-	
-	PrimaryComponentTick.SetTickFunctionEnable(true);
 }
 
 void UPAPhysicsAudioComponent::SetMassData()
@@ -121,14 +128,12 @@ void UPAPhysicsAudioComponent::SetMassData()
 		ObjectMass = ParentComponent->GetMass();
 	ensure(ObjectMass > 0.f);
 	
-	// Calculate mass-normalized thresholds
-	ObjectMassSqrt = FMath::Sqrt(ObjectMass);
 	SetRTPCValue(RTPCAssets->MassRTPC, FMath::Clamp(ObjectMass, 0.f, 500.f), 0, FString());
 	
 	// Desired minimum impact velocity to produce sound
 	float minVelocity = FMath::GetMappedRangeValueClamped(
 		FVector2D(1.f, 500.f), 
-		FVector2D(1.4f, .6f),
+		FVector2D(1.2f, .8f),
 		ObjectMass
 	);
 
@@ -153,8 +158,8 @@ float UPAPhysicsAudioComponent::NormalizeByMass(float InValue, float InMass, flo
 
 bool UPAPhysicsAudioComponent::ShouldPlayImpact(float InImpulseMagnitude) const
 {
-	const float currentImpactThreshold = bGrounded ? ImpactThreshold * ObjectMassSqrt : ImpactThreshold;
-	return ImpactCooldown >= PhysicsAudioSettings::PHYSICS_AUDIO_COOLDOWN_TIME
+	const float currentImpactThreshold = bGrounded ? ImpactThreshold * ObjectMass : ImpactThreshold;
+	return CurrentImpactCooldown >= ImpactCooldownThreshold
 			&& CurrentVelocityMagnitude > PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY
 			&& InImpulseMagnitude > currentImpactThreshold;
 }
@@ -162,12 +167,14 @@ bool UPAPhysicsAudioComponent::ShouldPlayImpact(float InImpulseMagnitude) const
 void UPAPhysicsAudioComponent::LoadAkAudioEvents()
 {
 	AudioEventsSoftRefs.Reset();
-	AudioEventsSoftRefs.SetNum(static_cast<int32>(EPAEventType::Count));	
+	AudioEventsSoftRefs.SetNum(static_cast<int32>(EPAEventType::Count));
+	
 	AudioEventsSoftRefs[static_cast<int32>(EPAEventType::Impact)] = PhysicsActorAudioProperties.ImpactSound;
-	AudioEventsSoftRefs[static_cast<int32>(EPAEventType::Slide)] = PhysicsActorAudioProperties.SlideSound;
-	AudioEventsSoftRefs[static_cast<int32>(EPAEventType::Roll)] = PhysicsActorAudioProperties.RollSound;
+	AudioEventsSoftRefs[static_cast<int32>(EPAEventType::Slide)] = PhysicsActorAudioProperties.SlideSound;	
+	AudioEventsSoftRefs[static_cast<int32>(EPAEventType::Roll)] = PhysicsActorAudioProperties.RollSound;	
 	AudioEventsSoftRefs[static_cast<int32>(EPAEventType::Projectile)] = PhysicsActorAudioProperties.ProjectileSound;
 	AudioEventsSoftRefs[static_cast<int32>(EPAEventType::Destruction)] = PhysicsActorAudioProperties.DestructionSound;
+	
 	TArray<FSoftObjectPath> assetsToLoadAsync;
 
 	for (int32 i = 0; i < AudioEventsSoftRefs.Num(); ++i)
@@ -208,7 +215,8 @@ void UPAPhysicsAudioComponent::OnAkAudioEventsLoaded()
 			if (!currentAudioEventSoft.bLoadSynchronously)
 				AudioEvents[i] = currentAudioEventSoft.AkEventSoft.Get();			
 		}
-	}		
+	}	
+	Activate();
 }
 
 bool UPAPhysicsAudioComponent::IsAkEventValidAndAudible(const UAkAudioEvent* InEvent) const
@@ -216,6 +224,16 @@ bool UPAPhysicsAudioComponent::IsAkEventValidAndAudible(const UAkAudioEvent* InE
 	if (!IsValid(InEvent))
 		return false;
 	return DistanceToClosestListenerSquared <= FMath::Square(InEvent->MaxAttenuationRadius);
+}
+
+void UPAPhysicsAudioComponent::SetCooldownVariables()
+{
+	ImpactCooldownThreshold = PhysicsActorAudioProperties.ImpactSound.CooldownThreshold;
+	CurrentImpactCooldown = ImpactCooldownThreshold;
+	SlideCooldownThreshold = PhysicsActorAudioProperties.SlideSound.CooldownThreshold;
+	CurrentSlideCooldown = SlideCooldownThreshold;
+	RollCooldownThreshold = PhysicsActorAudioProperties.RollSound.CooldownThreshold;
+	CurrenRollCooldown = RollCooldownThreshold;
 }
 
 void UPAPhysicsAudioComponent::UpdatePhysicsState(float DeltaTime)
@@ -331,7 +349,7 @@ void UPAPhysicsAudioComponent::OnComponentHit(UPrimitiveComponent* HitComponent,
 	
 	if (ShouldPlayImpact(impulseMagnitude))
 	{
-		ImpactCooldown = 0.f;
+		CurrentImpactCooldown = 0.f;
 		
 		// Normalize impulse by mass for consistent feel
 		float normalizedImpulse = impulseMagnitude / ObjectMass;
@@ -340,6 +358,8 @@ void UPAPhysicsAudioComponent::OnComponentHit(UPrimitiveComponent* HitComponent,
 		FVector2D(0.f, 100.f),
 		normalizedImpulse
 		);
+		UKismetSystemLibrary::DrawDebugString(GetWorld(), GetComponentLocation(), FString::SanitizeFloat(impactRTPCValue), 0, FLinearColor::Green, 1.f);
+
 		
 		if (!FMath::IsNearlyEqual(PreviousImpactRTPCValue, impactRTPCValue, PhysicsAudioSettings::PHYSICS_AUDIO_RTPC_TOLERANCE)) // Set RTPC only when it changed
 		{
@@ -347,10 +367,30 @@ void UPAPhysicsAudioComponent::OnComponentHit(UPrimitiveComponent* HitComponent,
 			SetRTPCValue(RTPCAssets->ImpactRTPC, FMath::Clamp(PreviousImpactRTPCValue, 0.f, 100.f), 0, FString());
 		}
 		PostAkEvent(GetAkEventByType(EPAEventType::Impact), 0, FOnAkPostEventCallback());
-		FLinearColor debugColor = bIsSliding ? FLinearColor::White : FLinearColor::Black;
+		FLinearColor debugColor = bGrounded ? FLinearColor::White : FLinearColor::Black;
 		UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetComponentLocation(), 100.f,12,debugColor, .5f);
 	}
 	bGrounded = true;	
+}
+
+void UPAPhysicsAudioComponent::Activate(bool bReset)
+{
+	Super::Activate(bReset);
+	PrimaryComponentTick.SetTickFunctionEnable(true);
+	ParentComponent->OnComponentHit.AddUniqueDynamic(this, &UPAPhysicsAudioComponent::OnComponentHit);
+}
+
+void UPAPhysicsAudioComponent::Deactivate()
+{
+	PrimaryComponentTick.SetTickFunctionEnable(false);
+	if (IsValid(ParentComponent))
+		ParentComponent->OnComponentHit.RemoveAll(this);
+	
+	// Let GC do it's work
+	ParentComponent = nullptr;	
+	AudioEvents.Empty();
+	AudioEvents.SetNum(static_cast<int32>(EPAEventType::Count));
+	Super::Deactivate();
 }
 
 void UPAPhysicsAudioComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
@@ -363,12 +403,12 @@ void UPAPhysicsAudioComponent::TickComponent(float DeltaTime, enum ELevelTick Ti
 		return;
 	}
 	// Update cooldowns
-	if (ImpactCooldown < PhysicsAudioSettings::PHYSICS_AUDIO_COOLDOWN_TIME)
-		ImpactCooldown += DeltaTime;
-	if (SlideCooldown < PhysicsAudioSettings::PHYSICS_AUDIO_COOLDOWN_TIME)
-		SlideCooldown += DeltaTime;
-	if (RollCooldown < PhysicsAudioSettings::PHYSICS_AUDIO_COOLDOWN_TIME)
-		RollCooldown += DeltaTime;
+	if (CurrentImpactCooldown < ImpactCooldownThreshold)
+		CurrentImpactCooldown += DeltaTime;
+	if (CurrentSlideCooldown < SlideCooldownThreshold)
+		CurrentSlideCooldown += DeltaTime;
+	if (CurrenRollCooldown < RollCooldownThreshold)
+		CurrenRollCooldown += DeltaTime;
 	
 	// Check if we even bother
 	bSlideAudible = IsAkEventValidAndAudible(GetAkEventByType(EPAEventType::Slide));
@@ -388,9 +428,9 @@ void UPAPhysicsAudioComponent::TickComponent(float DeltaTime, enum ELevelTick Ti
 		// Trigger slide sound when sliding starts or when sliding continues with cooldown
 		bool bShouldBeSliding = bGrounded && !bIsRolling && CurrentVelocityMagnitude > 50.f;
 
-		if (bShouldBeSliding && SlideCooldown >= PhysicsAudioSettings::PHYSICS_AUDIO_COOLDOWN_TIME)
+		if (bShouldBeSliding && CurrentSlideCooldown >= SlideCooldownThreshold)
 		{
-			SlideCooldown = 0.f;
+			CurrentSlideCooldown = 0.f;
 			bIsSliding = true;
 
 			// Slide RTPC already updated in UpdateRTPCValues()
@@ -401,9 +441,9 @@ void UPAPhysicsAudioComponent::TickComponent(float DeltaTime, enum ELevelTick Ti
 			bIsSliding = false;
 	}
 	
-	if (bRollAudible && bIsRolling && RollCooldown >= PhysicsAudioSettings::PHYSICS_AUDIO_COOLDOWN_TIME)
+	if (bRollAudible && bIsRolling && CurrenRollCooldown >= RollCooldownThreshold)
 	{
-		RollCooldown = 0.f;
+		CurrenRollCooldown = 0.f;
 		PostAkEvent(GetAkEventByType(EPAEventType::Roll), 0, FOnAkPostEventCallback());
 		UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetComponentLocation(), 50.f, 12, FLinearColor::Yellow);
 	}

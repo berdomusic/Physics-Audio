@@ -1,0 +1,153 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "2552694713",
+    "Type": "Event",
+    "GUID": "{E63B86A6-BA79-455F-B134-01A36F245234}",
+    "Language": "SFX",
+    "Hash": "{87251473-5727-A151-BBF1-DE4929319C09}",
+    "ObjectPath": "WoodenBoxDebris_Slide",
+    "ShortName": "WoodenBoxDebris_Slide",
+    "Path": "Event/WoodenBoxDebris_Slide.bnk",
+    "Media": [
+     {
+      "Id": "7419519",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_WoodenBox-003.wav",
+      "Path": "Media/7419519.wem",
+      "CachePath": "14/{142B8813-3C41-E61E-C23B-8777CD4EC440}.wem"
+     },
+     {
+      "Id": "151556924",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_WoodenBox-008.wav",
+      "Path": "Media/151556924.wem",
+      "CachePath": "AC/{AC055DD3-B22F-678D-A9BB-58982A3A4666}.wem"
+     },
+     {
+      "Id": "163574580",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_WoodenBox-007.wav",
+      "Path": "Media/163574580.wem",
+      "CachePath": "87/{874871C4-7D3E-3142-7953-58C71893D7FE}.wem"
+     },
+     {
+      "Id": "421503293",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_WoodenBox-005.wav",
+      "Path": "Media/421503293.wem",
+      "CachePath": "4F/{4FF66BD4-E65B-31E0-E931-B7FF0F2D1618}.wem"
+     },
+     {
+      "Id": "538684233",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_WoodenBox-001.wav",
+      "Path": "Media/538684233.wem",
+      "CachePath": "43/{43C63072-D2A8-1562-96FA-DD275763C73B}.wem"
+     },
+     {
+      "Id": "589366727",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_WoodenBox-002.wav",
+      "Path": "Media/589366727.wem",
+      "CachePath": "31/{31DA204C-7531-84DC-F921-7956C017C625}.wem"
+     },
+     {
+      "Id": "638666369",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_WoodenBox-004.wav",
+      "Path": "Media/638666369.wem",
+      "CachePath": "B3/{B35A9D5A-4B2D-5E3F-94C0-5B033E2B3C94}.wem"
+     },
+     {
+      "Id": "647868012",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_WoodenBox-006.wav",
+      "Path": "Media/647868012.wem",
+      "CachePath": "65/{6563C16B-FC99-3C3E-062C-F845214C24CC}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2552694713",
+      "Name": "WoodenBoxDebris_Slide",
+      "ObjectPath": "\\Events\\PhysicsObjects\\WoodenBox\\WoodenBoxDebris_Slide",
+      "GUID": "{E63B86A6-BA79-455F-B134-01A36F245234}",
+      "MaxAttenuation": "2500",
+      "DurationType": "OneShot",
+      "DurationMin": "0.22000189",
+      "DurationMax": "0.49172541",
+      "MediaRefs": [
+       {
+        "Id": "7419519"
+       },
+       {
+        "Id": "151556924"
+       },
+       {
+        "Id": "163574580"
+       },
+       {
+        "Id": "421503293"
+       },
+       {
+        "Id": "538684233"
+       },
+       {
+        "Id": "589366727"
+       },
+       {
+        "Id": "638666369"
+       },
+       {
+        "Id": "647868012"
+       }
+      ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1217927383",
+      "Name": "S_Mass",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
+      "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
+     },
+     {
+      "Id": "3874927894",
+      "Name": "S_Slide",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
+      "GUID": "{4CFDFD1B-B48A-4537-B9F0-EFE1F9EC47A6}"
+     },
+     {
+      "Id": "4098934257",
+      "Name": "S_Impact",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Impact",
+      "GUID": "{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{267D9EB7-451D-0570-2FFB-5D617502DC3D}"
+ }
+}

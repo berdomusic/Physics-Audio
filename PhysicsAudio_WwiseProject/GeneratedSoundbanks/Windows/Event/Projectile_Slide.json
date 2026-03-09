@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{CADE1FFB-6157-4066-B689-6DDC61FD7840}",
     "Language": "SFX",
-    "Hash": "{4378332A-D2E1-DB30-9004-736D698514BE}",
+    "Hash": "{FF97E12A-D8EE-D948-95B4-E13BCDBC2BB2}",
     "ObjectPath": "Projectile_Slide",
     "ShortName": "Projectile_Slide",
     "Path": "Event/Projectile_Slide.bnk",
@@ -186,16 +186,10 @@
       "Name": "S_Slide",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
       "GUID": "{4CFDFD1B-B48A-4537-B9F0-EFE1F9EC47A6}"
-     },
-     {
-      "Id": "4098934257",
-      "Name": "S_Impact",
-      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Impact",
-      "GUID": "{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}"
      }
     ]
    }
   ],
-  "FileHash": "{706A71DC-D4DA-EC03-85ED-51D6A4A553D3}"
+  "FileHash": "{86AB251D-911C-B0A8-5441-78310F219847}"
  }
 }

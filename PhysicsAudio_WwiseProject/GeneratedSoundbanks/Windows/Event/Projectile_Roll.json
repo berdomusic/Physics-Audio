@@ -1,0 +1,195 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "1426881542",
+    "Type": "Event",
+    "GUID": "{79C432A4-F007-410B-B1F7-0381C4F6A165}",
+    "Language": "SFX",
+    "Hash": "{3BDD8677-2E98-EBDB-2366-8596D6943C7E}",
+    "ObjectPath": "Projectile_Roll",
+    "ShortName": "Projectile_Roll",
+    "Path": "Event/Projectile_Roll.bnk",
+    "Media": [
+     {
+      "Id": "60261620",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile1.wav",
+      "Path": "Media/60261620.wem",
+      "CachePath": "1D/{1D9E2652-C537-9502-0D21-70E0E37A2D54}.wem"
+     },
+     {
+      "Id": "177556807",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile3.wav",
+      "Path": "Media/177556807.wem",
+      "CachePath": "13/{13F7641F-9453-0F37-A960-8B4D62238EAC}.wem"
+     },
+     {
+      "Id": "323772763",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile2.wav",
+      "Path": "Media/323772763.wem",
+      "CachePath": "0E/{0EFC53D7-E7A0-3570-F3CC-31ED8622004E}.wem"
+     },
+     {
+      "Id": "372513540",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile1.wav",
+      "Path": "Media/372513540.wem",
+      "CachePath": "23/{230C1A2B-ADD2-DB9F-6F39-2C389532A841}.wem"
+     },
+     {
+      "Id": "427450958",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile3.wav",
+      "Path": "Media/427450958.wem",
+      "CachePath": "01/{01ADD8CD-23F4-1749-7490-D4A303692F7F}.wem"
+     },
+     {
+      "Id": "492006925",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile2.wav",
+      "Path": "Media/492006925.wem",
+      "CachePath": "7C/{7CA956EF-50E2-6ACD-549F-3D13341F7092}.wem"
+     },
+     {
+      "Id": "499187730",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile3.wav",
+      "Path": "Media/499187730.wem",
+      "CachePath": "D2/{D2942999-EA4B-E1B9-F6E0-8AF57932E644}.wem"
+     },
+     {
+      "Id": "552464852",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile1.wav",
+      "Path": "Media/552464852.wem",
+      "CachePath": "16/{1690E4E2-8A88-A1C3-4D00-4A0EE00CFD55}.wem"
+     },
+     {
+      "Id": "636085913",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile3.wav",
+      "Path": "Media/636085913.wem",
+      "CachePath": "8D/{8D0DD9ED-B072-CA42-4668-3F468E3419DD}.wem"
+     },
+     {
+      "Id": "697517577",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile2.wav",
+      "Path": "Media/697517577.wem",
+      "CachePath": "2C/{2C75994A-1014-AC3F-7808-A795F6E17E8A}.wem"
+     },
+     {
+      "Id": "812603799",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile3.wav",
+      "Path": "Media/812603799.wem",
+      "CachePath": "7E/{7E1764C5-CF96-90F0-7208-5F08E7BB7BE8}.wem"
+     },
+     {
+      "Id": "825169097",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "SLI_Projectile1.wav",
+      "Path": "Media/825169097.wem",
+      "CachePath": "FE/{FE6DAA95-83BD-C421-8BEE-1AB55AAD45A4}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1426881542",
+      "Name": "Projectile_Roll",
+      "ObjectPath": "\\Events\\PhysicsObjects\\Projectile\\Projectile_Roll",
+      "GUID": "{79C432A4-F007-410B-B1F7-0381C4F6A165}",
+      "MaxAttenuation": "2500",
+      "DurationType": "OneShot",
+      "DurationMin": "0.1716758",
+      "DurationMax": "0.28596902",
+      "MediaRefs": [
+       {
+        "Id": "60261620"
+       },
+       {
+        "Id": "177556807"
+       },
+       {
+        "Id": "323772763"
+       },
+       {
+        "Id": "372513540"
+       },
+       {
+        "Id": "427450958"
+       },
+       {
+        "Id": "492006925"
+       },
+       {
+        "Id": "499187730"
+       },
+       {
+        "Id": "552464852"
+       },
+       {
+        "Id": "636085913"
+       },
+       {
+        "Id": "697517577"
+       },
+       {
+        "Id": "812603799"
+       },
+       {
+        "Id": "825169097"
+       }
+      ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1205658230",
+      "Name": "S_Roll",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Roll",
+      "GUID": "{878403F9-00A7-4E86-A34C-75B2471275B1}"
+     },
+     {
+      "Id": "1217927383",
+      "Name": "S_Mass",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
+      "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{EAF62C27-AE7E-7BE3-A756-594FEBEF5326}"
+ }
+}

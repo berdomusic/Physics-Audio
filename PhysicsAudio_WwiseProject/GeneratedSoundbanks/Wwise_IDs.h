@@ -15,13 +15,18 @@ namespace AK
     {
         static const AkUniqueID EMPTYEVENT = 1650177404U;
         static const AkUniqueID PROJECTILE_IMPACT = 1515280609U;
+        static const AkUniqueID PROJECTILE_ROLL = 1426881542U;
         static const AkUniqueID PROJECTILE_SLIDE = 1050410374U;
         static const AkUniqueID SCI_FI_CONTAINER_IMPACT = 1678608561U;
         static const AkUniqueID SCI_FI_CONTAINER_PROJECTILE = 2842158634U;
         static const AkUniqueID SCI_FI_CONTAINER_SLIDE = 107651542U;
+        static const AkUniqueID WOODENBOX_DESTRUCTION = 262868839U;
         static const AkUniqueID WOODENBOX_IMPACT = 1420461159U;
         static const AkUniqueID WOODENBOX_PROJECTILE = 2124312604U;
         static const AkUniqueID WOODENBOX_SLIDE = 1200576000U;
+        static const AkUniqueID WOODENBOXDEBRIS_IMPACT = 2627829476U;
+        static const AkUniqueID WOODENBOXDEBRIS_PROJECTILE = 2447290727U;
+        static const AkUniqueID WOODENBOXDEBRIS_SLIDE = 2552694713U;
     } // namespace EVENTS
 
     namespace SWITCHES

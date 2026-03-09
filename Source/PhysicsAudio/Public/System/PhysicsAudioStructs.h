@@ -45,6 +45,32 @@ public:
 	);
 };
 
+UINTERFACE(MinimalAPI, BlueprintType)
+class ULookAtInterface : public UInterface
+{
+	GENERATED_BODY()
+};
+
+class ILookAtInterface
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintNativeEvent, Category = "LookAt")
+	void OnLookAtStarted();
+	virtual void OnLookAtStarted_Implementation()	{	}
+	UFUNCTION(BlueprintNativeEvent, Category = "LookAt")
+	void OnLookAtFinished();
+	virtual void OnLookAtFinished_Implementation()	{	}
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "LookAt")
+	void OnPickup(AActor* InInstigator);
+	//virtual void OnPickup_Implementation(AController* InteractionInstigator);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "LookAt")
+	void OnDrop(AActor* InInstigator);
+	//virtual void OnDrop_Implementation(AController* InteractionInstigator);
+};
+
 UCLASS(BlueprintType)
 class PHYSICSAUDIO_API UPAMaterialSwitchMap : public UDataAsset
 {
@@ -92,25 +118,27 @@ struct FPAPhysicsAudioEvent
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
 	TSoftObjectPtr<UAkAudioEvent> AkEventSoft;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
+	float CooldownThreshold = .1f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
 	bool bLoadSynchronously;
 };
 
 USTRUCT(BlueprintType)
-struct FPAPhysicsActorAudioHandle : public FTableRowBase
+struct FPAPhysicsActorAudioProperties : public FTableRowBase
 {
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mass")
 	float ObjectMassOverride = 0.f;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Impact")
 	FPAPhysicsAudioEvent ImpactSound;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Slide")
 	FPAPhysicsAudioEvent SlideSound;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Roll")
 	FPAPhysicsAudioEvent RollSound;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile")
 	FPAPhysicsAudioEvent ProjectileSound;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Destruction")
 	FPAPhysicsAudioEvent DestructionSound;
 };
 
@@ -123,7 +151,7 @@ struct FPAPhysicsActorProperties : public FTableRowBase
 	TSoftClassPtr<AActor> PhysicsActorClass;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FVector2D SizeOffsets = FVector2D::UnitVector;
-	/*UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FDataTableRowHandle PhysicsActorAudioProperties;*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bPickable = true;	
 };
 

@@ -23,10 +23,11 @@ class PHYSICSAUDIO_API UPAPhysicsAudioComponent : public UAkComponent, public IP
 
 public:
 	void OnAttachedToSimulatingComponent(UPrimitiveComponent* InComponent,
-	                                     const FPAPhysicsActorAudioHandle& InAudioProperties);
+	                                     const FPAPhysicsActorAudioProperties& InAudioProperties);
 	void OnAttachedToNonSimulatingComponent(UPrimitiveComponent* InComponent,
-	                                        const FPAPhysicsActorAudioHandle& InAudioProperties);
-	void OnDetachedFromPhysicsComponent();	
+	                                        const FPAPhysicsActorAudioProperties& InAudioProperties);
+	void OnDetachedFromPhysicsComponent();
+	void OnParentDestroyed();
 	UFUNCTION()
 	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 		UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -39,12 +40,11 @@ protected:
 	virtual void OnHitByProjectile_Implementation(AActor* ProjectileActor, const FHitResult& Hit,
 	                                              const FVector& InProjectileImpulse) override;	
 	void OnAttachedToComponent_Internal(UPrimitiveComponent* InComponent, 
-		const FPAPhysicsActorAudioHandle& InAudioProperties);	
+		const FPAPhysicsActorAudioProperties& InAudioProperties);	
 	
 	// Mass and physics properties
 	void SetMassData();
 	float ObjectMass;
-	float ObjectMassSqrt;
 	float ObjectMassOverride;
 	
 	// Detection thresholds (mass-normalized)
@@ -66,7 +66,7 @@ protected:
 	float PreviousAngularSpeed;
 	
 	// Audio properties
-	FPAPhysicsActorAudioHandle PhysicsActorAudioProperties;
+	FPAPhysicsActorAudioProperties PhysicsActorAudioProperties;
 	UPROPERTY()
 	TArray<FPAPhysicsAudioEvent> AudioEventsSoftRefs;
 	UPROPERTY()
@@ -98,9 +98,14 @@ protected:
 	UPrimitiveComponent* ParentComponent;
 	
 	// Cooldowns
-	float ImpactCooldown = PhysicsAudioSettings::PHYSICS_AUDIO_COOLDOWN_TIME;
-	float SlideCooldown = PhysicsAudioSettings::PHYSICS_AUDIO_COOLDOWN_TIME;
-	float RollCooldown = PhysicsAudioSettings::PHYSICS_AUDIO_COOLDOWN_TIME;
+	UPROPERTY(BlueprintReadOnly)
+	float CurrentImpactCooldown = .1f;
+	float ImpactCooldownThreshold = .1f;	
+	float CurrentSlideCooldown = .1f;
+	float SlideCooldownThreshold = .1f;	
+	float CurrenRollCooldown = .1f;
+	float RollCooldownThreshold = .1f;
+	void SetCooldownVariables();
 	
 	// Helper functions
 	void UpdatePhysicsState(float DeltaTime);
@@ -111,6 +116,8 @@ protected:
 	bool bGrounded;
 	const float GroundedThreshold = 50.f;
 	
+	virtual void Activate(bool bReset = false) override;
+	virtual void Deactivate() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 };

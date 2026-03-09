@@ -1,0 +1,93 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "262868839",
+    "Type": "Event",
+    "GUID": "{7CB8D2A7-D309-4B5F-B20D-F961A5104B2C}",
+    "Language": "SFX",
+    "Hash": "{D20787F1-138D-24B1-E546-AEB53D3635A5}",
+    "ObjectPath": "WoodenBox_Destruction",
+    "ShortName": "WoodenBox_Destruction",
+    "Path": "Event/WoodenBox_Destruction.bnk",
+    "Media": [
+     {
+      "Id": "19539562",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "DEST_WoodenBox4.wav",
+      "Path": "Media/19539562.wem",
+      "CachePath": "0C/{0CB4C84D-D6CF-183F-B56B-D760781BEAB5}.wem"
+     },
+     {
+      "Id": "674458637",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "DEST_WoodenBox1.wav",
+      "Path": "Media/674458637.wem",
+      "CachePath": "14/{1461B0D5-7807-079E-770E-407AB0995D40}.wem"
+     },
+     {
+      "Id": "811436196",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "DEST_WoodenBox2.wav",
+      "Path": "Media/811436196.wem",
+      "CachePath": "95/{954D7575-8C7E-A49D-1BA2-E53C3228DEF5}.wem"
+     },
+     {
+      "Id": "1051326876",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "DEST_WoodenBox3.wav",
+      "Path": "Media/1051326876.wem",
+      "CachePath": "A3/{A3ABB1C4-064F-06B6-3D11-EBA794F422AE}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "262868839",
+      "Name": "WoodenBox_Destruction",
+      "ObjectPath": "\\Events\\PhysicsObjects\\WoodenBox\\WoodenBox_Destruction",
+      "GUID": "{7CB8D2A7-D309-4B5F-B20D-F961A5104B2C}",
+      "MaxAttenuation": "4000",
+      "DurationType": "OneShot",
+      "DurationMin": "1.8275347",
+      "DurationMax": "3.466521",
+      "MediaRefs": [
+       {
+        "Id": "19539562"
+       },
+       {
+        "Id": "674458637"
+       },
+       {
+        "Id": "811436196"
+       },
+       {
+        "Id": "1051326876"
+       }
+      ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1217927383",
+      "Name": "S_Mass",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
+      "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{96D1CCBF-3D96-D3B0-E9E5-7219F56556E8}"
+ }
+}

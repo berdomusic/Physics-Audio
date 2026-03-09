@@ -36,7 +36,7 @@ UPAPhysicsRTPCs* UPAFunctionLibrary::GetRTPC_Assets()
 	return nullptr;
 }
 
-bool UPAFunctionLibrary::IsAudioHandleNotEmpty(const FPAPhysicsActorAudioHandle& InHandle)
+bool UPAFunctionLibrary::IsAudioHandleNotEmpty(const FPAPhysicsActorAudioProperties& InHandle)
 {
 	// Returns true if any sound asset is assigned
 	return 
@@ -47,13 +47,13 @@ bool UPAFunctionLibrary::IsAudioHandleNotEmpty(const FPAPhysicsActorAudioHandle&
 		!InHandle.DestructionSound.AkEventSoft.IsNull();	
 }
 
-bool UPAFunctionLibrary::ResolveAudioHandle(const FDataTableRowHandle& InRowHandle, FPAPhysicsActorAudioHandle& OutHandle)
+bool UPAFunctionLibrary::ResolveAudioHandle(const FDataTableRowHandle& InRowHandle, FPAPhysicsActorAudioProperties& OutHandle)
 {
 	if (!InRowHandle.DataTable)
 		return false;
 
-	const FPAPhysicsActorAudioHandle* row =
-		InRowHandle.DataTable->FindRow<FPAPhysicsActorAudioHandle>(
+	const FPAPhysicsActorAudioProperties* row =
+		InRowHandle.DataTable->FindRow<FPAPhysicsActorAudioProperties>(
 			InRowHandle.RowName,
 			TEXT("ResolveAudioHandle")
 		);

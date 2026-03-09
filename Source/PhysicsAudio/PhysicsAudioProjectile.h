@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Components/PAPhysicsAudioComponent.h"
 #include "GameFramework/Actor.h"
-#include "Misc/MapErrors.h"
 #include "PhysicsAudioProjectile.generated.h"
 
 class USphereComponent;
@@ -31,7 +30,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PhysicsAudio")
 	FDataTableRowHandle PhysicsAudioHandle;
 	UPROPERTY(BlueprintReadOnly, Category = "PhysicsAudio")
-	FPAPhysicsActorAudioHandle ProjectileAudioProperties;
+	FPAPhysicsActorAudioProperties ProjectileAudioProperties;
 	UPROPERTY()
 	UStaticMeshComponent* StaticMeshComponent;
 	

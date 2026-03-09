@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "System/PhysicsAudioStructs.h"
 #include "PhysicsAudioCharacter.generated.h"
 
 class UInputComponent;
@@ -17,7 +18,7 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class APhysicsAudioCharacter : public ACharacter
+class APhysicsAudioCharacter : public ACharacter, public ILookAtInterface
 {
 	GENERATED_BODY()
 
@@ -54,6 +55,12 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+	
+	void UpdateLookAt();
+	UPROPERTY(BlueprintReadOnly)
+	AActor* CurrentLookedAtActor = nullptr;
+	UPROPERTY(BlueprintReadWrite)
+	AActor* CurrentPickedUpActor = nullptr;
 
 protected:
 	// APawn interface
@@ -67,5 +74,7 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+protected:
+	virtual void Tick(float DeltaTime) override;
 };
 

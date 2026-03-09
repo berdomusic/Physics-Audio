@@ -10,9 +10,9 @@
 struct FPAPhysicsAudioQueueInfo
 {
     TWeakObjectPtr<UPrimitiveComponent> TargetComponent;
-    FPAPhysicsActorAudioHandle Handle;
+    FPAPhysicsActorAudioProperties Handle;
 
-    FPAPhysicsAudioQueueInfo(UPrimitiveComponent* InComponent, const FPAPhysicsActorAudioHandle& InHandle)
+    FPAPhysicsAudioQueueInfo(UPrimitiveComponent* InComponent, const FPAPhysicsActorAudioProperties& InHandle)
         : TargetComponent(InComponent), Handle(InHandle)
     {
         check(TargetComponent.IsValid());
@@ -50,16 +50,12 @@ public:
     UFUNCTION(BlueprintPure, Category = "PhysicsAudio")
     int32 GetCurrentPoolSize() const { return PhysicsAudioPoolSize; }
     UFUNCTION(BlueprintCallable, Category = "PhysicsAudio")
-    void EnablePhysicsAudio(bool bAsync, int32 InPoolSize = 50);
+    void EnablePhysicsAudio(bool bAsync, int32 InPoolSize = 10);
     UFUNCTION(BlueprintCallable, Category = "PhysicsAudio")
-    void TryAddPhysicsAudioToPrimitive(UPrimitiveComponent* InComponent, const FPAPhysicsActorAudioHandle& InAudioHandle);
+    void TryAddPhysicsAudioToPrimitive(UPrimitiveComponent* InComponent, const FPAPhysicsActorAudioProperties& InAudioProperties);
     UFUNCTION(BlueprintCallable, Category = "PhysicsAudio")
-    void ReturnPhysicsAudioComponentToPool(UPrimitiveComponent* InComponent);
+    void ReturnPhysicsAudioObjectToPool(UPrimitiveComponent* InComponent, UPAPhysicsAudioComponent* InAudioComponent, bool bWasDestroyed);
 
-    void ReturnOrphanedAudioComponentToPool(const UPAPhysicsAudioComponent* InComponent);
-private:
-    void ProcessQueueItem(const FPAPhysicsAudioQueueInfo& QueueItem);
-    void ProcessPendingReturn();
 public:
     UFUNCTION(BlueprintPure, Category = "PhysicsAudio")
     TArray<FVector> GetListenersPositions() const { return ListenersPositions; }
@@ -85,6 +81,10 @@ private:
 
     void RunQueue(bool bOneItem);
     void FlushQueue();
+    
+    void ProcessQueueItem(const FPAPhysicsAudioQueueInfo& QueueItem);
+    void ProcessPendingReturn(bool bOneItem);
+    void ProcessAudioQueue(bool bOneItem);
 
     bool CheckIfCanAttachAudioComponent(const UPrimitiveComponent* InComponent) const;
     void AddAudioObjectToReturnQueue(const FPAActivePhysicsAudioObject& InAudioObject);

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{57FE86C3-0FBA-418E-8DFD-EA33F13E8B9B}",
     "Language": "SFX",
-    "Hash": "{7CD2C5A8-5964-5C5B-5397-C72777DD2E22}",
+    "Hash": "{E52FDC47-E4E0-9AB1-F38D-8F40AD14CDEE}",
     "ObjectPath": "WoodenBox_Impact",
     "ShortName": "WoodenBox_Impact",
     "Path": "Event/WoodenBox_Impact.bnk",
@@ -135,6 +135,6 @@
     ]
    }
   ],
-  "FileHash": "{C15AB8A6-DFBC-59BD-02ED-F7DFD53DE69F}"
+  "FileHash": "{FDE79487-A939-89BC-D907-AD570AD10AE3}"
  }
 }
