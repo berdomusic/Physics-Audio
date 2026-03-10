@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{7CB8D2A7-D309-4B5F-B20D-F961A5104B2C}",
     "Language": "SFX",
-    "Hash": "{D20787F1-138D-24B1-E546-AEB53D3635A5}",
+    "Hash": "{9E7EB735-DD98-19CB-54AC-A3B19E65A1D4}",
     "ObjectPath": "WoodenBox_Destruction",
     "ShortName": "WoodenBox_Destruction",
     "Path": "Event/WoodenBox_Destruction.bnk",
@@ -88,6 +88,6 @@
     ]
    }
   ],
-  "FileHash": "{96D1CCBF-3D96-D3B0-E9E5-7219F56556E8}"
+  "FileHash": "{4CD7268E-8FBD-03E8-3765-B85036105106}"
  }
 }

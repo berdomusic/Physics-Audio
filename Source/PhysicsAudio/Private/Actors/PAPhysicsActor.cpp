@@ -52,11 +52,10 @@ void APAPhysicsActor::OnDamageDealt_Implementation(AActor* Dealer, const FHitRes
 void APAPhysicsActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (NormalImpulse.SizeSquared() > 2500000000.f)
-		OnDamageDealt_Implementation(
-			OtherActor,
-			Hit,
-			FVector::One() * 10.f * FMath::RandRange(.8f, 1.2f));		
+	if (NormalImpulse.Size() < 50000.f)
+		return;
+	FVector mockDmg = FVector::One() * 30000.f * FMath::RandRange(.75f, 1.25f);
+	OnDamageDealt_Implementation(OtherActor, Hit, mockDmg);	
 }
 
 void APAPhysicsActor::Init()

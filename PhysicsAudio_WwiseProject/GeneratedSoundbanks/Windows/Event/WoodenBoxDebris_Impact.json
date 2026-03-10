@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{F41A4E9A-BD38-45AC-B796-628CCE4F67AE}",
     "Language": "SFX",
-    "Hash": "{E672537F-8AC6-E09F-4163-9EBE1BB798AE}",
+    "Hash": "{A53D5B56-B7C8-B969-79A6-64C4E076A5C3}",
     "ObjectPath": "WoodenBoxDebris_Impact",
     "ShortName": "WoodenBoxDebris_Impact",
     "Path": "Event/WoodenBoxDebris_Impact.bnk",
@@ -75,7 +75,7 @@
       {
        "Id": "12674208",
        "Name": "Impacter",
-       "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\Impact\\WoodenBox_Impact\\Impacter",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\Impact\\WoodenBox_Impacter\\Impacter",
        "GUID": "{6E3B5F47-A4EB-49CE-9115-13A07AF710C1}",
        "LibName": "Impacter",
        "LibId": "12058626",
@@ -135,6 +135,6 @@
     ]
    }
   ],
-  "FileHash": "{B8E4720D-BA8E-4C88-C5B1-2386B581F215}"
+  "FileHash": "{D92EE602-69AD-B43D-C970-E033562D23C6}"
  }
 }

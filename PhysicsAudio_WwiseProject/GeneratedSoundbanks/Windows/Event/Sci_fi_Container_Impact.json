@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{6A36F9BF-6877-4C36-A128-E8B48104D1D4}",
     "Language": "SFX",
-    "Hash": "{B79D2ECD-6827-3546-0951-197CFB99FD73}",
+    "Hash": "{7CED7BF5-2AD0-9409-CCFA-45BEB3E170B3}",
     "ObjectPath": "Sci_fi_Container_Impact",
     "ShortName": "Sci_fi_Container_Impact",
     "Path": "Event/Sci_fi_Container_Impact.bnk",
@@ -159,6 +159,6 @@
     ]
    }
   ],
-  "FileHash": "{522E7147-729B-4C86-6B53-BD72E9C3F704}"
+  "FileHash": "{2BB2DFF6-B36C-CB3F-CE2A-5AE2DDAA6F33}"
  }
 }

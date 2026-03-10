@@ -49,30 +49,36 @@ public:
     
     UFUNCTION(BlueprintPure, Category = "PhysicsAudio")
     int32 GetCurrentPoolSize() const { return PhysicsAudioPoolSize; }
+    UFUNCTION(BlueprintPure, Category = "PhysicsAudio")
+    bool IsPhysicsAudioEnabled() const { return bPhysicsAudioEnabled; }
     UFUNCTION(BlueprintCallable, Category = "PhysicsAudio")
     void EnablePhysicsAudio(bool bAsync, int32 InPoolSize = 10);
     UFUNCTION(BlueprintCallable, Category = "PhysicsAudio")
-    void TryAddPhysicsAudioToPrimitive(UPrimitiveComponent* InComponent, const FPAPhysicsActorAudioProperties& InAudioProperties);
-    UFUNCTION(BlueprintCallable, Category = "PhysicsAudio")
-    void ReturnPhysicsAudioObjectToPool(UPrimitiveComponent* InComponent, UPAPhysicsAudioComponent* InAudioComponent, bool bWasDestroyed);
-
-public:
+    void DisablePhysicsAudio();
+    UFUNCTION(BlueprintPure, Category = "PhysicsAudio")
+    bool CanEnablePhysicsAudio() const;
     UFUNCTION(BlueprintPure, Category = "PhysicsAudio")
     TArray<FVector> GetListenersPositions() const { return ListenersPositions; }
-
-    UPROPERTY(BlueprintReadOnly, Category = "PhysicsAudio")
-    TArray<UPAPhysicsAudioComponent*> AvailablePhysicsAudioComponentsPool;
-    UPROPERTY(BlueprintReadOnly, Category = "PhysicsAudio")
-    TArray<FPAActivePhysicsAudioObject> ActivePhysicsAudioObjectsPool;
-    UPROPERTY(BlueprintReadOnly, Category = "PhysicsAudio")
-    TArray<UPAPhysicsAudioComponent*> PendingReturnPool;
-
-private:    
+    UFUNCTION(BlueprintPure, Category = "PhysicsAudio")
+    void GetPhysicsAudioComponentCount(int32& Available, int32& Active, int32& PendingReturn) const;
+   
+    void TryAddPhysicsAudioToPrimitive(UPrimitiveComponent* InComponent, const FPAPhysicsActorAudioProperties& InAudioProperties);
+    void ReturnPhysicsAudioObjectToPool(UPrimitiveComponent* InComponent, UPAPhysicsAudioComponent* InAudioComponent, bool bWasDestroyed);
+private: 
+    
     int32 PhysicsAudioPoolSize = 50;
+    bool bPhysicsAudioEnabled;
+
+    UPROPERTY()
+    TArray<UPAPhysicsAudioComponent*> AvailablePhysicsAudioComponentsPool;
+    UPROPERTY()
+    TArray<FPAActivePhysicsAudioObject> ActivePhysicsAudioObjects;
+    UPROPERTY()
+    TArray<UPAPhysicsAudioComponent*> PendingReturnPool;    
     
     virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-    virtual void Deinitialize() override;    
-
+    virtual void Deinitialize() override;
+    
     void PopulatePoolAsync();
     void TryAddComponentToPool(UPAPhysicsAudioComponent* InComponent);
     UPAPhysicsAudioComponent* TryGetAudioComponentFromPool();

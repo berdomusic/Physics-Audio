@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{F47466CA-B9D9-49EC-B964-3A6BEC6DF42B}",
     "Language": "SFX",
-    "Hash": "{EB9DFD71-AFB5-2BBE-C0DD-2B624F2225E6}",
+    "Hash": "{98EAC8AB-5742-BE8C-9CB6-CFAE24B6D0DF}",
     "ObjectPath": "Projectile_Impact",
     "ShortName": "Projectile_Impact",
     "Path": "Event/Projectile_Impact.bnk",
@@ -112,10 +112,10 @@
       "Name": "Projectile_Impact",
       "ObjectPath": "\\Events\\PhysicsObjects\\Projectile\\Projectile_Impact",
       "GUID": "{F47466CA-B9D9-49EC-B964-3A6BEC6DF42B}",
-      "MaxAttenuation": "2000",
+      "MaxAttenuation": "3000",
       "DurationType": "OneShot",
-      "DurationMin": "0.33113676",
-      "DurationMax": "0.9659528",
+      "DurationMin": "0.29500932",
+      "DurationMax": "1.0382769",
       "MediaRefs": [
        {
         "Id": "136236821"
@@ -166,6 +166,6 @@
     ]
    }
   ],
-  "FileHash": "{5304B8E7-CDF4-1F43-3DE0-45A690B497D7}"
+  "FileHash": "{6E348FC2-A8CF-9CFD-2AA9-F326855C164D}"
  }
 }

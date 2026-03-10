@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{D251E098-393C-4FB2-94C7-6314153D88C2}",
     "Language": "SFX",
-    "Hash": "{B09E445D-8826-B1B5-5C34-AA66225E773A}",
+    "Hash": "{8F73DF79-D9B7-3185-7C9E-215591122B01}",
     "ObjectPath": "Sci_fi_Container_Projectile",
     "ShortName": "Sci_fi_Container_Projectile",
     "Path": "Event/Sci_fi_Container_Projectile.bnk",
@@ -106,6 +106,6 @@
     ]
    }
   ],
-  "FileHash": "{E6A980E0-5DFF-B798-5830-DE76DADFCA1A}"
+  "FileHash": "{B1E7FE60-9952-0F9A-826A-BA6DD8A96060}"
  }
 }

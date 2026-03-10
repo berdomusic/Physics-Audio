@@ -151,7 +151,5 @@ struct FPAPhysicsActorProperties : public FTableRowBase
 	TSoftClassPtr<AActor> PhysicsActorClass;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FVector2D SizeOffsets = FVector2D::UnitVector;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool bPickable = true;	
 };
 

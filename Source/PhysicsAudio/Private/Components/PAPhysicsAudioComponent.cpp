@@ -31,9 +31,7 @@ void UPAPhysicsAudioComponent::TryReturnComponentToPool()
 {
 	UPAPhysicsAudioSubsystem* subsystem = UPAPhysicsAudioSubsystem::Get(GetWorld());
 	if (IsValid(subsystem))
-	{
 		subsystem->ReturnPhysicsAudioObjectToPool(nullptr,this, false);
-	}
 	else
 		DestroyComponent();
 }
@@ -358,8 +356,6 @@ void UPAPhysicsAudioComponent::OnComponentHit(UPrimitiveComponent* HitComponent,
 		FVector2D(0.f, 100.f),
 		normalizedImpulse
 		);
-		UKismetSystemLibrary::DrawDebugString(GetWorld(), GetComponentLocation(), FString::SanitizeFloat(impactRTPCValue), 0, FLinearColor::Green, 1.f);
-
 		
 		if (!FMath::IsNearlyEqual(PreviousImpactRTPCValue, impactRTPCValue, PhysicsAudioSettings::PHYSICS_AUDIO_RTPC_TOLERANCE)) // Set RTPC only when it changed
 		{
@@ -449,9 +445,9 @@ void UPAPhysicsAudioComponent::TickComponent(float DeltaTime, enum ELevelTick Ti
 	}
 }
 
-void UPAPhysicsAudioComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void UPAPhysicsAudioComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 {
 	if (IsValid(ParentComponent))
 		ParentComponent->OnComponentHit.RemoveAll(this);
-	Super::EndPlay(EndPlayReason);
+	Super::OnComponentDestroyed(bDestroyingHierarchy);
 }

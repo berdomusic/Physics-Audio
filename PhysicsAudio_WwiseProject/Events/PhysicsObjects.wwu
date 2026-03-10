@@ -10,7 +10,7 @@
 								<Action Name="" ID="{80A5DD52-94E0-43AC-8732-C79F63D128B4}" ShortID="648901368">
 									<ReferenceList>
 										<Reference Name="Target">
-											<ObjectRef Name="WoodenBox_Impact" ID="{82AF5FBC-B3BE-4195-9420-F0C766A218C6}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+											<ObjectRef Name="WoodenBox_Impact" ID="{FE38530D-2890-4D2A-9AF4-3DA97F37F117}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -43,7 +43,7 @@
 								<Action Name="" ID="{73EFFA1B-E406-4F53-A429-142A7CA853F6}" ShortID="240137734">
 									<ReferenceList>
 										<Reference Name="Target">
-											<ObjectRef Name="WoodenBox_Impact" ID="{82AF5FBC-B3BE-4195-9420-F0C766A218C6}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+											<ObjectRef Name="WoodenBox_Impacter" ID="{82AF5FBC-B3BE-4195-9420-F0C766A218C6}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

@@ -10,98 +10,66 @@
     "Type": "Event",
     "GUID": "{57FE86C3-0FBA-418E-8DFD-EA33F13E8B9B}",
     "Language": "SFX",
-    "Hash": "{E52FDC47-E4E0-9AB1-F38D-8F40AD14CDEE}",
+    "Hash": "{5124DD92-24E4-F14C-621A-45E7C3ED1F10}",
     "ObjectPath": "WoodenBox_Impact",
     "ShortName": "WoodenBox_Impact",
     "Path": "Event/WoodenBox_Impact.bnk",
     "Media": [
      {
-      "Id": "34113978",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "IMP_WoodenBox-001.wav",
-      "Path": "Media/34113978.wem",
-      "CachePath": "23/{2393E8AB-3A72-1807-DD37-0EE154D783A5}.wem"
-     },
-     {
-      "Id": "286476534",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "IMP_WoodenBox-003.wav",
-      "Path": "Media/286476534.wem",
-      "CachePath": "38/{384F6603-F75F-22CB-4BB7-F846A9E375E2}.wem"
-     },
-     {
-      "Id": "394891647",
+      "Id": "339053875",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
       "ShortName": "IMP_WoodenBox-002.wav",
-      "Path": "Media/394891647.wem",
-      "CachePath": "66/{667867DF-DA1A-7E2D-EEF2-59A35944B573}.wem"
+      "Path": "Media/339053875.wem",
+      "CachePath": "5E/{5E8B0F7D-5A4B-CA39-48EC-063223299222}.wem"
      },
      {
-      "Id": "463898344",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "IMP_WoodenBox-004.wav",
-      "Path": "Media/463898344.wem",
-      "CachePath": "BC/{BC56750C-2889-B2C8-932F-EE85936CD0BE}.wem"
-     },
-     {
-      "Id": "913535671",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "IMP_WoodenBox-006.wav",
-      "Path": "Media/913535671.wem",
-      "CachePath": "DA/{DA340536-6444-3DFB-9649-8A1DB91A74D5}.wem"
-     },
-     {
-      "Id": "986466163",
+      "Id": "442300775",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
       "ShortName": "IMP_WoodenBox-005.wav",
-      "Path": "Media/986466163.wem",
-      "CachePath": "28/{28E5E9EE-9816-0740-4B3F-7EF4C9E7960D}.wem"
+      "Path": "Media/442300775.wem",
+      "CachePath": "29/{29C99334-0608-9800-76A3-77C20BF48AE7}.wem"
+     },
+     {
+      "Id": "553717254",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-004.wav",
+      "Path": "Media/553717254.wem",
+      "CachePath": "C6/{C68B540F-CEF7-0E25-2B11-CA7D18BAB3E8}.wem"
+     },
+     {
+      "Id": "785128766",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-001.wav",
+      "Path": "Media/785128766.wem",
+      "CachePath": "F9/{F9AA7FEC-4180-CE77-EAC2-F373FDAEF770}.wem"
+     },
+     {
+      "Id": "816903639",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-003.wav",
+      "Path": "Media/816903639.wem",
+      "CachePath": "AF/{AFB5B60F-0DEB-6BD3-1CF2-FB89A4BDCA18}.wem"
+     },
+     {
+      "Id": "941555057",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-006.wav",
+      "Path": "Media/941555057.wem",
+      "CachePath": "E1/{E16602F8-073F-F087-1969-700BF1295091}.wem"
      }
     ],
-    "Plugins": {
-     "Custom": [
-      {
-       "Id": "12674208",
-       "Name": "Impacter",
-       "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\Impact\\WoodenBox_Impact\\Impacter",
-       "GUID": "{6E3B5F47-A4EB-49CE-9115-13A07AF710C1}",
-       "LibName": "Impacter",
-       "LibId": "12058626",
-       "MediaRefs": [
-        {
-         "Id": "34113978"
-        },
-        {
-         "Id": "286476534"
-        },
-        {
-         "Id": "394891647"
-        },
-        {
-         "Id": "463898344"
-        },
-        {
-         "Id": "913535671"
-        },
-        {
-         "Id": "986466163"
-        }
-       ]
-      }
-     ]
-    },
     "Events": [
      {
       "Id": "1420461159",
@@ -109,14 +77,29 @@
       "ObjectPath": "\\Events\\PhysicsObjects\\WoodenBox\\WoodenBox_Impact",
       "GUID": "{57FE86C3-0FBA-418E-8DFD-EA33F13E8B9B}",
       "MaxAttenuation": "4000",
-      "DurationType": "Unknown",
-      "PluginRefs": {
-       "Custom": [
-        {
-         "Id": "12674208"
-        }
-       ]
-      }
+      "DurationType": "OneShot",
+      "DurationMin": "0.405284",
+      "DurationMax": "1.1328963",
+      "MediaRefs": [
+       {
+        "Id": "339053875"
+       },
+       {
+        "Id": "442300775"
+       },
+       {
+        "Id": "553717254"
+       },
+       {
+        "Id": "785128766"
+       },
+       {
+        "Id": "816903639"
+       },
+       {
+        "Id": "941555057"
+       }
+      ]
      }
     ],
     "GameParameters": [
@@ -135,6 +118,6 @@
     ]
    }
   ],
-  "FileHash": "{FDE79487-A939-89BC-D907-AD570AD10AE3}"
+  "FileHash": "{EE0A53A9-9521-144B-57B2-D98A8F5C1965}"
  }
 }

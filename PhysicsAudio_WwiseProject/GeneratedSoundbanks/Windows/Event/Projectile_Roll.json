@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{79C432A4-F007-410B-B1F7-0381C4F6A165}",
     "Language": "SFX",
-    "Hash": "{3BDD8677-2E98-EBDB-2366-8596D6943C7E}",
+    "Hash": "{1C5050E1-63C4-193C-E5BA-90707BC57312}",
     "ObjectPath": "Projectile_Roll",
     "ShortName": "Projectile_Roll",
     "Path": "Event/Projectile_Roll.bnk",
@@ -130,7 +130,7 @@
       "Name": "Projectile_Roll",
       "ObjectPath": "\\Events\\PhysicsObjects\\Projectile\\Projectile_Roll",
       "GUID": "{79C432A4-F007-410B-B1F7-0381C4F6A165}",
-      "MaxAttenuation": "2500",
+      "MaxAttenuation": "1500",
       "DurationType": "OneShot",
       "DurationMin": "0.1716758",
       "DurationMax": "0.28596902",
@@ -190,6 +190,6 @@
     ]
    }
   ],
-  "FileHash": "{EAF62C27-AE7E-7BE3-A756-594FEBEF5326}"
+  "FileHash": "{07E5A98C-F5AF-CD3F-886F-6149DFD1BDE9}"
  }
 }

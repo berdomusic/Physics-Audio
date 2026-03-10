@@ -18,13 +18,13 @@ APAInteractableActor::APAInteractableActor()
 void APAInteractableActor::OnLookAtStarted_Implementation()
 {
 	ILookAtInterface::OnLookAtStarted_Implementation();
-	if (WidgetComponent && WidgetComponent->GetWidget())
+	if (bCanBePickedUp && WidgetComponent && WidgetComponent->GetWidget())
 		WidgetComponent->SetVisibility(true);
 }
 
 void APAInteractableActor::OnLookAtFinished_Implementation()
 {
 	ILookAtInterface::OnLookAtFinished_Implementation();
-	if (WidgetComponent && WidgetComponent->GetWidget())
+	if (bCanBePickedUp && WidgetComponent && WidgetComponent->GetWidget())
 		WidgetComponent->SetVisibility(false);
 }

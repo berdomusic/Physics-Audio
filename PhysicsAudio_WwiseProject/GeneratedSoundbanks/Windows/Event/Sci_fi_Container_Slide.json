@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{8C97A3B4-D029-460E-8317-8E7C504B068E}",
     "Language": "SFX",
-    "Hash": "{4182EE6F-1448-5BF2-FC97-A3E20D63D5B9}",
+    "Hash": "{F66C6547-D38E-7A2F-C510-0942FB05B25A}",
     "ObjectPath": "Sci_fi_Container_Slide",
     "ShortName": "Sci_fi_Container_Slide",
     "Path": "Event/Sci_fi_Container_Slide.bnk",
@@ -94,7 +94,7 @@
       "Name": "Sci_fi_Container_Slide",
       "ObjectPath": "\\Events\\PhysicsObjects\\Sci-fi Container\\Sci_fi_Container_Slide",
       "GUID": "{8C97A3B4-D029-460E-8317-8E7C504B068E}",
-      "MaxAttenuation": "2500",
+      "MaxAttenuation": "1500",
       "DurationType": "OneShot",
       "DurationMin": "0.16694981",
       "DurationMax": "0.2911523",
@@ -142,6 +142,6 @@
     ]
    }
   ],
-  "FileHash": "{34A69B81-A9D9-9E9F-6A00-FBF1D445B8D8}"
+  "FileHash": "{6862D3CC-B965-B746-39BD-C2FEC6E8ACD0}"
  }
 }

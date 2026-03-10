@@ -130,269 +130,6 @@
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
-								<Sound Name="WoodenBox_Impact" ID="{82AF5FBC-B3BE-4195-9420-F0C766A218C6}" ShortID="888004007">
-									<PropertyList>
-										<Property Name="3DSpatialization" Type="int16" Value="2"/>
-										<Property Name="GameAuxSendVolume" Type="Real64">
-											<ValueList>
-												<Value>-9</Value>
-											</ValueList>
-										</Property>
-										<Property Name="OutputBusVolume" Type="Real64">
-											<ValueList>
-												<Value>-6</Value>
-											</ValueList>
-										</Property>
-										<Property Name="Pitch" Type="int32">
-											<ValueList>
-												<Value>300</Value>
-											</ValueList>
-											<ModifierList>
-												<ModifierInfo>
-													<Modifier Name="" ID="{B04E1350-717D-4B99-9E98-BAE66EDC25C4}">
-														<PropertyList>
-															<Property Name="Enabled" Type="bool" Value="True"/>
-															<Property Name="Max" Type="Real64" Value="400"/>
-															<Property Name="Min" Type="Real64" Value="-100"/>
-														</PropertyList>
-													</Modifier>
-												</ModifierInfo>
-											</ModifierList>
-										</Property>
-										<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="Attenuation">
-											<ObjectRef Name="ATT_PhysicsImpact" ID="{222699AC-63CD-496A-9143-BC11BEFE995B}" WorkUnitID="{D0B4EF31-0BAB-4AFC-AC2E-036AB39C5AAF}"/>
-										</Reference>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="Physics" ID="{A9E67370-553A-4A2E-A554-F721CB7E8C3F}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<SourcePlugin Name="Impacter" ID="{6E3B5F47-A4EB-49CE-9115-13A07AF710C1}" ShortID="12674208" PluginName="Impacter" CompanyID="0" PluginID="184">
-											<PropertyList>
-												<Property Name="FMDepth" Type="Real32" Value="0.2"/>
-												<Property Name="FMDepthRandom" Type="Real32" Value="0.2"/>
-												<Property Name="ImpactPositionRandom" Type="Real32" Value="0.5"/>
-												<Property Name="NumFiles" Type="int32" Value="6"/>
-											</PropertyList>
-											<ChildrenList>
-												<PluginMediaSource Name="IMP_WoodenBox-006" ID="{32AA9C8B-D488-4E8C-AFD1-6313AB3C2B5E}">
-													<ParentPluginID>12058626</ParentPluginID>
-													<PropertyList>
-														<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-006.wav"/>
-													</PropertyList>
-													<MediaIDList>
-														<MediaID ID="913535671"/>
-													</MediaIDList>
-												</PluginMediaSource>
-												<PluginMediaSource Name="IMP_WoodenBox-005" ID="{1708DE54-2B5F-4173-8BE6-3A53A32C4E10}">
-													<ParentPluginID>12058626</ParentPluginID>
-													<PropertyList>
-														<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-005.wav"/>
-													</PropertyList>
-													<MediaIDList>
-														<MediaID ID="986466163"/>
-													</MediaIDList>
-												</PluginMediaSource>
-												<PluginMediaSource Name="IMP_WoodenBox-004" ID="{C37FF261-165D-428C-8E60-60EEF3D8BF8B}">
-													<ParentPluginID>12058626</ParentPluginID>
-													<PropertyList>
-														<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-004.wav"/>
-													</PropertyList>
-													<MediaIDList>
-														<MediaID ID="463898344"/>
-													</MediaIDList>
-												</PluginMediaSource>
-												<PluginMediaSource Name="IMP_WoodenBox-003" ID="{7E940A8D-16C8-41E2-A35D-5DEA3961FD56}">
-													<ParentPluginID>12058626</ParentPluginID>
-													<PropertyList>
-														<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-003.wav"/>
-													</PropertyList>
-													<MediaIDList>
-														<MediaID ID="286476534"/>
-													</MediaIDList>
-												</PluginMediaSource>
-												<PluginMediaSource Name="IMP_WoodenBox-002" ID="{43210EA7-A029-42C6-B7DF-FC7C13CD5480}">
-													<ParentPluginID>12058626</ParentPluginID>
-													<PropertyList>
-														<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-002.wav"/>
-													</PropertyList>
-													<MediaIDList>
-														<MediaID ID="394891647"/>
-													</MediaIDList>
-												</PluginMediaSource>
-												<PluginMediaSource Name="IMP_WoodenBox-001" ID="{C1A9409C-2286-4509-A109-0DE11D11836A}">
-													<ParentPluginID>12058626</ParentPluginID>
-													<PropertyList>
-														<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-001.wav"/>
-													</PropertyList>
-													<MediaIDList>
-														<MediaID ID="34113978"/>
-													</MediaIDList>
-												</PluginMediaSource>
-											</ChildrenList>
-											<ObjectLists>
-												<ObjectList Name="RTPC">
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{1BA644C6-273B-4B03-8366-2F2F0FE67D0B}" ShortID="149672193">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Velocity"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{AE7663E6-01F4-4C2B-9F03-AC12808CD467}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="1"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>0.05</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>100</XPos>
-																						<YPos>1</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{DACAED1A-34ED-4898-BDD2-F3AC411E78CA}" ShortID="901771142">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Mass"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="S_Mass" ID="{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{580E84F0-827B-4790-94B2-382B898BA3F1}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="1"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0.1</XPos>
-																						<YPos>0.01</YPos>
-																						<Flags>5</Flags>
-																						<SegmentShape>Exp2</SegmentShape>
-																					</Point>
-																					<Point>
-																						<XPos>500</XPos>
-																						<YPos>2</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-												</ObjectList>
-											</ObjectLists>
-											<Language>SFX</Language>
-										</SourcePlugin>
-									</ChildrenList>
-									<ObjectLists>
-										<ObjectList Name="RTPC">
-											<Reference>
-												<Local>
-													<RTPC Name="" ID="{4FFEF1E5-8C07-4972-880A-0A28C20AD9C1}" ShortID="485857576">
-														<PropertyList>
-															<Property Name="PropertyName" Type="string" Value="Pitch"/>
-														</PropertyList>
-														<ReferenceList>
-															<Reference Name="ControlInput">
-																<ObjectRef Name="S_Mass" ID="{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
-															</Reference>
-															<Reference Name="Curve">
-																<Custom>
-																	<Curve Name="" ID="{F07FA99C-7E42-4140-8F0F-24540C31B666}">
-																		<PropertyList>
-																			<Property Name="Flags" Type="int32" Value="65537"/>
-																		</PropertyList>
-																		<PointList>
-																			<Point>
-																				<XPos>0.1</XPos>
-																				<YPos>100</YPos>
-																				<Flags>5</Flags>
-																			</Point>
-																			<Point>
-																				<XPos>500</XPos>
-																				<YPos>-100</YPos>
-																				<Flags>37</Flags>
-																			</Point>
-																		</PointList>
-																	</Curve>
-																</Custom>
-															</Reference>
-														</ReferenceList>
-													</RTPC>
-												</Local>
-											</Reference>
-											<Reference>
-												<Local>
-													<RTPC Name="" ID="{0317A1E5-ABDD-4E3F-9D30-D882E6B18FDA}" ShortID="812271823">
-														<PropertyList>
-															<Property Name="PropertyName" Type="string" Value="Highpass"/>
-														</PropertyList>
-														<ReferenceList>
-															<Reference Name="ControlInput">
-																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
-															</Reference>
-															<Reference Name="Curve">
-																<Custom>
-																	<Curve Name="" ID="{25CBA113-4DC0-4B10-9AC8-2C6FCEB8E208}">
-																		<PropertyList>
-																			<Property Name="Flags" Type="int32" Value="65537"/>
-																		</PropertyList>
-																		<PointList>
-																			<Point>
-																				<XPos>0</XPos>
-																				<YPos>15</YPos>
-																				<Flags>5</Flags>
-																				<SegmentShape>Log1</SegmentShape>
-																			</Point>
-																			<Point>
-																				<XPos>100</XPos>
-																				<YPos>0</YPos>
-																				<Flags>37</Flags>
-																			</Point>
-																		</PointList>
-																	</Curve>
-																</Custom>
-															</Reference>
-														</ReferenceList>
-													</RTPC>
-												</Local>
-											</Reference>
-										</ObjectList>
-									</ObjectLists>
-									<ActiveSourceList>
-										<ActiveSource Name="Impacter" ID="{6E3B5F47-A4EB-49CE-9115-13A07AF710C1}" Platform="Linked"/>
-									</ActiveSourceList>
-								</Sound>
 								<Sound Name="Sci_fi_Container_Impact" ID="{501F7C3E-7AE9-4A41-912C-1498BAB77C5B}" ShortID="578669532">
 									<ReferenceList>
 										<Reference Name="Conversion">
@@ -676,14 +413,17 @@
 													<Modifier Name="" ID="{EC6D5D5F-B551-4E54-AA2E-9335908F27D7}">
 														<PropertyList>
 															<Property Name="Enabled" Type="bool" Value="True"/>
-															<Property Name="Max" Type="Real64" Value="100"/>
-															<Property Name="Min" Type="Real64" Value="-100"/>
+															<Property Name="Max" Type="Real64" Value="200"/>
+															<Property Name="Min" Type="Real64" Value="-125"/>
 														</PropertyList>
 													</Modifier>
 												</ModifierInfo>
 											</ModifierList>
 										</Property>
 										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-6</Value>
+											</ValueList>
 											<ModifierList>
 												<ModifierInfo>
 													<Modifier Name="" ID="{1A56F84F-A0EC-4882-917E-84940E8A7594}">
@@ -1385,8 +1125,9 @@
 																		<PointList>
 																			<Point>
 																				<XPos>0</XPos>
-																				<YPos>10</YPos>
+																				<YPos>15</YPos>
 																				<Flags>5</Flags>
+																				<SegmentShape>Exp2</SegmentShape>
 																			</Point>
 																			<Point>
 																				<XPos>100</XPos>
@@ -1420,7 +1161,7 @@
 																		<PointList>
 																			<Point>
 																				<XPos>0</XPos>
-																				<YPos>600</YPos>
+																				<YPos>1200</YPos>
 																				<Flags>5</Flags>
 																			</Point>
 																			<Point>
@@ -1455,9 +1196,8 @@
 																		<PointList>
 																			<Point>
 																				<XPos>0</XPos>
-																				<YPos>-200</YPos>
+																				<YPos>-9</YPos>
 																				<Flags>5</Flags>
-																				<SegmentShape>Log3</SegmentShape>
 																			</Point>
 																			<Point>
 																				<XPos>100</XPos>
@@ -1740,6 +1480,645 @@
 									</ObjectLists>
 									<ActiveSourceList>
 										<ActiveSource Name="Impacter" ID="{B0A11050-7848-4592-B9D8-0F0A265A4B64}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<RandomSequenceContainer Name="WoodenBox_Impact" ID="{FE38530D-2890-4D2A-9AF4-3DA97F37F117}" ShortID="177417582">
+									<PropertyList>
+										<Property Name="Pitch" Type="int32">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{F653CD73-68E3-406C-BCCD-2F04D0B25EB3}">
+														<PropertyList>
+															<Property Name="Enabled" Type="bool" Value="True"/>
+															<Property Name="Max" Type="Real64" Value="250"/>
+															<Property Name="Min" Type="Real64" Value="-150"/>
+														</PropertyList>
+													</Modifier>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="3"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="IMP_WoodenBox-001" ID="{4E8F7AD2-1BB0-469B-9B12-94F375C19026}" ShortID="217007741">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="IMP_WoodenBox-001" ID="{92525F73-EF0C-43C4-A8EC-F9D91D5C4197}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.505749389639065"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.0243734645609188"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.728157244220706"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>IMP_WoodenBox-001.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="785128766"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="IMP_WoodenBox-001" ID="{92525F73-EF0C-43C4-A8EC-F9D91D5C4197}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="IMP_WoodenBox-002" ID="{2A780089-8E24-406C-A1FC-055F5ED887CE}" ShortID="829044667">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="IMP_WoodenBox-002" ID="{3E42288F-B72D-4468-9386-B36201B51533}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.410122870227336"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.838648637307657"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>IMP_WoodenBox-002.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="339053875"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="IMP_WoodenBox-002" ID="{3E42288F-B72D-4468-9386-B36201B51533}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="IMP_WoodenBox-003" ID="{77BEFCE8-AE56-42C7-A27C-0413F0D9D483}" ShortID="327993095">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="IMP_WoodenBox-003" ID="{58E2B096-9324-4AAE-BF70-43D303FE03F4}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.505454540252686"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.136609335203429"/>
+														<Property Name="TrimEnd" Type="Real64" Value="1.06213759551177"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>IMP_WoodenBox-003.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="816903639"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="IMP_WoodenBox-003" ID="{58E2B096-9324-4AAE-BF70-43D303FE03F4}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="IMP_WoodenBox-004" ID="{D4069AD9-EFAA-4029-A13E-B273A5C1B0EF}" ShortID="219064736">
+											<PropertyList>
+												<Property Name="Pitch" Type="int32">
+													<ValueList>
+														<Value>300</Value>
+													</ValueList>
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{B3991F0F-9368-4692-BE9C-DFA577065C99}"/>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="IMP_WoodenBox-004" ID="{15377C9A-CC83-4048-A22D-F2257DCA3EBA}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.223226192835215"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.16617949911066"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.791212847277676"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>IMP_WoodenBox-004.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="553717254"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="IMP_WoodenBox-004" ID="{15377C9A-CC83-4048-A22D-F2257DCA3EBA}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="IMP_WoodenBox-005" ID="{9FBD7C19-A7D6-4183-A084-AE5C674883A5}" ShortID="337253845">
+											<PropertyList>
+												<Property Name="Pitch" Type="int32">
+													<ValueList>
+														<Value>320</Value>
+													</ValueList>
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{3555EFB3-FF5D-4A68-9715-56F15DBCFB02}"/>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="IMP_WoodenBox-005" ID="{DE14A825-A70A-4144-8291-2BA7394013AA}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.14277373602115"/>
+														<Property Name="LoopBegin" Type="Real64" Value="0"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>IMP_WoodenBox-005.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="442300775"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="IMP_WoodenBox-005" ID="{DE14A825-A70A-4144-8291-2BA7394013AA}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="IMP_WoodenBox-006" ID="{15D428A7-5CE1-4FD7-A2CC-F5743C008A33}" ShortID="757980463">
+											<PropertyList>
+												<Property Name="Pitch" Type="int32">
+													<ValueList>
+														<Value>230</Value>
+													</ValueList>
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{C9576AC6-35A7-45F9-842F-627A55F07536}"/>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="IMP_WoodenBox-006" ID="{99538C31-D0F5-4B89-9436-ED1CAFE9D181}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0734720572792634"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.319443727301145"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.127777490920458"/>
+														<Property Name="TrimEnd" Type="Real64" Value="0.891248083476303"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>IMP_WoodenBox-006.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="941555057"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="IMP_WoodenBox-006" ID="{99538C31-D0F5-4B89-9436-ED1CAFE9D181}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{C0FEDFB6-93C2-400E-961B-6354FA1DD8BC}" ShortID="906611375">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Highpass"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{C8D599D2-1BF5-40D0-8685-18FBE7213FD8}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="65537"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>10</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>100</XPos>
+																				<YPos>0</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{C9A5690C-44A0-4A0F-8EF2-DA9CACAF5A1A}" ShortID="146217764">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Pitch"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="S_Mass" ID="{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{259DD041-4ED7-4A55-AEDF-E9B575826E43}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="65537"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0.1</XPos>
+																				<YPos>100</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>500</XPos>
+																				<YPos>-100</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{165E50F9-CB28-4341-AF84-0F860E2F876B}" ShortID="412328747">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Pitch"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{EEEE2827-FD03-4BDE-91BB-BE192C26E848}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="65537"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>600</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>100</XPos>
+																				<YPos>-100</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{28A1F976-5D7A-4CE6-91B9-3A2C5FA50249}" ShortID="515591955">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{DA19B017-E452-424F-9657-D79CB1517BEF}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-3</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>100</XPos>
+																				<YPos>0</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+								</RandomSequenceContainer>
+								<Sound Name="WoodenBox_Impacter" ID="{82AF5FBC-B3BE-4195-9420-F0C766A218C6}" ShortID="888004007">
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="BelowThresholdBehavior" Type="int16" Value="2"/>
+										<Property Name="GameAuxSendVolume" Type="Real64">
+											<ValueList>
+												<Value>-9</Value>
+											</ValueList>
+										</Property>
+										<Property Name="Pitch" Type="int32">
+											<ValueList>
+												<Value>300</Value>
+											</ValueList>
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{B04E1350-717D-4B99-9E98-BAE66EDC25C4}">
+														<PropertyList>
+															<Property Name="Enabled" Type="bool" Value="True"/>
+															<Property Name="Max" Type="Real64" Value="400"/>
+															<Property Name="Min" Type="Real64" Value="-100"/>
+														</PropertyList>
+													</Modifier>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+										<Property Name="Priority" Type="int16">
+											<ValueList>
+												<Value>100</Value>
+											</ValueList>
+										</Property>
+										<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Attenuation">
+											<ObjectRef Name="ATT_PhysicsImpact" ID="{222699AC-63CD-496A-9143-BC11BEFE995B}" WorkUnitID="{D0B4EF31-0BAB-4AFC-AC2E-036AB39C5AAF}"/>
+										</Reference>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Impact" ID="{37974C39-7D0A-4CB1-A25B-75C396EBB209}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<SourcePlugin Name="Impacter" ID="{6E3B5F47-A4EB-49CE-9115-13A07AF710C1}" ShortID="12674208" PluginName="Impacter" CompanyID="0" PluginID="184">
+											<PropertyList>
+												<Property Name="FMDepth" Type="Real32" Value="0.2"/>
+												<Property Name="FMDepthRandom" Type="Real32" Value="0.2"/>
+												<Property Name="ImpactPositionRandom" Type="Real32" Value="0.5"/>
+												<Property Name="NumFiles" Type="int32" Value="6"/>
+											</PropertyList>
+											<ChildrenList>
+												<PluginMediaSource Name="IMP_WoodenBox-006" ID="{32AA9C8B-D488-4E8C-AFD1-6313AB3C2B5E}">
+													<ParentPluginID>12058626</ParentPluginID>
+													<PropertyList>
+														<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-006.wav"/>
+													</PropertyList>
+													<MediaIDList>
+														<MediaID ID="913535671"/>
+													</MediaIDList>
+												</PluginMediaSource>
+												<PluginMediaSource Name="IMP_WoodenBox-005" ID="{1708DE54-2B5F-4173-8BE6-3A53A32C4E10}">
+													<ParentPluginID>12058626</ParentPluginID>
+													<PropertyList>
+														<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-005.wav"/>
+													</PropertyList>
+													<MediaIDList>
+														<MediaID ID="986466163"/>
+													</MediaIDList>
+												</PluginMediaSource>
+												<PluginMediaSource Name="IMP_WoodenBox-004" ID="{C37FF261-165D-428C-8E60-60EEF3D8BF8B}">
+													<ParentPluginID>12058626</ParentPluginID>
+													<PropertyList>
+														<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-004.wav"/>
+													</PropertyList>
+													<MediaIDList>
+														<MediaID ID="463898344"/>
+													</MediaIDList>
+												</PluginMediaSource>
+												<PluginMediaSource Name="IMP_WoodenBox-003" ID="{7E940A8D-16C8-41E2-A35D-5DEA3961FD56}">
+													<ParentPluginID>12058626</ParentPluginID>
+													<PropertyList>
+														<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-003.wav"/>
+													</PropertyList>
+													<MediaIDList>
+														<MediaID ID="286476534"/>
+													</MediaIDList>
+												</PluginMediaSource>
+												<PluginMediaSource Name="IMP_WoodenBox-002" ID="{43210EA7-A029-42C6-B7DF-FC7C13CD5480}">
+													<ParentPluginID>12058626</ParentPluginID>
+													<PropertyList>
+														<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-002.wav"/>
+													</PropertyList>
+													<MediaIDList>
+														<MediaID ID="394891647"/>
+													</MediaIDList>
+												</PluginMediaSource>
+												<PluginMediaSource Name="IMP_WoodenBox-001" ID="{C1A9409C-2286-4509-A109-0DE11D11836A}">
+													<ParentPluginID>12058626</ParentPluginID>
+													<PropertyList>
+														<Property Name="DataFileName" Type="string" Value="IMP_WoodenBox-001.wav"/>
+													</PropertyList>
+													<MediaIDList>
+														<MediaID ID="34113978"/>
+													</MediaIDList>
+												</PluginMediaSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{1BA644C6-273B-4B03-8366-2F2F0FE67D0B}" ShortID="149672193">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Velocity"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{AE7663E6-01F4-4C2B-9F03-AC12808CD467}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="1"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>0.05</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>1</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{DACAED1A-34ED-4898-BDD2-F3AC411E78CA}" ShortID="901771142">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Mass"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="S_Mass" ID="{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{580E84F0-827B-4790-94B2-382B898BA3F1}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="1"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0.1</XPos>
+																						<YPos>0.01</YPos>
+																						<Flags>5</Flags>
+																						<SegmentShape>Exp2</SegmentShape>
+																					</Point>
+																					<Point>
+																						<XPos>500</XPos>
+																						<YPos>2</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<Language>SFX</Language>
+										</SourcePlugin>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{4FFEF1E5-8C07-4972-880A-0A28C20AD9C1}" ShortID="485857576">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Pitch"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="S_Mass" ID="{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{F07FA99C-7E42-4140-8F0F-24540C31B666}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="65537"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0.1</XPos>
+																				<YPos>100</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>500</XPos>
+																				<YPos>-100</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{0317A1E5-ABDD-4E3F-9D30-D882E6B18FDA}" ShortID="812271823">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Highpass"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{25CBA113-4DC0-4B10-9AC8-2C6FCEB8E208}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="65537"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>15</YPos>
+																				<Flags>5</Flags>
+																				<SegmentShape>Log1</SegmentShape>
+																			</Point>
+																			<Point>
+																				<XPos>100</XPos>
+																				<YPos>0</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+									<ActiveSourceList>
+										<ActiveSource Name="Impacter" ID="{6E3B5F47-A4EB-49CE-9115-13A07AF710C1}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
@@ -4739,6 +5118,11 @@
 												<Value>-9</Value>
 											</ValueList>
 										</Property>
+										<Property Name="Highpass" Type="int16">
+											<ValueList>
+												<Value>10</Value>
+											</ValueList>
+										</Property>
 										<Property Name="OutputBusVolume" Type="Real64">
 											<ValueList>
 												<Value>-6</Value>
@@ -4756,11 +5140,6 @@
 										</Property>
 										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="6"/>
 										<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>12</Value>
-											</ValueList>
-										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">

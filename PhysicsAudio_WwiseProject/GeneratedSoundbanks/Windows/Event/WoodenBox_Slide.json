@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{59A3D029-F495-4698-9134-40BE6C6A48EF}",
     "Language": "SFX",
-    "Hash": "{CAC795B8-7444-3A7D-8F26-349517CAE84C}",
+    "Hash": "{43755675-EB3D-2AA9-2B96-455136F0139A}",
     "ObjectPath": "WoodenBox_Slide",
     "ShortName": "WoodenBox_Slide",
     "Path": "Event/WoodenBox_Slide.bnk",
@@ -94,7 +94,7 @@
       "Name": "WoodenBox_Slide",
       "ObjectPath": "\\Events\\PhysicsObjects\\WoodenBox\\WoodenBox_Slide",
       "GUID": "{59A3D029-F495-4698-9134-40BE6C6A48EF}",
-      "MaxAttenuation": "2500",
+      "MaxAttenuation": "1500",
       "DurationType": "OneShot",
       "DurationMin": "0.22000189",
       "DurationMax": "0.49172541",
@@ -148,6 +148,6 @@
     ]
    }
   ],
-  "FileHash": "{22E908EE-85CF-0A1D-078B-E8EC4C8349FD}"
+  "FileHash": "{470D1A41-FDEC-405F-7090-2190E820EFA9}"
  }
 }
