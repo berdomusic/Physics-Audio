@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{F41A4E9A-BD38-45AC-B796-628CCE4F67AE}",
     "Language": "SFX",
-    "Hash": "{A53D5B56-B7C8-B969-79A6-64C4E076A5C3}",
+    "Hash": "{250A9622-43F9-3D59-379F-79A52FAF0E2D}",
     "ObjectPath": "WoodenBoxDebris_Impact",
     "ShortName": "WoodenBoxDebris_Impact",
     "Path": "Event/WoodenBoxDebris_Impact.bnk",
@@ -121,10 +121,22 @@
     ],
     "GameParameters": [
      {
+      "Id": "1205658230",
+      "Name": "S_Roll",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Roll",
+      "GUID": "{878403F9-00A7-4E86-A34C-75B2471275B1}"
+     },
+     {
       "Id": "1217927383",
       "Name": "S_Mass",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
       "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
+     },
+     {
+      "Id": "3874927894",
+      "Name": "S_Slide",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
+      "GUID": "{4CFDFD1B-B48A-4537-B9F0-EFE1F9EC47A6}"
      },
      {
       "Id": "4098934257",
@@ -135,6 +147,6 @@
     ]
    }
   ],
-  "FileHash": "{D92EE602-69AD-B43D-C970-E033562D23C6}"
+  "FileHash": "{BD2B1E6E-0FC7-871D-3CFF-F8FC9C197183}"
  }
 }

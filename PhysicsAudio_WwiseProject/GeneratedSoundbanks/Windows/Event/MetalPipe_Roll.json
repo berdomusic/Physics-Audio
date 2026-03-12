@@ -1,0 +1,91 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "2409010740",
+    "Type": "Event",
+    "GUID": "{795BECE8-E3D9-4EB2-9CD5-C19A9D3CFC62}",
+    "Language": "SFX",
+    "Hash": "{101AF10C-FB22-83FA-9C2D-DAB9F346C762}",
+    "ObjectPath": "MetalPipe_Roll",
+    "ShortName": "MetalPipe_Roll",
+    "Path": "Event/MetalPipe_Roll.bnk",
+    "Media": [
+     {
+      "Id": "150164972",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "ROL_MetalPipe-001.wav",
+      "Path": "Media/150164972.wem",
+      "CachePath": "33/{33C369D5-F123-780B-CF92-01E143D65A29}.wem"
+     },
+     {
+      "Id": "410886635",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "ROL_MetalPipe-002.wav",
+      "Path": "Media/410886635.wem",
+      "CachePath": "CF/{CF21E45D-3732-A238-79B8-091B799DE539}.wem"
+     },
+     {
+      "Id": "767605512",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "ROL_MetalPipe-003.wav",
+      "Path": "Media/767605512.wem",
+      "CachePath": "B4/{B4C65ECE-0BDA-3DA4-C4D9-9946DAD16725}.wem"
+     },
+     {
+      "Id": "859314237",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "ROL_MetalPipe-004.wav",
+      "Path": "Media/859314237.wem",
+      "CachePath": "98/{98BC50A4-DF74-C667-69F6-5880BBFF533F}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2409010740",
+      "Name": "MetalPipe_Roll",
+      "ObjectPath": "\\Events\\PhysicsObjects\\MetalPipe\\MetalPipe_Roll",
+      "GUID": "{795BECE8-E3D9-4EB2-9CD5-C19A9D3CFC62}",
+      "MaxAttenuation": "1500",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "150164972"
+       },
+       {
+        "Id": "410886635"
+       },
+       {
+        "Id": "767605512"
+       },
+       {
+        "Id": "859314237"
+       }
+      ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1205658230",
+      "Name": "S_Roll",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Roll",
+      "GUID": "{878403F9-00A7-4E86-A34C-75B2471275B1}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{E731FE0C-A6EF-6D68-2B8C-D1545EFC5E18}"
+ }
+}

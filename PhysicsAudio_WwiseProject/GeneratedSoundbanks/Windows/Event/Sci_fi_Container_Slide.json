@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{8C97A3B4-D029-460E-8317-8E7C504B068E}",
     "Language": "SFX",
-    "Hash": "{F66C6547-D38E-7A2F-C510-0942FB05B25A}",
+    "Hash": "{6887D852-FD99-00B1-987E-EC300F8F55B3}",
     "ObjectPath": "Sci_fi_Container_Slide",
     "ShortName": "Sci_fi_Container_Slide",
     "Path": "Event/Sci_fi_Container_Slide.bnk",
@@ -95,9 +95,7 @@
       "ObjectPath": "\\Events\\PhysicsObjects\\Sci-fi Container\\Sci_fi_Container_Slide",
       "GUID": "{8C97A3B4-D029-460E-8317-8E7C504B068E}",
       "MaxAttenuation": "1500",
-      "DurationType": "OneShot",
-      "DurationMin": "0.16694981",
-      "DurationMax": "0.2911523",
+      "DurationType": "Infinite",
       "MediaRefs": [
        {
         "Id": "6416374"
@@ -128,12 +126,6 @@
     ],
     "GameParameters": [
      {
-      "Id": "1217927383",
-      "Name": "S_Mass",
-      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
-      "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
-     },
-     {
       "Id": "3874927894",
       "Name": "S_Slide",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
@@ -142,6 +134,6 @@
     ]
    }
   ],
-  "FileHash": "{6862D3CC-B965-B746-39BD-C2FEC6E8ACD0}"
+  "FileHash": "{F1D63223-F0A8-D0AB-F88F-6A01C1EBC6FC}"
  }
 }

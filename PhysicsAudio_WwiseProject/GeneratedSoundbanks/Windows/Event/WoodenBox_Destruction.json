@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{7CB8D2A7-D309-4B5F-B20D-F961A5104B2C}",
     "Language": "SFX",
-    "Hash": "{9E7EB735-DD98-19CB-54AC-A3B19E65A1D4}",
+    "Hash": "{EF2C0C28-DA80-546C-AA2A-CDC0228AAEC8}",
     "ObjectPath": "WoodenBox_Destruction",
     "ShortName": "WoodenBox_Destruction",
     "Path": "Event/WoodenBox_Destruction.bnk",
@@ -77,17 +77,9 @@
        }
       ]
      }
-    ],
-    "GameParameters": [
-     {
-      "Id": "1217927383",
-      "Name": "S_Mass",
-      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
-      "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
-     }
     ]
    }
   ],
-  "FileHash": "{4CD7268E-8FBD-03E8-3765-B85036105106}"
+  "FileHash": "{E8462FB8-3055-E4E5-7F24-03CCFD4828C2}"
  }
 }

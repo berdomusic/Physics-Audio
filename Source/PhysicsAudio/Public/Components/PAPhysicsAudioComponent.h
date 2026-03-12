@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "AkComponent.h"
 #include "AkAudioEvent.h"
-#include "System/PhysicsAudioSettings.h"
 #include "System/PhysicsAudioStructs.h"
 #include "PAPhysicsAudioComponent.generated.h"
 
@@ -26,7 +25,7 @@ public:
 	                                     const FPAPhysicsActorAudioProperties& InAudioProperties);
 	void OnAttachedToNonSimulatingComponent(UPrimitiveComponent* InComponent,
 	                                        const FPAPhysicsActorAudioProperties& InAudioProperties);
-	void OnDetachedFromPhysicsComponent();
+	void DeactivatePhysicsAudioComponent();
 	void OnParentDestroyed();
 	UFUNCTION()
 	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
@@ -47,21 +46,25 @@ protected:
 	float ObjectMass;
 	float ObjectMassOverride;
 	
-	// Detection thresholds (mass-normalized)
-	float ImpactThreshold;
+	// Detection thresholds
+	float ImpactVelocityThreshold;
 	float RollThreshold;
 	
 	// State tracking
 	bool bIsSliding;
 	bool bIsRolling;
-	float TimeSinceLastRollDetection;
+	bool bSlideAudible;
+	bool bRollAudible;
+	bool bSlideLoopPosted;
+	bool bRollLoopPosted;
+	float TimeSinceLastRollDetection;	
+	void StopContinuousSound(TArray<EPAEventType> InEventTypes);
 	
 	// Velocity tracking
 	float PreviousVelocityMagnitude;
 	float CurrentVelocityMagnitude;
 	
 	// Rolling specific
-	float AngularSpeed;
 	float CurrentAngularSpeed;
 	float PreviousAngularSpeed;
 	
@@ -90,8 +93,6 @@ protected:
 	// Audibility
 	float DistanceToClosestListenerSquared;
 	bool IsAkEventValidAndAudible(const UAkAudioEvent* InEvent) const;
-	bool bSlideAudible;
-	bool bRollAudible;
 	
 	// Component references
 	UPROPERTY()
@@ -107,10 +108,16 @@ protected:
 	float RollCooldownThreshold = .1f;
 	void SetCooldownVariables();
 	
+
 	// Helper functions
 	void UpdatePhysicsState(float DeltaTime);
 	bool bPhysicsStateUpdated;
 	void UpdateRTPCValues();
+	void HandleStoppingLoops();
+	void HandlePlayingContinuousSounds();
+	void HandlePlayingSlide();
+	void HandlePlayingRoll();	
+	
 	static float NormalizeByMass(float InValue, float InMass, float InExponent = .5f);
 	bool ShouldPlayImpact(float InImpulseMagnitude) const;
 	bool bGrounded;
@@ -118,6 +125,7 @@ protected:
 	
 	virtual void Activate(bool bReset = false) override;
 	virtual void Deactivate() override;
+	
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 };

@@ -10,7 +10,7 @@
 								<Action Name="" ID="{80A5DD52-94E0-43AC-8732-C79F63D128B4}" ShortID="648901368">
 									<ReferenceList>
 										<Reference Name="Target">
-											<ObjectRef Name="WoodenBox_Impact" ID="{FE38530D-2890-4D2A-9AF4-3DA97F37F117}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+											<ObjectRef Name="WoodenBox_Impact" ID="{C6D6E920-ECB8-4218-A7B9-73BBAB4EDCC4}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -158,6 +158,73 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Folder Name="MetalPipe" ID="{3848D8F8-E0B2-45BF-AAFF-65B9A3A1536C}" ShortID="1062893963">
+					<ChildrenList>
+						<Event Name="MetalPipe_Roll" ID="{795BECE8-E3D9-4EB2-9CD5-C19A9D3CFC62}">
+							<ChildrenList>
+								<Action Name="" ID="{AA80D003-D80F-4910-8D9C-653065E5EBC4}" ShortID="461756905">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MetalPipe_Roll" ID="{E296152E-8AB5-4DAA-A5AA-A6997473FF23}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="MetalPipe_Slide" ID="{1641CCBD-16DC-4FD1-8494-EC7E5F79C5C8}">
+							<ChildrenList>
+								<Action Name="" ID="{11021EDA-3C06-4E82-BD7D-C1A6094E468E}" ShortID="104335535">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MetalPipe_Slide" ID="{3EDD84C6-97FB-4017-9D56-4255941A51C8}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="MetalPipe_Impact" ID="{AAADBCEA-6AF8-49AA-AD60-4F6106E3AB4D}">
+							<ChildrenList>
+								<Action Name="" ID="{70351892-83A6-4017-8EC2-BCB55B2CA85B}" ShortID="976673089">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MetalPipe_Impact" ID="{C9A56F7F-3365-4BE6-B358-0A48866D0207}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Event Name="Stop_Roll" ID="{E0A02FA0-4BC1-480B-9C6A-4558BE261162}">
+					<ChildrenList>
+						<Action Name="" ID="{7393FD29-28C7-4EB7-89EC-0B95DFE55EEC}" ShortID="439096330">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+								<Property Name="FadeTime" Type="Real64" Value="0.2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Roll" ID="{050584BF-DB28-466D-AEAE-E7471B5E30C0}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_Slide" ID="{F31C2CA5-C810-479B-B7B3-BCC601B59F79}">
+					<ChildrenList>
+						<Action Name="" ID="{602E6DEC-31C7-406E-8E75-91DC68CEFADF}" ShortID="86641266">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+								<Property Name="FadeTime" Type="Real64" Value="0.2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Slide" ID="{D322BDEF-AFAB-4705-8719-6440FA3D55F6}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

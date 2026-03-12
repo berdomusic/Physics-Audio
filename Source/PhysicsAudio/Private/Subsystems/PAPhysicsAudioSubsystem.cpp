@@ -46,7 +46,8 @@ void UPAPhysicsAudioSubsystem::DisablePhysicsAudio()
     for (const FPAActivePhysicsAudioObject& ActiveObject : ActivePhysicsAudioObjects)
         if (ActiveObject.AudioComponent.IsValid())
         {
-            ActiveObject.AudioComponent.Get()->OnDetachedFromPhysicsComponent();
+            ActiveObject.AudioComponent.Get()->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+            ActiveObject.AudioComponent.Get()->DeactivatePhysicsAudioComponent();
             ActiveObject.AudioComponent.Get()->DestroyComponent();
         }    
     ActivePhysicsAudioObjects.Empty();
@@ -116,8 +117,14 @@ void UPAPhysicsAudioSubsystem::ReturnPhysicsAudioObjectToPool(UPrimitiveComponen
     FPAActivePhysicsAudioObject audioObject = GetActiveAudioObject(bSuccess, InComponent, InAudioComponent);
     if (bSuccess)
     {
-        if (bWasDestroyed)
-            audioObject.AudioComponent->OnParentDestroyed();
+        UPAPhysicsAudioComponent* audioComp = audioObject.AudioComponent.Get();
+        if (IsValid(audioComp))
+        {
+            if (bWasDestroyed)
+                audioComp->OnParentDestroyed();        
+            audioComp->DeactivatePhysicsAudioComponent();
+            audioComp->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);    
+        } 
         AddAudioObjectToReturnQueue(audioObject);
     }        
 }
@@ -150,7 +157,6 @@ void UPAPhysicsAudioSubsystem::ProcessQueueItem(const FPAPhysicsAudioQueueInfo& 
         componentToProcess->OnAttachedToSimulatingComponent(QueueItem.TargetComponent.Get(), QueueItem.Handle);
     else
         componentToProcess->OnAttachedToNonSimulatingComponent(QueueItem.TargetComponent.Get(), QueueItem.Handle);
-   
     ActivePhysicsAudioObjects.Emplace(FPAActivePhysicsAudioObject{ QueueItem.TargetComponent, componentToProcess });
 }
 
@@ -162,7 +168,6 @@ void UPAPhysicsAudioSubsystem::ProcessPendingReturn(bool bOneItem)
         PendingReturnPool.RemoveAt(0);
         if (IsValid(object))
         {
-            object->OnDetachedFromPhysicsComponent();
             TryAddComponentToPool(object);
             if (bOneItem)
                 return;

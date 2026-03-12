@@ -10,11 +10,29 @@
     "Type": "Event",
     "GUID": "{57FE86C3-0FBA-418E-8DFD-EA33F13E8B9B}",
     "Language": "SFX",
-    "Hash": "{5124DD92-24E4-F14C-621A-45E7C3ED1F10}",
+    "Hash": "{96B4C2D9-ED81-EBA3-4E21-AEC295A6F0AC}",
     "ObjectPath": "WoodenBox_Impact",
     "ShortName": "WoodenBox_Impact",
     "Path": "Event/WoodenBox_Impact.bnk",
     "Media": [
+     {
+      "Id": "58457214",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-004.wav",
+      "Path": "Media/58457214.wem",
+      "CachePath": "ED/{ED951FAA-7A94-D85B-E716-B8C1A48420E7}.wem"
+     },
+     {
+      "Id": "323973214",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-006.wav",
+      "Path": "Media/323973214.wem",
+      "CachePath": "06/{0689D05B-8532-9288-F057-D56101725D15}.wem"
+     },
      {
       "Id": "339053875",
       "Language": "SFX",
@@ -22,25 +40,43 @@
       "Location": "Loose",
       "ShortName": "IMP_WoodenBox-002.wav",
       "Path": "Media/339053875.wem",
-      "CachePath": "5E/{5E8B0F7D-5A4B-CA39-48EC-063223299222}.wem"
+      "CachePath": "AD/{AD35CDDF-8AEA-7AD8-456E-82E25B5A48EC}.wem"
      },
      {
-      "Id": "442300775",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Loose",
-      "ShortName": "IMP_WoodenBox-005.wav",
-      "Path": "Media/442300775.wem",
-      "CachePath": "29/{29C99334-0608-9800-76A3-77C20BF48AE7}.wem"
-     },
-     {
-      "Id": "553717254",
+      "Id": "479629713",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
       "ShortName": "IMP_WoodenBox-004.wav",
-      "Path": "Media/553717254.wem",
-      "CachePath": "C6/{C68B540F-CEF7-0E25-2B11-CA7D18BAB3E8}.wem"
+      "Path": "Media/479629713.wem",
+      "CachePath": "BA/{BA74B376-A32D-2B46-191A-6E853865A53C}.wem"
+     },
+     {
+      "Id": "562085340",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-002.wav",
+      "Path": "Media/562085340.wem",
+      "CachePath": "9E/{9ECB19D0-8962-4340-B757-5507399C2FB8}.wem"
+     },
+     {
+      "Id": "618977929",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-001.wav",
+      "Path": "Media/618977929.wem",
+      "CachePath": "84/{84830F89-44F4-4E68-AFF4-EAA029ABBD05}.wem"
+     },
+     {
+      "Id": "679168612",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_WoodenBox-003.wav",
+      "Path": "Media/679168612.wem",
+      "CachePath": "F8/{F8BEF14A-77DD-B790-8713-2692FF1915D1}.wem"
      },
      {
       "Id": "785128766",
@@ -49,7 +85,7 @@
       "Location": "Loose",
       "ShortName": "IMP_WoodenBox-001.wav",
       "Path": "Media/785128766.wem",
-      "CachePath": "F9/{F9AA7FEC-4180-CE77-EAC2-F373FDAEF770}.wem"
+      "CachePath": "7C/{7C49EEA7-70FB-B4E1-176E-249E25D2D556}.wem"
      },
      {
       "Id": "816903639",
@@ -58,16 +94,16 @@
       "Location": "Loose",
       "ShortName": "IMP_WoodenBox-003.wav",
       "Path": "Media/816903639.wem",
-      "CachePath": "AF/{AFB5B60F-0DEB-6BD3-1CF2-FB89A4BDCA18}.wem"
+      "CachePath": "86/{8688E542-E629-7866-5CFF-8F9FC75E2C59}.wem"
      },
      {
-      "Id": "941555057",
+      "Id": "877420925",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Loose",
-      "ShortName": "IMP_WoodenBox-006.wav",
-      "Path": "Media/941555057.wem",
-      "CachePath": "E1/{E16602F8-073F-F087-1969-700BF1295091}.wem"
+      "ShortName": "IMP_WoodenBox-005.wav",
+      "Path": "Media/877420925.wem",
+      "CachePath": "0C/{0CC47390-B874-5CA7-8C8E-9F341073D23A}.wem"
      }
     ],
     "Events": [
@@ -78,17 +114,29 @@
       "GUID": "{57FE86C3-0FBA-418E-8DFD-EA33F13E8B9B}",
       "MaxAttenuation": "4000",
       "DurationType": "OneShot",
-      "DurationMin": "0.405284",
-      "DurationMax": "1.1328963",
+      "DurationMin": "0.3373684",
+      "DurationMax": "1.0325774",
       "MediaRefs": [
+       {
+        "Id": "58457214"
+       },
+       {
+        "Id": "323973214"
+       },
        {
         "Id": "339053875"
        },
        {
-        "Id": "442300775"
+        "Id": "479629713"
        },
        {
-        "Id": "553717254"
+        "Id": "562085340"
+       },
+       {
+        "Id": "618977929"
+       },
+       {
+        "Id": "679168612"
        },
        {
         "Id": "785128766"
@@ -97,17 +145,29 @@
         "Id": "816903639"
        },
        {
-        "Id": "941555057"
+        "Id": "877420925"
        }
       ]
      }
     ],
     "GameParameters": [
      {
+      "Id": "1205658230",
+      "Name": "S_Roll",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Roll",
+      "GUID": "{878403F9-00A7-4E86-A34C-75B2471275B1}"
+     },
+     {
       "Id": "1217927383",
       "Name": "S_Mass",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
       "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
+     },
+     {
+      "Id": "3874927894",
+      "Name": "S_Slide",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
+      "GUID": "{4CFDFD1B-B48A-4537-B9F0-EFE1F9EC47A6}"
      },
      {
       "Id": "4098934257",
@@ -118,6 +178,6 @@
     ]
    }
   ],
-  "FileHash": "{EE0A53A9-9521-144B-57B2-D98A8F5C1965}"
+  "FileHash": "{9A7E2284-CCF7-A4DA-E1A6-2C5284ABEF6B}"
  }
 }

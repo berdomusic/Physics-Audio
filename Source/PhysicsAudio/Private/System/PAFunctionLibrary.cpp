@@ -27,11 +27,21 @@ UAkSwitchValue* UPAFunctionLibrary::GetAkSwitchFromSurface(const TEnumAsByte<EPh
 	return nullptr;
 }
 
-UPAPhysicsRTPCs* UPAFunctionLibrary::GetRTPC_Assets()
-{	
-	if (UDataAsset* dataAsset = UPAGameReferencesSubsystem::Get().GetRTPCsDataAsset())
-		if (UPAPhysicsRTPCs* rtpcAssets = Cast<UPAPhysicsRTPCs>(dataAsset))
-			return rtpcAssets;
+UAkAudioEvent* UPAFunctionLibrary::GetStopContinousSoundEvent(const EPAEventType InEventType)
+{
+	if (!(InEventType == EPAEventType::Roll || InEventType == EPAEventType::Slide))
+		return nullptr;
+		if (UDataAsset* dataAsset = UPAGameReferencesSubsystem::Get().GetStopContinousSoundsDataAsset())
+			if (UPAStopContinousSoundEvents* stopContinousEvents = Cast<UPAStopContinousSoundEvents>(dataAsset))
+				switch (InEventType)
+				{
+				case EPAEventType::Roll: 
+					return stopContinousEvents->StopRoll;
+				case EPAEventType::Slide: 
+					return stopContinousEvents->StopSlide;
+				default: 
+					return nullptr;
+				}				
 	checkNoEntry()
 	return nullptr;
 }

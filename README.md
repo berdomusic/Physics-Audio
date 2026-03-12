@@ -41,6 +41,8 @@ Sliding: Linear motion across a surface without rotation.
 
 Apart from that, impacts from projectiles and object destruction are handled separately.
 
+Both rolling and sliding handle either one-shot sounds and infinite loops.
+
 #
 State updates occur both on tick and on component hit, with a flag system preventing double-processing within a single frame.
 States use cooldowns to prevent audio overlap and excessive triggering. These cooldowns either use default values or customized per-event values.

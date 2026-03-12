@@ -6,6 +6,7 @@
 #include "Engine/DeveloperSettings.h"
 #include "PAGameReferencesSettings.generated.h"
 
+class UAkAudioEvent;
 /**
  * 
  */
@@ -35,5 +36,6 @@ public:
 	FPAGameReferenceDataAsset MaterialSwitchesSoft;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, config)
 	FPAGameReferenceDataAsset RTPCs_Soft;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, config)
+	FPAGameReferenceDataAsset StopContinuousSoundsDataAssetSoft;
 };

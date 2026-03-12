@@ -1,0 +1,159 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "2729294339",
+    "Type": "Event",
+    "GUID": "{AAADBCEA-6AF8-49AA-AD60-4F6106E3AB4D}",
+    "Language": "SFX",
+    "Hash": "{18DFF8D1-92FE-9FF5-C5FC-7C3F1806DF50}",
+    "ObjectPath": "MetalPipe_Impact",
+    "ShortName": "MetalPipe_Impact",
+    "Path": "Event/MetalPipe_Impact.bnk",
+    "Media": [
+     {
+      "Id": "9650817",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_MetalPipe-009.wav",
+      "Path": "Media/9650817.wem",
+      "CachePath": "61/{61A80ACF-3AD2-5BCB-1458-D54EC9EF8ADE}.wem"
+     },
+     {
+      "Id": "21315540",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_MetalPipe-007.wav",
+      "Path": "Media/21315540.wem",
+      "CachePath": "8B/{8BE17739-5C78-44F0-6C06-61BF671434AE}.wem"
+     },
+     {
+      "Id": "171202388",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_MetalPipe-004.wav",
+      "Path": "Media/171202388.wem",
+      "CachePath": "67/{6724F5FA-25A5-3F73-5FFA-6D19988F6902}.wem"
+     },
+     {
+      "Id": "320704465",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_MetalPipe-006.wav",
+      "Path": "Media/320704465.wem",
+      "CachePath": "15/{158A547C-8DD3-8EF3-1FC0-81E44B20307C}.wem"
+     },
+     {
+      "Id": "392959484",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_MetalPipe-003.wav",
+      "Path": "Media/392959484.wem",
+      "CachePath": "B2/{B2602754-341B-1979-2B0C-359F3F7F49A9}.wem"
+     },
+     {
+      "Id": "557236240",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_MetalPipe-002.wav",
+      "Path": "Media/557236240.wem",
+      "CachePath": "A5/{A5FF94F7-91FA-221F-1DF9-5708E36EAE5A}.wem"
+     },
+     {
+      "Id": "911053206",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_MetalPipe-008.wav",
+      "Path": "Media/911053206.wem",
+      "CachePath": "82/{829D8F2A-00FF-A5E9-E93D-8D27F245BBBD}.wem"
+     },
+     {
+      "Id": "1045146451",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_MetalPipe-005.wav",
+      "Path": "Media/1045146451.wem",
+      "CachePath": "2E/{2E46954F-6AF1-0BE0-9F4D-1689073DCD8A}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2729294339",
+      "Name": "MetalPipe_Impact",
+      "ObjectPath": "\\Events\\PhysicsObjects\\MetalPipe\\MetalPipe_Impact",
+      "GUID": "{AAADBCEA-6AF8-49AA-AD60-4F6106E3AB4D}",
+      "MaxAttenuation": "4000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.3835802",
+      "DurationMax": "1.4745517",
+      "MediaRefs": [
+       {
+        "Id": "9650817"
+       },
+       {
+        "Id": "21315540"
+       },
+       {
+        "Id": "171202388"
+       },
+       {
+        "Id": "320704465"
+       },
+       {
+        "Id": "392959484"
+       },
+       {
+        "Id": "557236240"
+       },
+       {
+        "Id": "911053206"
+       },
+       {
+        "Id": "1045146451"
+       }
+      ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1205658230",
+      "Name": "S_Roll",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Roll",
+      "GUID": "{878403F9-00A7-4E86-A34C-75B2471275B1}"
+     },
+     {
+      "Id": "1217927383",
+      "Name": "S_Mass",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
+      "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
+     },
+     {
+      "Id": "3874927894",
+      "Name": "S_Slide",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
+      "GUID": "{4CFDFD1B-B48A-4537-B9F0-EFE1F9EC47A6}"
+     },
+     {
+      "Id": "4098934257",
+      "Name": "S_Impact",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Impact",
+      "GUID": "{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{1780163E-D8A2-5A43-421E-EEF897EFB66C}"
+ }
+}

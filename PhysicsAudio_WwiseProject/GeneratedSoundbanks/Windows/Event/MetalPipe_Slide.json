@@ -1,0 +1,91 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "3796836572",
+    "Type": "Event",
+    "GUID": "{1641CCBD-16DC-4FD1-8494-EC7E5F79C5C8}",
+    "Language": "SFX",
+    "Hash": "{35E0650F-4C9D-2500-C771-86923D25595F}",
+    "ObjectPath": "MetalPipe_Slide",
+    "ShortName": "MetalPipe_Slide",
+    "Path": "Event/MetalPipe_Slide.bnk",
+    "Media": [
+     {
+      "Id": "150164972",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "ROL_MetalPipe-001.wav",
+      "Path": "Media/150164972.wem",
+      "CachePath": "33/{33C369D5-F123-780B-CF92-01E143D65A29}.wem"
+     },
+     {
+      "Id": "410886635",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "ROL_MetalPipe-002.wav",
+      "Path": "Media/410886635.wem",
+      "CachePath": "CF/{CF21E45D-3732-A238-79B8-091B799DE539}.wem"
+     },
+     {
+      "Id": "767605512",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "ROL_MetalPipe-003.wav",
+      "Path": "Media/767605512.wem",
+      "CachePath": "B4/{B4C65ECE-0BDA-3DA4-C4D9-9946DAD16725}.wem"
+     },
+     {
+      "Id": "859314237",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "ROL_MetalPipe-004.wav",
+      "Path": "Media/859314237.wem",
+      "CachePath": "98/{98BC50A4-DF74-C667-69F6-5880BBFF533F}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3796836572",
+      "Name": "MetalPipe_Slide",
+      "ObjectPath": "\\Events\\PhysicsObjects\\MetalPipe\\MetalPipe_Slide",
+      "GUID": "{1641CCBD-16DC-4FD1-8494-EC7E5F79C5C8}",
+      "MaxAttenuation": "1500",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "150164972"
+       },
+       {
+        "Id": "410886635"
+       },
+       {
+        "Id": "767605512"
+       },
+       {
+        "Id": "859314237"
+       }
+      ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "3874927894",
+      "Name": "S_Slide",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
+      "GUID": "{4CFDFD1B-B48A-4537-B9F0-EFE1F9EC47A6}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{B8EF6A0C-E64D-3B99-632D-60D476201A93}"
+ }
+}

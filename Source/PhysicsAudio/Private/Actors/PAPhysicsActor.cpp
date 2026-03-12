@@ -119,8 +119,8 @@ void APAPhysicsActor::BeginPlay()
 	Super::BeginPlay();
 	if (!IsValid(GetWorld()))
 		return;
-	// ignore begin play overlaps
-	//GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUObject(this, &APAPhysicsActor::Init));
+	
+	// Ignore begin play overlaps
 	GetWorld()->GetTimerManager().SetTimer(
 		InitTimerHandle,
 		this,
@@ -208,6 +208,7 @@ void APAPhysicsActor::OnDeath(AActor* Dealer, const FHitResult& Hit, const FVect
 		
 		subsystem->TryAddPhysicsAudioToPrimitive(newPhysicsActor->StaticMeshComponent, PhysicsAudioProperties);		
 		newPhysicsActor->StaticMeshComponent->AddRadialImpulse(Hit.Location, 100.f, 1000.f, RIF_Linear, true );
+		newPhysicsActor->SetLifeTime(5.f);
 	}
 	Destroy();
 }
@@ -237,10 +238,15 @@ bool APAPhysicsActor::ShouldDeactivatePhysicsAudio()
 bool APAPhysicsActor::IsPhysicsTriggerActor(const AActor* InActor)
 {
 	if (IsValid(InActor))
+	{
 		if (InActor->IsA(APawn::StaticClass()) 
 			|| InActor->IsA(APhysicsAudioProjectile::StaticClass())
 			)
-		return true;
+			return true;
+		UPrimitiveComponent* primitive = InActor->FindComponentByClass<UPrimitiveComponent>();
+		if (IsValid(primitive))
+			return primitive->GetPhysicsLinearVelocity().SizeSquared() > PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY_SQUARED;
+	}		
 	return false;
 }
 

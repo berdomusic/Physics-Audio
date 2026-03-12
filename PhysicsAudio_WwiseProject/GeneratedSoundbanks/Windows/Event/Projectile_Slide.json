@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{CADE1FFB-6157-4066-B689-6DDC61FD7840}",
     "Language": "SFX",
-    "Hash": "{8EF3E890-25A2-4BDD-DE38-49546F5C49DB}",
+    "Hash": "{9D94C3D4-128D-D385-47E9-63D717307239}",
     "ObjectPath": "Projectile_Slide",
     "ShortName": "Projectile_Slide",
     "Path": "Event/Projectile_Slide.bnk",
@@ -131,9 +131,7 @@
       "ObjectPath": "\\Events\\PhysicsObjects\\Projectile\\Projectile_Slide",
       "GUID": "{CADE1FFB-6157-4066-B689-6DDC61FD7840}",
       "MaxAttenuation": "1500",
-      "DurationType": "OneShot",
-      "DurationMin": "0.3433516",
-      "DurationMax": "0.57193804",
+      "DurationType": "Infinite",
       "MediaRefs": [
        {
         "Id": "60261620"
@@ -190,6 +188,6 @@
     ]
    }
   ],
-  "FileHash": "{CE6F803A-BC42-2B5E-722C-3C3300873CBD}"
+  "FileHash": "{CCFB5740-A19E-12AB-76CF-255433651B58}"
  }
 }

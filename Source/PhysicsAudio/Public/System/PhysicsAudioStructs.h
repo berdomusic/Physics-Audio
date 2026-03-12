@@ -99,6 +99,18 @@ public:
 	UAkRtpc* ProjectileRTPC = nullptr;
 };
 
+UCLASS(BlueprintType)
+class PHYSICSAUDIO_API UPAStopContinousSoundEvents : public UDataAsset
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="ContinousSound")
+	UAkAudioEvent* StopRoll = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="ContinousSound")
+	UAkAudioEvent* StopSlide = nullptr;
+};
+
 UENUM()
 enum class EPAEventType : uint8
 {
@@ -117,10 +129,10 @@ struct FPAPhysicsAudioEvent
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
 	TSoftObjectPtr<UAkAudioEvent> AkEventSoft;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound", meta = (ClampMin = "0"))
 	float CooldownThreshold = .1f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
-	bool bLoadSynchronously;
+	bool bLoadSynchronous;
 };
 
 USTRUCT(BlueprintType)
@@ -128,7 +140,7 @@ struct FPAPhysicsActorAudioProperties : public FTableRowBase
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mass")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mass", meta = (ClampMin = "0"))
 	float ObjectMassOverride = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Impact")
 	FPAPhysicsAudioEvent ImpactSound;

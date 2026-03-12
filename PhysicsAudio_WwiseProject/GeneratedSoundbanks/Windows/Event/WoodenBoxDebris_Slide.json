@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{E63B86A6-BA79-455F-B134-01A36F245234}",
     "Language": "SFX",
-    "Hash": "{D9CEC8B2-5D22-B9BB-BF80-D644C14B3ECC}",
+    "Hash": "{819D4015-CA30-D694-AD64-557B53B4A20F}",
     "ObjectPath": "WoodenBoxDebris_Slide",
     "ShortName": "WoodenBoxDebris_Slide",
     "Path": "Event/WoodenBoxDebris_Slide.bnk",
@@ -95,9 +95,7 @@
       "ObjectPath": "\\Events\\PhysicsObjects\\WoodenBox\\WoodenBoxDebris_Slide",
       "GUID": "{E63B86A6-BA79-455F-B134-01A36F245234}",
       "MaxAttenuation": "1500",
-      "DurationType": "OneShot",
-      "DurationMin": "0.22000189",
-      "DurationMax": "0.49172541",
+      "DurationType": "Infinite",
       "MediaRefs": [
        {
         "Id": "7419519"
@@ -138,16 +136,10 @@
       "Name": "S_Slide",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
       "GUID": "{4CFDFD1B-B48A-4537-B9F0-EFE1F9EC47A6}"
-     },
-     {
-      "Id": "4098934257",
-      "Name": "S_Impact",
-      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Impact",
-      "GUID": "{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}"
      }
     ]
    }
   ],
-  "FileHash": "{900A6CB6-0BB9-B749-9718-C08A6EFBE8C9}"
+  "FileHash": "{B1CF60CE-25E7-D2B1-8ED6-70115833AE65}"
  }
 }

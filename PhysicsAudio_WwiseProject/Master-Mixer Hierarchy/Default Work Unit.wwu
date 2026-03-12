@@ -35,8 +35,7 @@
 								</Bus>
 								<Bus Name="Continous" ID="{7D8557FC-0ADD-4358-BABC-703577A3E7EC}">
 									<PropertyList>
-										<Property Name="MaxDuckVolume" Type="Real64" Value="-6"/>
-										<Property Name="RecoveryTime" Type="Real64" Value="0.2"/>
+										<Property Name="RecoveryTime" Type="Real64" Value="0.1"/>
 									</PropertyList>
 									<DuckingList>
 										<DuckItem>
@@ -52,7 +51,7 @@
 										<DuckItem>
 											<BusRef Name="Projectile" ID="{AA0CA1C1-5DE9-4619-BDF2-9E0B7175224D}"/>
 											<DuckingParam>
-												<Volume>-6</Volume>
+												<Volume>-3</Volume>
 												<FadeInTime>0.300000011920929</FadeInTime>
 												<FadeOutTime>0.100000001490116</FadeOutTime>
 												<FadeCurve>FadeLinear</FadeCurve>
@@ -68,24 +67,29 @@
 								<ObjectList Name="Effects">
 									<Reference>
 										<Local>
-											<EffectSlot Name="" ID="{05DE99F3-4A07-4D8A-AF29-4EC2344AD23D}" ShortID="355054268">
-												<PropertyList>
-													<Property Name="Bypass" Type="bool" Value="True"/>
-												</PropertyList>
-												<ReferenceList>
-													<Reference Name="Effect" PluginName="Wwise Matrix Reverb" CompanyID="0" PluginID="115" PluginType="3">
-														<ObjectRef Name="Large_Bright_Chamber1" ID="{0BFA2291-5716-4759-AC24-F59D29E8F2E4}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
-													</Reference>
-												</ReferenceList>
-											</EffectSlot>
-										</Local>
-									</Reference>
-									<Reference>
-										<Local>
 											<EffectSlot Name="" ID="{2FDD6CBE-9C8F-41F6-A58B-26D50BE72D95}" ShortID="835595944">
 												<ReferenceList>
-													<Reference Name="Effect" PluginName="Wwise RoomVerb" CompanyID="0" PluginID="118" PluginType="3">
-														<ObjectRef Name="Room_Medium_High_Absorbtion" ID="{E22DBBB6-7656-4B93-A28D-C003FD416889}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
+													<Reference Name="Effect">
+														<Custom CreatedFrom="{E22DBBB6-7656-4B93-A28D-C003FD416889}">
+															<Effect Name="Room_Medium_High_Absorbtion (Custom)" ID="{6B2DECAA-6BE4-4BC0-AE6B-10354161FB34}" ShortID="201800092" PluginName="Wwise RoomVerb" CompanyID="0" PluginID="118" PluginType="3">
+																<PropertyList>
+																	<Property Name="Density" Type="Real32" Value="70"/>
+																	<Property Name="Diffusion" Type="Real32" Value="46"/>
+																	<Property Name="ERLevel" Type="Real32" Value="-23"/>
+																	<Property Name="Filter1Freq" Type="Real32" Value="590"/>
+																	<Property Name="Filter2Freq" Type="Real32" Value="10520"/>
+																	<Property Name="Filter2Gain" Type="Real32" Value="-12"/>
+																	<Property Name="Filter3Freq" Type="Real32" Value="8440"/>
+																	<Property Name="Filter3Gain" Type="Real32" Value="-12"/>
+																	<Property Name="HFDamping" Type="Real32" Value="7"/>
+																	<Property Name="Quality" Type="int32" Value="10"/>
+																	<Property Name="ReverbLevel" Type="Real32" Value="-22"/>
+																	<Property Name="RoomShape" Type="Real32" Value="55"/>
+																	<Property Name="RoomSize" Type="Real32" Value="15"/>
+																	<Property Name="StereoWidth" Type="Real32" Value="115"/>
+																</PropertyList>
+															</Effect>
+														</Custom>
 													</Reference>
 												</ReferenceList>
 											</EffectSlot>

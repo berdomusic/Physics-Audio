@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{00ED8E22-CB7B-4FCE-BB62-88BA581F346F}",
     "Language": "SFX",
-    "Hash": "{6DBDE479-57EC-1007-A5C0-06E326E4AC2D}",
+    "Hash": "{C140DEE5-6CE2-8DB3-4E3E-CEA6EFAD3E03}",
     "ObjectPath": "WoodenBoxDebris_Projectile",
     "ShortName": "WoodenBoxDebris_Projectile",
     "Path": "Event/WoodenBoxDebris_Projectile.bnk",
@@ -191,6 +191,6 @@
     ]
    }
   ],
-  "FileHash": "{034C4447-BE80-182A-792D-0E1B898F9153}"
+  "FileHash": "{50AC8A8C-464C-ECD8-7E32-598B8A9E561B}"
  }
 }

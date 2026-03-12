@@ -7,9 +7,23 @@
 void UPAGameReferencesSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	//preload
-	MaterialSwitchDataAsset = GetMaterialSwitchDataAsset();
-	RTPCsDataAsset = GetRTPCsDataAsset();
+	
+	const UPAGameReferencesSettings& settings = UPAGameReferencesSettings::Get();
+
+	if (UPAGameReferencesSettings::Get().MaterialSwitchesSoft.bKeepLoaded)
+		MaterialSwitchDataAsset = UPAGameReferencesSettings::Get().MaterialSwitchesSoft.DataAsset.LoadSynchronous();
+	if (settings.RTPCs_Soft.bKeepLoaded)
+		RTPCsDataAsset = settings.RTPCs_Soft.DataAsset.LoadSynchronous();	
+	if (settings.StopContinuousSoundsDataAssetSoft.bKeepLoaded)
+		StopContinuousSoundsDataAsset = settings.StopContinuousSoundsDataAssetSoft.DataAsset.LoadSynchronous();
+}
+
+void UPAGameReferencesSubsystem::Deinitialize()
+{
+	MaterialSwitchDataAsset = nullptr;
+	RTPCsDataAsset = nullptr;
+	StopContinuousSoundsDataAsset = nullptr;	
+	Super::Deinitialize();
 }
 
 UPAGameReferencesSubsystem& UPAGameReferencesSubsystem::Get()
@@ -35,4 +49,13 @@ UDataAsset* UPAGameReferencesSubsystem::GetRTPCsDataAsset() const
 		RTPCsDataAsset = UPAGameReferencesSettings::Get().RTPCs_Soft.DataAsset.LoadSynchronous();
 	}
 	return RTPCsDataAsset;
+}
+
+UDataAsset* UPAGameReferencesSubsystem::GetStopContinousSoundsDataAsset() const
+{
+	if(!StopContinuousSoundsDataAsset)
+	{
+		StopContinuousSoundsDataAsset = UPAGameReferencesSettings::Get().StopContinuousSoundsDataAssetSoft.DataAsset.LoadSynchronous();
+	}
+	return StopContinuousSoundsDataAsset;
 }

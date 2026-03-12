@@ -1,0 +1,33 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "1116482623",
+    "Type": "Event",
+    "GUID": "{F31C2CA5-C810-479B-B7B3-BCC601B59F79}",
+    "Language": "SFX",
+    "Hash": "{5746A82E-6F69-DC0B-02DD-624689B62AFE}",
+    "ObjectPath": "Stop_Slide",
+    "ShortName": "Stop_Slide",
+    "Path": "Event/Stop_Slide.bnk",
+    "Events": [
+     {
+      "Id": "1116482623",
+      "Name": "Stop_Slide",
+      "ObjectPath": "\\Events\\PhysicsObjects\\Stop_Slide",
+      "GUID": "{F31C2CA5-C810-479B-B7B3-BCC601B59F79}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{062E6C18-FBE0-4BC6-2425-B123E6DBCC26}"
+ }
+}

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{79C432A4-F007-410B-B1F7-0381C4F6A165}",
     "Language": "SFX",
-    "Hash": "{1C5050E1-63C4-193C-E5BA-90707BC57312}",
+    "Hash": "{07021F74-8F25-6C47-854A-D9690E63B22A}",
     "ObjectPath": "Projectile_Roll",
     "ShortName": "Projectile_Roll",
     "Path": "Event/Projectile_Roll.bnk",
@@ -131,9 +131,7 @@
       "ObjectPath": "\\Events\\PhysicsObjects\\Projectile\\Projectile_Roll",
       "GUID": "{79C432A4-F007-410B-B1F7-0381C4F6A165}",
       "MaxAttenuation": "1500",
-      "DurationType": "OneShot",
-      "DurationMin": "0.1716758",
-      "DurationMax": "0.28596902",
+      "DurationType": "Infinite",
       "MediaRefs": [
        {
         "Id": "60261620"
@@ -180,16 +178,10 @@
       "Name": "S_Roll",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Roll",
       "GUID": "{878403F9-00A7-4E86-A34C-75B2471275B1}"
-     },
-     {
-      "Id": "1217927383",
-      "Name": "S_Mass",
-      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
-      "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
      }
     ]
    }
   ],
-  "FileHash": "{07E5A98C-F5AF-CD3F-886F-6149DFD1BDE9}"
+  "FileHash": "{278B4344-B0C8-D0D3-7247-BDB57BF18F25}"
  }
 }

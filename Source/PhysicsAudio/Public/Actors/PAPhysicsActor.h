@@ -72,6 +72,8 @@ protected:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
 	void OnDeath(AActor* Dealer, const FHitResult& Hit, const FVector& Impulse);
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetLifeTime(float InTime);
 
 	bool ShouldActivatePhysicsAudio(const AActor* OtherActor, UPrimitiveComponent* OtherComp) const;
 	bool ShouldDeactivatePhysicsAudio();

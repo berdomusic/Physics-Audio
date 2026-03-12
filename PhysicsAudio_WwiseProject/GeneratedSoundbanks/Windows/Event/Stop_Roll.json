@@ -1,0 +1,33 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "3220749505",
+    "Type": "Event",
+    "GUID": "{E0A02FA0-4BC1-480B-9C6A-4558BE261162}",
+    "Language": "SFX",
+    "Hash": "{5D3D641E-8C04-DE59-C5BF-BADC8F87DE8B}",
+    "ObjectPath": "Stop_Roll",
+    "ShortName": "Stop_Roll",
+    "Path": "Event/Stop_Roll.bnk",
+    "Events": [
+     {
+      "Id": "3220749505",
+      "Name": "Stop_Roll",
+      "ObjectPath": "\\Events\\PhysicsObjects\\Stop_Roll",
+      "GUID": "{E0A02FA0-4BC1-480B-9C6A-4558BE261162}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{66F75DF1-5336-0FC6-18F9-473190FDDFDF}"
+ }
+}

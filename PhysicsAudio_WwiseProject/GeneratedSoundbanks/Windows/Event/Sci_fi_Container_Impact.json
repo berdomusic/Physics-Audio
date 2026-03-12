@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{6A36F9BF-6877-4C36-A128-E8B48104D1D4}",
     "Language": "SFX",
-    "Hash": "{7CED7BF5-2AD0-9409-CCFA-45BEB3E170B3}",
+    "Hash": "{2EF71252-5470-2C05-E558-12C497B58BFA}",
     "ObjectPath": "Sci_fi_Container_Impact",
     "ShortName": "Sci_fi_Container_Impact",
     "Path": "Event/Sci_fi_Container_Impact.bnk",
@@ -145,10 +145,22 @@
     ],
     "GameParameters": [
      {
+      "Id": "1205658230",
+      "Name": "S_Roll",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Roll",
+      "GUID": "{878403F9-00A7-4E86-A34C-75B2471275B1}"
+     },
+     {
       "Id": "1217927383",
       "Name": "S_Mass",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
       "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
+     },
+     {
+      "Id": "3874927894",
+      "Name": "S_Slide",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
+      "GUID": "{4CFDFD1B-B48A-4537-B9F0-EFE1F9EC47A6}"
      },
      {
       "Id": "4098934257",
@@ -159,6 +171,6 @@
     ]
    }
   ],
-  "FileHash": "{2BB2DFF6-B36C-CB3F-CE2A-5AE2DDAA6F33}"
+  "FileHash": "{020CD31E-F5B1-0F78-34CE-DCEBF5BC7DA9}"
  }
 }

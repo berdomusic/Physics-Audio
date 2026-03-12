@@ -10,27 +10,19 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{F99F7FE3-469D-1B3E-5889-759C5BAAF27D}",
+    "Hash": "{2E25318D-1D38-EC8F-2F21-AF2BF1FC7043}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
     "Plugins": {
-     "ShareSets": [
+     "Custom": [
       {
-       "Id": "2891462749",
-       "Name": "Room_Medium_High_Absorbtion",
-       "ObjectPath": "\\Effects\\Factory Effects\\RoomVerb\\Rooms\\Room_Medium_High_Absorbtion",
-       "GUID": "{E22DBBB6-7656-4B93-A28D-C003FD416889}",
+       "Id": "201800092",
+       "Name": "Room_Medium_High_Absorbtion (Custom)",
+       "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Reverb\\[Effect Slot [0]: (RoomVerb)]\\Room_Medium_High_Absorbtion (Custom)",
+       "GUID": "{6B2DECAA-6BE4-4BC0-AE6B-10354161FB34}",
        "LibName": "Wwise RoomVerb",
        "LibId": "7733251"
-      },
-      {
-       "Id": "3673681183",
-       "Name": "Large_Bright_Chamber1",
-       "ObjectPath": "\\Effects\\Factory Effects\\Matrix Reverb\\Large_Bright_Chamber1",
-       "GUID": "{0BFA2291-5716-4759-AC24-F59D29E8F2E4}",
-       "LibName": "Wwise Matrix Reverb",
-       "LibId": "7536643"
       }
      ],
      "AudioDevices": [
@@ -91,12 +83,9 @@
       "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Reverb",
       "GUID": "{CE96B12A-32EE-4774-BFA1-CD57A86BD6E6}",
       "PluginRefs": {
-       "ShareSets": [
+       "Custom": [
         {
-         "Id": "2891462749"
-        },
-        {
-         "Id": "3673681183"
+         "Id": "201800092"
         }
        ]
       }
@@ -152,6 +141,6 @@
     ]
    }
   ],
-  "FileHash": "{896D1763-DF68-E3CD-B121-27FFEB289867}"
+  "FileHash": "{2F1C6242-BA2D-A0AB-D610-06118E6DEC5E}"
  }
 }
