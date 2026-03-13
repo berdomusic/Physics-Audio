@@ -26,6 +26,8 @@ protected:
 	UWidgetComponent* WidgetComponent;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	bool bCanBePickedUp = true;
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsPickedUp = false;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	FName ItemName;

@@ -19,6 +19,7 @@ void UPAHealthComponent::OnDamageDealt_Implementation(AActor* Dealer, const FHit
 		InImpulse.Size()
 		);
 	CurrentHealth -= damage;
+	OnHealthUpdate.Broadcast(CurrentHealth, MaxHealth);
 	
 	if (CurrentHealth < 0.f)
 		OnDeath.Broadcast(Dealer, Hit, InImpulse);

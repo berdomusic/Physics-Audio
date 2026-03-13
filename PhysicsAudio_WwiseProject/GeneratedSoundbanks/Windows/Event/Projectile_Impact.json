@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{F47466CA-B9D9-49EC-B964-3A6BEC6DF42B}",
     "Language": "SFX",
-    "Hash": "{8049B04C-16A1-9BAD-8EED-D1FB2773FC29}",
+    "Hash": "{8EE0DF15-0988-CC26-FFCF-C33A3B244675}",
     "ObjectPath": "Projectile_Impact",
     "ShortName": "Projectile_Impact",
     "Path": "Event/Projectile_Impact.bnk",
@@ -172,6 +172,6 @@
     ]
    }
   ],
-  "FileHash": "{BCE12801-EF7D-854B-511C-C1DF74F58117}"
+  "FileHash": "{E1B1E245-803E-907B-6767-8C8C14D0AF7E}"
  }
 }

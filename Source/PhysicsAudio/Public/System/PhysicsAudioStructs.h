@@ -8,6 +8,21 @@ class UAkRtpc;
 class UAkSwitchValue;
 
 UINTERFACE(MinimalAPI, Blueprintable)
+class UPhysicsAudioInterface : public UInterface
+{
+	GENERATED_BODY()
+};
+
+class IPhysicsAudioInterface
+{
+	GENERATED_BODY()
+	
+public:
+	UFUNCTION(BlueprintNativeEvent, Category = "PhysicsAudio")
+	void OnPhysicsActorHit(FVector NormalImpulse, const FHitResult& Hit);
+};
+
+UINTERFACE(MinimalAPI, Blueprintable)
 class UDamageInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -58,17 +73,13 @@ class ILookAtInterface
 public:
 	UFUNCTION(BlueprintNativeEvent, Category = "LookAt")
 	void OnLookAtStarted();
-	virtual void OnLookAtStarted_Implementation()	{	}
 	UFUNCTION(BlueprintNativeEvent, Category = "LookAt")
 	void OnLookAtFinished();
-	virtual void OnLookAtFinished_Implementation()	{	}
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "LookAt")
 	void OnPickup(AActor* InInstigator);
-	//virtual void OnPickup_Implementation(AController* InteractionInstigator);
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "LookAt")
 	void OnDrop(AActor* InInstigator);
-	//virtual void OnDrop_Implementation(AController* InteractionInstigator);
 };
 
 UCLASS(BlueprintType)
@@ -152,16 +163,5 @@ struct FPAPhysicsActorAudioProperties : public FTableRowBase
 	FPAPhysicsAudioEvent ProjectileSound;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Destruction")
 	FPAPhysicsAudioEvent DestructionSound;
-};
-
-USTRUCT(BlueprintType)
-struct FPAPhysicsActorProperties : public FTableRowBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSoftClassPtr<AActor> PhysicsActorClass;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FVector2D SizeOffsets = FVector2D::UnitVector;
 };
 

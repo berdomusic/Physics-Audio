@@ -51,7 +51,7 @@ UDataAsset* UPAGameReferencesSubsystem::GetRTPCsDataAsset() const
 	return RTPCsDataAsset;
 }
 
-UDataAsset* UPAGameReferencesSubsystem::GetStopContinousSoundsDataAsset() const
+UDataAsset* UPAGameReferencesSubsystem::GetStopContinuousSoundsDataAsset() const
 {
 	if(!StopContinuousSoundsDataAsset)
 	{

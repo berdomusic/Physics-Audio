@@ -3,13 +3,13 @@
 #include "Components/PAPhysicsAudioComponent.h"
 
 #include "AkGameplayStatics.h"
+#include "AudioMixerBlueprintLibrary.h"
 #include "Engine/AssetManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/PAPhysicsAudioSubsystem.h"
 #include "System/PAFunctionLibrary.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "System/PhysicsAudioSettings.h"
-#include "GameFramework/Actor.h"
 #include "System/PAGameReferencesSubsystem.h"
 
 UPAPhysicsAudioComponent::UPAPhysicsAudioComponent(const FObjectInitializer& ObjectInitializer) :
@@ -74,7 +74,17 @@ void UPAPhysicsAudioComponent::OnParentDestroyed()
 		GetComponentLocation(),
 		GetComponentRotation(),
 		GetWorld()
-		);	
+		);
+}
+
+void UPAPhysicsAudioComponent::OnPickup_Implementation(AActor* InInstigator)
+{
+	bGrounded = false;
+}
+
+void UPAPhysicsAudioComponent::OnPhysicsActorHit_Implementation(FVector NormalImpulse, const FHitResult& Hit)
+{
+	OnComponentHit(nullptr, nullptr, nullptr, NormalImpulse, Hit);
 }
 
 void UPAPhysicsAudioComponent::OnHitByProjectile_Implementation(AActor* ProjectileActor, const FHitResult& Hit,
@@ -161,7 +171,7 @@ bool UPAPhysicsAudioComponent::ShouldPlayImpact(float InImpulseMagnitude) const
 {
 	if (CurrentImpactCooldown < ImpactCooldownThreshold)
 		return false;
-	if (CurrentVelocityMagnitude <= PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY)
+	if (CurrentVelocityMagnitude <= UPhysicsAudioSettings::GetMinVelocity())
 		return false;
 	float velocityThreshold = bGrounded ? ImpactVelocityThreshold * ObjectMass : ImpactVelocityThreshold;    
 	return InImpulseMagnitude > velocityThreshold;
@@ -171,7 +181,6 @@ void UPAPhysicsAudioComponent::StopContinuousSound(TArray<EPAEventType> InEventT
 {
 	if (InEventTypes.IsEmpty())
 		return;
-
 	for (EPAEventType eventType : InEventTypes)
 	{
 		UAkAudioEvent* akEvent = GetAkEventByType(eventType);
@@ -248,8 +257,33 @@ void UPAPhysicsAudioComponent::OnAkAudioEventsLoaded()
 			if (!currentAudioEventSoft.bLoadSynchronous)
 				AudioEvents[i] = currentAudioEventSoft.AkEventSoft.Get();			
 		}
-	}	
+	}
+	SetInfiniteEventsVariables();
 	Activate();
+}
+
+void UPAPhysicsAudioComponent::SetInfiniteEventsVariables(TArray<EPAEventType> InEventTypes)
+{
+	for (EPAEventType eventType : InEventTypes)
+	{
+		UAkAudioEvent* akEvent = GetAkEventByType(eventType);
+		if (!IsValid(akEvent))
+			continue;
+		switch (eventType)
+		{
+		case EPAEventType::Slide:
+			bSlideInfinite = akEvent->IsInfinite;
+			break;
+
+		case EPAEventType::Roll:
+			bRollInfinite = akEvent->IsInfinite;
+			break;
+
+		default:
+			break;
+		}
+	}
+		
 }
 
 bool UPAPhysicsAudioComponent::IsAkEventValidAndAudible(const UAkAudioEvent* InEvent) const
@@ -271,24 +305,19 @@ void UPAPhysicsAudioComponent::SetCooldownVariables()
 
 void UPAPhysicsAudioComponent::UpdatePhysicsState(float DeltaTime)
 {	
-	/* Physics state is updated on tick and on component hit, 
-	 *this prevents from update happening twice in one frame*/
-	/*if (bPhysicsStateUpdated)
-	{
-		bPhysicsStateUpdated = false;
-		return;
-	}	*/
-
 	// Update velocity tracking
 	PreviousVelocityMagnitude = CurrentVelocityMagnitude;
 	CurrentVelocityMagnitude = ParentComponent->GetPhysicsLinearVelocity().Size();
 	
-	// Calculate velocity delta
-	const float velocityMagnitudeDelta = FMath::Abs(CurrentVelocityMagnitude - PreviousVelocityMagnitude);
-	
+		
 	// Update grounded state
-	if (velocityMagnitudeDelta >= GroundedThreshold)
-		bGrounded = false;
+	if (bGrounded)
+	{
+		// Calculate velocity delta
+		const float velocityMagnitudeDelta = FMath::Abs(CurrentVelocityMagnitude - PreviousVelocityMagnitude);
+		if (velocityMagnitudeDelta >= GroundedThreshold)
+			bGrounded = false;		
+	}		
 	
 	// Update rolling state
 	// Get angular velocity
@@ -313,9 +342,7 @@ void UPAPhysicsAudioComponent::UpdatePhysicsState(float DeltaTime)
 	else
 		bIsRolling = bGrounded; // Maintain rolling state during cooldown if grounded
 	
-	bIsSliding = bGrounded && !bIsRolling && CurrentVelocityMagnitude > PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY;
-	
-	//bPhysicsStateUpdated = true;
+	bIsSliding = bGrounded && !bIsRolling && CurrentVelocityMagnitude > UPhysicsAudioSettings::GetMinVelocity();
 }
 
 void UPAPhysicsAudioComponent::UpdateRTPCValues()
@@ -338,7 +365,7 @@ void UPAPhysicsAudioComponent::UpdateRTPCValues()
 		normalizedSpeed
 		);
 	}
-	if (!FMath::IsNearlyEqual(PreviousSlideRTPCValue, slideValue, PhysicsAudioSettings::PHYSICS_AUDIO_RTPC_TOLERANCE)) // Set RTPC only when it changed
+	if (!FMath::IsNearlyEqual(PreviousSlideRTPCValue, slideValue, UPhysicsAudioSettings::GetRTPCTolerance())) // Set RTPC only when it changed
 	{
 		PreviousSlideRTPCValue = slideValue;
 		SetRTPCValue(RTPCAssets->SlideRTPC, FMath::Clamp(PreviousSlideRTPCValue, 0.f, 100.f), 100, FString());
@@ -358,7 +385,7 @@ void UPAPhysicsAudioComponent::UpdateRTPCValues()
 		normalizedAngularSpeed
 		);
 	}
-	if (!FMath::IsNearlyEqual(PreviousRollRTPCValue, rollValue, PhysicsAudioSettings::PHYSICS_AUDIO_RTPC_TOLERANCE)) // Set RTPC only when it changed
+	if (!FMath::IsNearlyEqual(PreviousRollRTPCValue, rollValue, UPhysicsAudioSettings::GetRTPCTolerance())) // Set RTPC only when it changed
 	{
 		PreviousRollRTPCValue = rollValue;
 		SetRTPCValue(RTPCAssets->RollRTPC, FMath::Clamp(PreviousRollRTPCValue, 0.f, 100.f), 100, FString());
@@ -367,9 +394,9 @@ void UPAPhysicsAudioComponent::UpdateRTPCValues()
 
 void UPAPhysicsAudioComponent::HandleStoppingLoops()
 {
-	if (!bRollAudible || !bIsRolling)
+	if (bRollLoopPosted && (!bRollAudible || !bIsRolling))
 		StopContinuousSound({ EPAEventType::Roll });
-	if (!bSlideAudible || !bIsSliding)
+	if (bSlideLoopPosted && (!bSlideAudible || !bIsSliding))
 		StopContinuousSound({ EPAEventType::Slide });
 }
 
@@ -383,17 +410,18 @@ void UPAPhysicsAudioComponent::HandlePlayingSlide()
 {
 	if (bSlideAudible && bIsSliding)
 	{
-		if (!bSlideLoopPosted && GetAkEventByType(EPAEventType::Slide)->IsInfinite)
-		{			
-			PostAkEvent(GetAkEventByType(EPAEventType::Slide), 0, FOnAkPostEventCallback());
-			bSlideLoopPosted = true;
-			UKismetSystemLibrary::PrintString(GetWorld(), "SLIDE LOOP POSTED");
-		}
+		if (bSlideInfinite)
+		{
+			if (!bSlideLoopPosted)
+			{			
+				PostAkEvent(GetAkEventByType(EPAEventType::Slide), 0, FOnAkPostEventCallback());
+				bSlideLoopPosted = true;
+			}
+		}			
 		else if (CurrentSlideCooldown >= SlideCooldownThreshold)
 		{
 			CurrentSlideCooldown = 0.f;
 			PostAkEvent(GetAkEventByType(EPAEventType::Slide), 0, FOnAkPostEventCallback());
-			//UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetComponentLocation(), 75.f, 12, FLinearColor::Blue);
 		}
 	}
 }
@@ -402,11 +430,14 @@ void UPAPhysicsAudioComponent::HandlePlayingRoll()
 {
 	if (bRollAudible && bIsRolling)
 	{
-		if (!bRollLoopPosted && GetAkEventByType(EPAEventType::Roll)->IsInfinite)
-		{			
-			PostAkEvent(GetAkEventByType(EPAEventType::Roll), 0, FOnAkPostEventCallback());
-			bRollLoopPosted = true;
-		}
+		if (bRollInfinite)
+		{
+			if (!bRollLoopPosted)
+			{			
+				PostAkEvent(GetAkEventByType(EPAEventType::Roll), 0, FOnAkPostEventCallback());
+				bRollLoopPosted = true;
+			}
+		}			
 		else if (CurrenRollCooldown >= RollCooldownThreshold)
 		{
 			CurrenRollCooldown = 0.f;
@@ -423,8 +454,6 @@ void UPAPhysicsAudioComponent::OnComponentHit(UPrimitiveComponent* HitComponent,
 		bGrounded = true;
 		return;
 	}		
-	// Update physics state first to get latest velocities
-	//UpdatePhysicsState(0.f); // DeltaTime not needed for immediate update
 	
 	// Set surface type switch if physical material exists
 	if (Hit.PhysMaterial.Get())
@@ -444,7 +473,7 @@ void UPAPhysicsAudioComponent::OnComponentHit(UPrimitiveComponent* HitComponent,
 			normalizedImpulse
 		);
 		
-		if (!FMath::IsNearlyEqual(PreviousImpactRTPCValue, impactRTPCValue, PhysicsAudioSettings::PHYSICS_AUDIO_RTPC_TOLERANCE)) // Set RTPC only when it changed
+		if (!FMath::IsNearlyEqual(PreviousImpactRTPCValue, impactRTPCValue, UPhysicsAudioSettings::GetRTPCTolerance())) // Set RTPC only when it changed
 		{
 			PreviousImpactRTPCValue = impactRTPCValue;
 			SetRTPCValue(RTPCAssets->ImpactRTPC, FMath::Clamp(PreviousImpactRTPCValue, 0.f, 100.f), 0, FString());
@@ -467,7 +496,8 @@ void UPAPhysicsAudioComponent::Activate(bool bReset)
 void UPAPhysicsAudioComponent::Deactivate()
 {
 	PrimaryComponentTick.SetTickFunctionEnable(false);
-	StopContinuousSound({ EPAEventType::Slide, EPAEventType::Roll });
+	if (LIKELY(IsValid(this)))
+		StopContinuousSound({ EPAEventType::Slide, EPAEventType::Roll });
 	if (IsValid(ParentComponent))
 		ParentComponent->OnComponentHit.RemoveAll(this);
 	

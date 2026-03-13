@@ -1,0 +1,123 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "1584434112",
+    "Type": "Event",
+    "GUID": "{8DAFD110-2745-47E4-BAE8-CA4960870025}",
+    "Language": "SFX",
+    "Hash": "{DA250B7E-4975-1D23-8A6B-51B18795D0A7}",
+    "ObjectPath": "MetalPipe_Projectile",
+    "ShortName": "MetalPipe_Projectile",
+    "Path": "Event/MetalPipe_Projectile.bnk",
+    "Media": [
+     {
+      "Id": "9650817",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_MetalPipe-009.wav",
+      "Path": "Media/9650817.wem",
+      "CachePath": "61/{61A80ACF-3AD2-5BCB-1458-D54EC9EF8ADE}.wem"
+     },
+     {
+      "Id": "392959484",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_MetalPipe-003.wav",
+      "Path": "Media/392959484.wem",
+      "CachePath": "B2/{B2602754-341B-1979-2B0C-359F3F7F49A9}.wem"
+     },
+     {
+      "Id": "557236240",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_MetalPipe-002.wav",
+      "Path": "Media/557236240.wem",
+      "CachePath": "A5/{A5FF94F7-91FA-221F-1DF9-5708E36EAE5A}.wem"
+     },
+     {
+      "Id": "566156717",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "PRO_Sci-Fi_Container-003.wav",
+      "Path": "Media/566156717.wem",
+      "CachePath": "A6/{A60D7D82-AC4A-866C-3304-29EB6F42D064}.wem"
+     },
+     {
+      "Id": "773384674",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "PRO_Sci-Fi_Container-002.wav",
+      "Path": "Media/773384674.wem",
+      "CachePath": "E5/{E5F3793D-F9D8-6898-4E02-C6366F5A8658}.wem"
+     },
+     {
+      "Id": "911053206",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Loose",
+      "ShortName": "IMP_MetalPipe-008.wav",
+      "Path": "Media/911053206.wem",
+      "CachePath": "82/{829D8F2A-00FF-A5E9-E93D-8D27F245BBBD}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1584434112",
+      "Name": "MetalPipe_Projectile",
+      "ObjectPath": "\\Events\\PhysicsObjects\\MetalPipe\\MetalPipe_Projectile",
+      "GUID": "{8DAFD110-2745-47E4-BAE8-CA4960870025}",
+      "MaxAttenuation": "4000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.20830125",
+      "DurationMax": "0.80227566",
+      "MediaRefs": [
+       {
+        "Id": "9650817"
+       },
+       {
+        "Id": "392959484"
+       },
+       {
+        "Id": "557236240"
+       },
+       {
+        "Id": "566156717"
+       },
+       {
+        "Id": "773384674"
+       },
+       {
+        "Id": "911053206"
+       }
+      ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1217927383",
+      "Name": "S_Mass",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Mass",
+      "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
+     },
+     {
+      "Id": "2667713947",
+      "Name": "S_ProjectileSpeed",
+      "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_ProjectileSpeed",
+      "GUID": "{2A573DD8-4FCF-473F-BB3F-E2188568AB17}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{EE2F21F6-3D3D-4377-77C9-0FB21A9D67C8}"
+ }
+}

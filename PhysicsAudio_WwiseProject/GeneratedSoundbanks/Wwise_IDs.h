@@ -15,6 +15,7 @@ namespace AK
     {
         static const AkUniqueID EMPTYEVENT = 1650177404U;
         static const AkUniqueID METALPIPE_IMPACT = 2729294339U;
+        static const AkUniqueID METALPIPE_PROJECTILE = 1584434112U;
         static const AkUniqueID METALPIPE_ROLL = 2409010740U;
         static const AkUniqueID METALPIPE_SLIDE = 3796836572U;
         static const AkUniqueID PROJECTILE_IMPACT = 1515280609U;

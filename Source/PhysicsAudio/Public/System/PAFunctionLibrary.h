@@ -21,4 +21,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	static bool IsAudioHandleNotEmpty(const FPAPhysicsActorAudioProperties& InHandle);
 	static bool ResolveAudioHandle(const FDataTableRowHandle& InRowHandle, FPAPhysicsActorAudioProperties& OutHandle);
+	
+	UFUNCTION(BlueprintPure, meta = (WorldContext = "InWorldContext", CompactNodeTitle = "GetPickupModifier"))
+	static float GetCurrentPickupLengthModifier(const UObject* InWorldContext);
 };

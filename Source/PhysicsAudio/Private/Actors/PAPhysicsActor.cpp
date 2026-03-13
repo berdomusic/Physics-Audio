@@ -23,6 +23,7 @@ APAPhysicsActor::APAPhysicsActor()
 	ActivationSphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("ActivationSphereCollision"));
 	ActivationSphereCollision->SetupAttachment(RootComponent);
 	ActivationSphereCollision->SetCollisionProfileName(TEXT("OverlapPhysicsActors"));
+	ActivationSphereCollision->SetSphereRadius(ActivationSphereRadius);
 	
 	HealthComponent = CreateDefaultSubobject<UPAHealthComponent>(TEXT("HealthComponent"));
 	
@@ -50,12 +51,18 @@ void APAPhysicsActor::OnDamageDealt_Implementation(AActor* Dealer, const FHitRes
 }
 
 void APAPhysicsActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	FVector NormalImpulse, const FHitResult& Hit)
+                            FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (NormalImpulse.Size() < 50000.f)
 		return;
-	FVector mockDmg = FVector::One() * 30000.f * FMath::RandRange(.75f, 1.25f);
-	OnDamageDealt_Implementation(OtherActor, Hit, mockDmg);	
+	FVector mockDmg = FVector::One() * 50000.f * FMath::RandRange(.75f, 1.25f);
+	OnDamageDealt_Implementation(OtherActor, Hit, NormalImpulse);	
+	
+	const TArray<USceneComponent*>& attachedChildren = StaticMeshComponent->GetAttachChildren();
+	
+	for (USceneComponent* child : attachedChildren)
+		if (child && child->GetClass()->ImplementsInterface(UPhysicsAudioInterface::StaticClass()))
+			Execute_OnPhysicsActorHit(child, NormalImpulse, Hit);
 }
 
 void APAPhysicsActor::Init()
@@ -83,7 +90,8 @@ void APAPhysicsActor::Init()
 		StaticMeshComponent->OnComponentHit.AddUniqueDynamic(this, &APAPhysicsActor::OnHit);
 		HealthComponent->SetCanBeDamaged(true);
 		HealthComponent->OnDeath.AddUniqueDynamic(this, &APAPhysicsActor::OnDeath);
-	}		
+		SetupHealthWidget();
+	}
 }
 
 void APAPhysicsActor::GetDestructibleMeshes()
@@ -104,14 +112,6 @@ void APAPhysicsActor::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);	
 	GetDestructibleMeshes();
-	UStaticMesh* staticMeshAsset = StaticMeshComponent->GetStaticMesh();
-	// Need a little bigger radius to give time for queue to attach physical audio
-	if (staticMeshAsset != nullptr)
-	{
-		ActivationSphereRadius = staticMeshAsset->GetBounds().SphereRadius + 100.f;
-		ActivationSphereCollision->SetSphereRadius(ActivationSphereRadius);	
-	}
-			
 }
 
 void APAPhysicsActor::BeginPlay()
@@ -119,6 +119,17 @@ void APAPhysicsActor::BeginPlay()
 	Super::BeginPlay();
 	if (!IsValid(GetWorld()))
 		return;
+	
+	UStaticMesh* staticMeshAsset = StaticMeshComponent->GetStaticMesh();	
+	if (!staticMeshAsset)
+	{
+		Destroy();
+		return;
+	}
+	
+	// Need a little bigger radius to give time for queue to attach physical audio
+	ActivationSphereRadius = staticMeshAsset->GetBounds().SphereRadius + 200.f;
+	ActivationSphereCollision->SetSphereRadius(ActivationSphereRadius);	
 	
 	// Ignore begin play overlaps
 	GetWorld()->GetTimerManager().SetTimer(
@@ -213,29 +224,33 @@ void APAPhysicsActor::OnDeath(AActor* Dealer, const FHitResult& Hit, const FVect
 	Destroy();
 }
 
-bool APAPhysicsActor::ShouldActivatePhysicsAudio(const AActor* OtherActor, UPrimitiveComponent* OtherComp) const
+bool APAPhysicsActor::ShouldActivatePhysicsAudio(AActor* OtherActor, UPrimitiveComponent* OtherComp) const
 {
 	if (!UPAFunctionLibrary::IsAudioHandleNotEmpty(PhysicsAudioProperties))
 		return false;
+	if (bIsPickedUp)
+		return true;
 	if (IsPhysicsTriggerActor(OtherActor))
 		return true;
-	if (OtherComp->GetPhysicsLinearVelocity().SizeSquared() > PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY_SQUARED)
+	if (OtherComp->GetPhysicsLinearVelocity().SizeSquared() > UPhysicsAudioSettings::GetMinVelocitySquared())
 		return true;
 	return false;
 }
 
 bool APAPhysicsActor::ShouldDeactivatePhysicsAudio()
 {
+	if (bIsPickedUp)
+		return false;
 	if (!OverlappedActors.IsEmpty())
 		for (AActor* overlappedActor : OverlappedActors)
 			if (IsPhysicsTriggerActor(overlappedActor))
 				return false;
-	if (StaticMeshComponent->GetPhysicsLinearVelocity().SizeSquared() > PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY_SQUARED)
+	if (StaticMeshComponent->GetPhysicsLinearVelocity().SizeSquared() > UPhysicsAudioSettings::GetMinVelocitySquared())
 		return false;
 	return true;
 }
 
-bool APAPhysicsActor::IsPhysicsTriggerActor(const AActor* InActor)
+bool APAPhysicsActor::IsPhysicsTriggerActor(AActor* InActor)
 {
 	if (IsValid(InActor))
 	{
@@ -243,9 +258,13 @@ bool APAPhysicsActor::IsPhysicsTriggerActor(const AActor* InActor)
 			|| InActor->IsA(APhysicsAudioProjectile::StaticClass())
 			)
 			return true;
+		if (InActor->IsA(StaticClass()))
+			if (APAPhysicsActor* physicsActor = Cast<APAPhysicsActor>(InActor))
+				if (physicsActor->bIsPickedUp)
+					return true;
 		UPrimitiveComponent* primitive = InActor->FindComponentByClass<UPrimitiveComponent>();
 		if (IsValid(primitive))
-			return primitive->GetPhysicsLinearVelocity().SizeSquared() > PhysicsAudioSettings::PHYSICS_AUDIO_MIN_VELOCITY_SQUARED;
+			return primitive->GetPhysicsLinearVelocity().SizeSquared() > UPhysicsAudioSettings::GetMinVelocitySquared();
 	}		
 	return false;
 }
@@ -266,7 +285,7 @@ void APAPhysicsActor::TriggerDeactivationTimer()
 		DeactivationTimerHandle,
 		this,
 		&APAPhysicsActor::DeactivatePhysicsAudio,
-		PhysicsAudioSettings::PHYSICS_AUDIO_DEACTIVATION_DELAY,
+		UPhysicsAudioSettings::GetDeactivationDelay(),
 		true
 	);
 }
@@ -275,8 +294,13 @@ void APAPhysicsActor::OnPickup_Implementation(AActor* InInstigator)
 {
 	UStaticMesh* staticMeshAsset = StaticMeshComponent->GetStaticMesh();
 	if (staticMeshAsset != nullptr)
-		ActivationSphereCollision->SetSphereRadius(ActivationSphereRadius + 200.f, true);	
-	Super::OnPickup_Implementation(InInstigator);
+		ActivationSphereCollision->SetSphereRadius(ActivationSphereRadius + 200.f, true);
+	
+	const TArray<USceneComponent*>& attachedChildren = StaticMeshComponent->GetAttachChildren();
+	
+	for (USceneComponent* child : attachedChildren)
+		if (child && child->GetClass()->ImplementsInterface(ULookAtInterface::StaticClass()))
+			Execute_OnPickup(child, InInstigator);
 }
 
 void APAPhysicsActor::OnDrop_Implementation(AActor* InInstigator)
@@ -284,5 +308,4 @@ void APAPhysicsActor::OnDrop_Implementation(AActor* InInstigator)
 	UStaticMesh* staticMeshAsset = StaticMeshComponent->GetStaticMesh();
 	if (staticMeshAsset != nullptr)
 		ActivationSphereCollision->SetSphereRadius(ActivationSphereRadius, true);	
-	Super::OnDrop_Implementation(InInstigator);
 }

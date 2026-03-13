@@ -11,7 +11,8 @@
 #include "PAPhysicsActor.generated.h"
 
 UCLASS()
-class PHYSICSAUDIO_API APAPhysicsActor : public APAInteractableActor, public IProjectileInterface, public IDamageInterface
+class PHYSICSAUDIO_API APAPhysicsActor : public APAInteractableActor, 
+public IProjectileInterface, public IDamageInterface, public IPhysicsAudioInterface
 {
 	GENERATED_BODY()
 	
@@ -21,10 +22,10 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	USphereComponent* ActivationSphereCollision;
-	float ActivationSphereRadius;
+	float ActivationSphereRadius = 100.f;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	UStaticMeshComponent* StaticMeshComponent;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	UPAHealthComponent* HealthComponent;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PhysicsAudio")
@@ -46,12 +47,15 @@ protected:
 	
 	virtual void OnHitByProjectile_Implementation(AActor* ProjectileActor, const FHitResult& Hit,
 	                                              const FVector& InProjectileImpulse) override;
-	virtual void OnDamageDealt_Implementation(AActor* Dealer, const FHitResult& Hit, const FVector& InImpulse) override;
+	virtual void OnDamageDealt_Implementation(AActor* Dealer, const FHitResult& Hit, 
+		const FVector& InImpulse) override;
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UFUNCTION(BlueprintCallable)
 	void Init();
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetupHealthWidget();
 	void GetDestructibleMeshes();
 
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -75,9 +79,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetLifeTime(float InTime);
 
-	bool ShouldActivatePhysicsAudio(const AActor* OtherActor, UPrimitiveComponent* OtherComp) const;
+	bool ShouldActivatePhysicsAudio(AActor* OtherActor, UPrimitiveComponent* OtherComp) const;
 	bool ShouldDeactivatePhysicsAudio();
-	static bool IsPhysicsTriggerActor(const AActor* InActor);
+	static bool IsPhysicsTriggerActor(AActor* InActor);
 	void DeactivatePhysicsAudio();
 	void TriggerDeactivationTimer();
 	

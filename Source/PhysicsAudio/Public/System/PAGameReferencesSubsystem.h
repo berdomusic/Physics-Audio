@@ -22,7 +22,7 @@ public:
 
 	UDataAsset* GetMaterialSwitchDataAsset() const;
 	UDataAsset* GetRTPCsDataAsset() const;
-	UDataAsset* GetStopContinousSoundsDataAsset() const;
+	UDataAsset* GetStopContinuousSoundsDataAsset() const;
 
 protected:
 	UPROPERTY()

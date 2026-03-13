@@ -13,7 +13,8 @@
  * with proper mass-based normalization and RTPC ranges
  */
 UCLASS()
-class PHYSICSAUDIO_API UPAPhysicsAudioComponent : public UAkComponent, public IProjectileInterface
+class PHYSICSAUDIO_API UPAPhysicsAudioComponent : public UAkComponent, 
+	public IProjectileInterface, public IPhysicsAudioInterface, public ILookAtInterface
 {
 	GENERATED_BODY()
 	
@@ -35,6 +36,8 @@ public:
 		DistanceToClosestListenerSquared = InDistance;
 	}
 protected:
+	virtual void OnPickup_Implementation(AActor* InInstigator) override;
+	virtual void OnPhysicsActorHit_Implementation(FVector NormalImpulse, const FHitResult& Hit) override;
 	UFUNCTION()
 	virtual void OnHitByProjectile_Implementation(AActor* ProjectileActor, const FHitResult& Hit,
 	                                              const FVector& InProjectileImpulse) override;	
@@ -57,6 +60,9 @@ protected:
 	bool bRollAudible;
 	bool bSlideLoopPosted;
 	bool bRollLoopPosted;
+	bool bSlideInfinite;
+	bool bRollInfinite;
+	
 	float TimeSinceLastRollDetection;	
 	void StopContinuousSound(TArray<EPAEventType> InEventTypes);
 	
@@ -82,6 +88,8 @@ protected:
 	}
 	void LoadAkAudioEvents();
 	void OnAkAudioEventsLoaded();
+	void SetInfiniteEventsVariables(TArray<EPAEventType> InEventTypes =
+		{ EPAEventType::Slide, EPAEventType::Roll });
 	
 	// RTPC assets
 	UPROPERTY()
@@ -106,12 +114,10 @@ protected:
 	float SlideCooldownThreshold = .1f;	
 	float CurrenRollCooldown = .1f;
 	float RollCooldownThreshold = .1f;
-	void SetCooldownVariables();
-	
+	void SetCooldownVariables();	
 
 	// Helper functions
 	void UpdatePhysicsState(float DeltaTime);
-	bool bPhysicsStateUpdated;
 	void UpdateRTPCValues();
 	void HandleStoppingLoops();
 	void HandlePlayingContinuousSounds();

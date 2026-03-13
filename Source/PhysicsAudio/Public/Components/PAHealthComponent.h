@@ -12,23 +12,30 @@ class PHYSICSAUDIO_API UPAHealthComponent : public UActorComponent, public IDama
 {
 	GENERATED_BODY()
 	
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FPAHealthComponent_Delegate, AActor*, Dealer, const FHitResult&, Hit, const FVector&, Impulse);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FPAHealthComponent_HealthUpdateDelegate, float, InNewHealth, float, InMaxHealth);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FPAHealthComponent_DeathDelegate, AActor*, Dealer, const FHitResult&, Hit, const FVector&, Impulse);
 
 public:	
 	// Sets default values for this component's properties
 	UPAHealthComponent();
 	
-	void SetCanBeDamaged(bool CanBeDamaged) { bCanBeDamaged = CanBeDamaged; }	
-	float MaxHealth = 100.f;
-	float CurrentHealth = 100.f;
-	
-	UPROPERTY(BlueprintAssignable)
-	FPAHealthComponent_Delegate OnDeath;
-
+	void SetCanBeDamaged(bool CanBeDamaged) { bCanBeDamaged = CanBeDamaged; }
+	UFUNCTION(BlueprintPure)
+	bool CanBeDamaged() const { return bCanBeDamaged; }
+	UFUNCTION(BlueprintPure)
+	float GetMaxHealth() const { return MaxHealth; }
+	UFUNCTION(BlueprintPure)
+	float GetCurrentHealth() const { return CurrentHealth; }
 	UFUNCTION(BlueprintPure)
 	bool IsAlive() const { return CurrentHealth > 0.f; }
-protected:
 	
+	UPROPERTY(BlueprintAssignable)
+	FPAHealthComponent_HealthUpdateDelegate OnHealthUpdate;
+	FPAHealthComponent_DeathDelegate OnDeath;
+	
+protected:	
+	float MaxHealth = 100.f;
+	float CurrentHealth = 100.f;
 	bool bCanBeDamaged;
 	virtual void OnDamageDealt_Implementation(AActor* Dealer, const FHitResult& Hit, const FVector& InImpulse) override;
 };

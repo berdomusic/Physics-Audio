@@ -64,13 +64,14 @@ public:
    
     void TryAddPhysicsAudioToPrimitive(UPrimitiveComponent* InComponent, const FPAPhysicsActorAudioProperties& InAudioProperties);
     void ReturnPhysicsAudioObjectToPool(UPrimitiveComponent* InComponent, UPAPhysicsAudioComponent* InAudioComponent, bool bWasDestroyed);
+    UPROPERTY(BlueprintReadOnly)
+    TArray<UPAPhysicsAudioComponent*> AvailablePhysicsAudioComponentsPool;
 private: 
     
     int32 PhysicsAudioPoolSize = 50;
     bool bPhysicsAudioEnabled;
 
-    UPROPERTY()
-    TArray<UPAPhysicsAudioComponent*> AvailablePhysicsAudioComponentsPool;
+    
     UPROPERTY()
     TArray<FPAActivePhysicsAudioObject> ActivePhysicsAudioObjects;
     UPROPERTY()

@@ -3,6 +3,8 @@
 
 #include "System/PAFunctionLibrary.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "PhysicsAudio/PhysicsAudioCharacter.h"
 #include "System/PAGameReferencesSubsystem.h"
 #include "System/PhysicsAudioStructs.h"
 
@@ -31,7 +33,7 @@ UAkAudioEvent* UPAFunctionLibrary::GetStopContinousSoundEvent(const EPAEventType
 {
 	if (!(InEventType == EPAEventType::Roll || InEventType == EPAEventType::Slide))
 		return nullptr;
-		if (UDataAsset* dataAsset = UPAGameReferencesSubsystem::Get().GetStopContinousSoundsDataAsset())
+		if (UDataAsset* dataAsset = UPAGameReferencesSubsystem::Get().GetStopContinuousSoundsDataAsset())
 			if (UPAStopContinousSoundEvents* stopContinousEvents = Cast<UPAStopContinousSoundEvents>(dataAsset))
 				switch (InEventType)
 				{
@@ -74,4 +76,12 @@ bool UPAFunctionLibrary::ResolveAudioHandle(const FDataTableRowHandle& InRowHand
 		return true;
 	}	
 	return false;
+}
+
+float UPAFunctionLibrary::GetCurrentPickupLengthModifier(const UObject* InWorldContext)
+{
+	if (UWorld* world = InWorldContext->GetWorld())
+		if (APhysicsAudioCharacter* character = Cast<APhysicsAudioCharacter>(UGameplayStatics::GetPlayerCharacter(world, 0)))
+			return character->PickupLengthModifier;	
+	return 1.f;
 }

@@ -48,6 +48,9 @@ class APhysicsAudioCharacter : public ACharacter, public ILookAtInterface
 	
 public:
 	APhysicsAudioCharacter();
+	
+	UPROPERTY(BlueprintReadWrite)
+	float PickupLengthModifier = 1.f;
 
 protected:
 	/** Called for movement input */
