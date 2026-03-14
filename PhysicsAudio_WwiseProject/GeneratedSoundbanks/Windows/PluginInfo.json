@@ -18,6 +18,13 @@
     "StaticLib": "AkRoomVerbFX"
    },
    {
+    "LibName": "Wwise Time Stretch",
+    "LibId": "8519683",
+    "Type": "Effect",
+    "DLL": "AkTimeStretch",
+    "StaticLib": "AkTimeStretchFX"
+   },
+   {
     "LibName": "System",
     "LibId": "11403271",
     "Type": "AudioDevice"
@@ -35,6 +42,6 @@
     "StaticLib": "AkImpacterSource"
    }
   ],
-  "FileHash": "{F8EC2F0D-CFD4-872F-0EF8-4010F49C84FF}"
+  "FileHash": "{9CCB9E8E-9E13-FFA7-BE2D-6806A4341B07}"
  }
 }

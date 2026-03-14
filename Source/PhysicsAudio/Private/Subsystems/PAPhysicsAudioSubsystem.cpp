@@ -299,6 +299,7 @@ void UPAPhysicsAudioSubsystem::PopulatePoolAsync()
 {
     if (!IsValid(GetWorld()))
         return;
+    
     if (CanAddComponentToPool())
     {
         TryAddComponentToPool(nullptr);
@@ -306,7 +307,7 @@ void UPAPhysicsAudioSubsystem::PopulatePoolAsync()
             FTimerDelegate::CreateUObject(this, &UPAPhysicsAudioSubsystem::PopulatePoolAsync)
         );
     }
-    else if (!TickHandle.IsValid())
+    if (!AvailablePhysicsAudioComponentsPool.IsEmpty() && !TickHandle.IsValid())
     {
         TickHandle = FTSTicker::GetCoreTicker().AddTicker(
             FTickerDelegate::CreateUObject(this, &UPAPhysicsAudioSubsystem::Tick)

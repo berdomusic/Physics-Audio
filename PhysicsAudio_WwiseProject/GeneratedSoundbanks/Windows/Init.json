@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{2E25318D-1D38-EC8F-2F21-AF2BF1FC7043}",
+    "Hash": "{E0E7F213-0BFA-9DAB-2BAD-0AA731054BC6}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -111,6 +111,12 @@
       "GUID": "{2A573DD8-4FCF-473F-BB3F-E2188568AB17}"
      },
      {
+      "Id": "3564404055",
+      "Name": "S_TimeStretch",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\S_TimeStretch",
+      "GUID": "{26D637F1-4026-404F-909D-1F5839C249B4}"
+     },
+     {
       "Id": "3874927894",
       "Name": "S_Slide",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
@@ -141,6 +147,6 @@
     ]
    }
   ],
-  "FileHash": "{2F1C6242-BA2D-A0AB-D610-06118E6DEC5E}"
+  "FileHash": "{78D0B6EA-1D07-FF1D-10C9-FB7DE05356DC}"
  }
 }

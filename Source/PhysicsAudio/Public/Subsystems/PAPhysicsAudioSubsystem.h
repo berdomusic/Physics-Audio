@@ -61,19 +61,20 @@ public:
     TArray<FVector> GetListenersPositions() const { return ListenersPositions; }
     UFUNCTION(BlueprintPure, Category = "PhysicsAudio")
     void GetPhysicsAudioComponentCount(int32& Available, int32& Active, int32& PendingReturn) const;
-   
+    UFUNCTION(BlueprintPure, Category = "PhysicsAudio")
+    TArray<FPAActivePhysicsAudioObject> GetActivePhysicsAudioObjects() { return ActivePhysicsAudioObjects; }
+    
     void TryAddPhysicsAudioToPrimitive(UPrimitiveComponent* InComponent, const FPAPhysicsActorAudioProperties& InAudioProperties);
     void ReturnPhysicsAudioObjectToPool(UPrimitiveComponent* InComponent, UPAPhysicsAudioComponent* InAudioComponent, bool bWasDestroyed);
-    UPROPERTY(BlueprintReadOnly)
-    TArray<UPAPhysicsAudioComponent*> AvailablePhysicsAudioComponentsPool;
-private: 
     
+private:    
     int32 PhysicsAudioPoolSize = 50;
     bool bPhysicsAudioEnabled;
 
-    
     UPROPERTY()
     TArray<FPAActivePhysicsAudioObject> ActivePhysicsAudioObjects;
+    UPROPERTY()
+    TArray<UPAPhysicsAudioComponent*> AvailablePhysicsAudioComponentsPool;    
     UPROPERTY()
     TArray<UPAPhysicsAudioComponent*> PendingReturnPool;    
     

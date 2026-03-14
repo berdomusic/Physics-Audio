@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{E0A02FA0-4BC1-480B-9C6A-4558BE261162}",
     "Language": "SFX",
-    "Hash": "{5D3D641E-8C04-DE59-C5BF-BADC8F87DE8B}",
+    "Hash": "{864C88D4-1EAA-DF0D-0BEF-947E177D7A3E}",
     "ObjectPath": "Stop_Roll",
     "ShortName": "Stop_Roll",
     "Path": "Event/Stop_Roll.bnk",
@@ -28,6 +28,6 @@
     ]
    }
   ],
-  "FileHash": "{66F75DF1-5336-0FC6-18F9-473190FDDFDF}"
+  "FileHash": "{4C89B627-E865-5BF7-5345-B82CE127EEC1}"
  }
 }

@@ -18,6 +18,7 @@ namespace AK
         static const AkUniqueID METALPIPE_PROJECTILE = 1584434112U;
         static const AkUniqueID METALPIPE_ROLL = 2409010740U;
         static const AkUniqueID METALPIPE_SLIDE = 3796836572U;
+        static const AkUniqueID METALPIPEHEAVY_IMPACT = 1074356124U;
         static const AkUniqueID PROJECTILE_IMPACT = 1515280609U;
         static const AkUniqueID PROJECTILE_ROLL = 1426881542U;
         static const AkUniqueID PROJECTILE_SLIDE = 1050410374U;
@@ -56,6 +57,7 @@ namespace AK
         static const AkUniqueID S_PROJECTILESPEED = 2667713947U;
         static const AkUniqueID S_ROLL = 1205658230U;
         static const AkUniqueID S_SLIDE = 3874927894U;
+        static const AkUniqueID S_TIMESTRETCH = 3564404055U;
     } // namespace GAME_PARAMETERS
 
     namespace BUSSES

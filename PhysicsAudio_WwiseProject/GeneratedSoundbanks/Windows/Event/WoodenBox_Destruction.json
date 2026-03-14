@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{7CB8D2A7-D309-4B5F-B20D-F961A5104B2C}",
     "Language": "SFX",
-    "Hash": "{EF2C0C28-DA80-546C-AA2A-CDC0228AAEC8}",
+    "Hash": "{F2D1F520-4F85-EB9B-FAA7-AA30CC83CADC}",
     "ObjectPath": "WoodenBox_Destruction",
     "ShortName": "WoodenBox_Destruction",
     "Path": "Event/WoodenBox_Destruction.bnk",
@@ -52,6 +52,18 @@
       "CachePath": "A3/{A3ABB1C4-064F-06B6-3D11-EBA794F422AE}.wem"
      }
     ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "571670381",
+       "Name": "Time Stretch (Custom)",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\[Effect Slot [0]: (Time Stretch)]\\Time Stretch (Custom)",
+       "GUID": "{81036C4C-0423-470F-B2F9-FAE755687D95}",
+       "LibName": "Wwise Time Stretch",
+       "LibId": "8519683"
+      }
+     ]
+    },
     "Events": [
      {
       "Id": "262868839",
@@ -75,11 +87,26 @@
        {
         "Id": "1051326876"
        }
-      ]
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "571670381"
+        }
+       ]
+      }
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "3564404055",
+      "Name": "S_TimeStretch",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\S_TimeStretch",
+      "GUID": "{26D637F1-4026-404F-909D-1F5839C249B4}"
      }
     ]
    }
   ],
-  "FileHash": "{E8462FB8-3055-E4E5-7F24-03CCFD4828C2}"
+  "FileHash": "{F10D58D2-5F5F-859F-D388-A52547B4732C}"
  }
 }

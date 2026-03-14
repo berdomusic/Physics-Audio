@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{79C432A4-F007-410B-B1F7-0381C4F6A165}",
     "Language": "SFX",
-    "Hash": "{07021F74-8F25-6C47-854A-D9690E63B22A}",
+    "Hash": "{08990B8C-DB1B-9F36-6DE3-F258BC317F7B}",
     "ObjectPath": "Projectile_Roll",
     "ShortName": "Projectile_Roll",
     "Path": "Event/Projectile_Roll.bnk",
@@ -124,6 +124,18 @@
       "CachePath": "FE/{FE6DAA95-83BD-C421-8BEE-1AB55AAD45A4}.wem"
      }
     ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "571670381",
+       "Name": "Time Stretch (Custom)",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\[Effect Slot [0]: (Time Stretch)]\\Time Stretch (Custom)",
+       "GUID": "{81036C4C-0423-470F-B2F9-FAE755687D95}",
+       "LibName": "Wwise Time Stretch",
+       "LibId": "8519683"
+      }
+     ]
+    },
     "Events": [
      {
       "Id": "1426881542",
@@ -169,7 +181,14 @@
        {
         "Id": "825169097"
        }
-      ]
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "571670381"
+        }
+       ]
+      }
      }
     ],
     "GameParameters": [
@@ -178,10 +197,16 @@
       "Name": "S_Roll",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Roll",
       "GUID": "{878403F9-00A7-4E86-A34C-75B2471275B1}"
+     },
+     {
+      "Id": "3564404055",
+      "Name": "S_TimeStretch",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\S_TimeStretch",
+      "GUID": "{26D637F1-4026-404F-909D-1F5839C249B4}"
      }
     ]
    }
   ],
-  "FileHash": "{278B4344-B0C8-D0D3-7247-BDB57BF18F25}"
+  "FileHash": "{3082AC22-DFDA-3D51-A351-3A2828CD7BBC}"
  }
 }

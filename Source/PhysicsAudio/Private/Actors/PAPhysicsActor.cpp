@@ -14,6 +14,8 @@ class UPAPhysicsAudioComponent;
 // Sets default values
 APAPhysicsActor::APAPhysicsActor()
 {
+	PrimaryActorTick.TickGroup = TG_PostPhysics;
+	
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	RootComponent = StaticMeshComponent;
 	StaticMeshComponent->SetCollisionProfileName("PhysicsActor");
@@ -55,8 +57,7 @@ void APAPhysicsActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 {
 	if (NormalImpulse.Size() < 50000.f)
 		return;
-	FVector mockDmg = FVector::One() * 50000.f * FMath::RandRange(.75f, 1.25f);
-	OnDamageDealt_Implementation(OtherActor, Hit, NormalImpulse);	
+	OnDamageDealt_Implementation(OtherActor, Hit, NormalImpulse * FMath::RandRange(.5f, .75f));	
 	
 	const TArray<USceneComponent*>& attachedChildren = StaticMeshComponent->GetAttachChildren();
 	
@@ -190,6 +191,7 @@ void APAPhysicsActor::OnDeath(AActor* Dealer, const FHitResult& Hit, const FVect
 	if (!IsValid(subsystem))
 		return;
 	subsystem->ReturnPhysicsAudioObjectToPool(StaticMeshComponent, nullptr, true);
+	const float velocity = FMath::Max(StaticMeshComponent->GetPhysicsLinearVelocity().Length(), 1000.f);
 	StaticMeshComponent->SetHiddenInGame(true);
 	StaticMeshComponent->SetSimulatePhysics(false);
 	StaticMeshComponent->OnComponentHit.RemoveAll(this);
@@ -218,7 +220,13 @@ void APAPhysicsActor::OnDeath(AActor* Dealer, const FHitResult& Hit, const FVect
 		newPhysicsActor->bCanBePickedUp = false;
 		
 		subsystem->TryAddPhysicsAudioToPrimitive(newPhysicsActor->StaticMeshComponent, PhysicsAudioProperties);		
-		newPhysicsActor->StaticMeshComponent->AddRadialImpulse(Hit.Location, 100.f, 1000.f, RIF_Linear, true );
+		newPhysicsActor->StaticMeshComponent->AddRadialImpulse(
+			Hit.Location,
+			100.f,
+			velocity,
+			RIF_Linear,
+			true
+			);
 		newPhysicsActor->SetLifeTime(5.f);
 	}
 	Destroy();
@@ -308,4 +316,10 @@ void APAPhysicsActor::OnDrop_Implementation(AActor* InInstigator)
 	UStaticMesh* staticMeshAsset = StaticMeshComponent->GetStaticMesh();
 	if (staticMeshAsset != nullptr)
 		ActivationSphereCollision->SetSphereRadius(ActivationSphereRadius, true);	
+	
+	const TArray<USceneComponent*>& attachedChildren = StaticMeshComponent->GetAttachChildren();
+	
+	for (USceneComponent* child : attachedChildren)
+		if (child && child->GetClass()->ImplementsInterface(ULookAtInterface::StaticClass()))
+			Execute_OnDrop(child, InInstigator);
 }

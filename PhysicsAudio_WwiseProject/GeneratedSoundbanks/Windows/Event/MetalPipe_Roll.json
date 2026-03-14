@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{795BECE8-E3D9-4EB2-9CD5-C19A9D3CFC62}",
     "Language": "SFX",
-    "Hash": "{101AF10C-FB22-83FA-9C2D-DAB9F346C762}",
+    "Hash": "{200CDD0A-4D75-A4A8-3179-98C597B3B3C2}",
     "ObjectPath": "MetalPipe_Roll",
     "ShortName": "MetalPipe_Roll",
     "Path": "Event/MetalPipe_Roll.bnk",
@@ -52,6 +52,18 @@
       "CachePath": "98/{98BC50A4-DF74-C667-69F6-5880BBFF533F}.wem"
      }
     ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "571670381",
+       "Name": "Time Stretch (Custom)",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\[Effect Slot [0]: (Time Stretch)]\\Time Stretch (Custom)",
+       "GUID": "{81036C4C-0423-470F-B2F9-FAE755687D95}",
+       "LibName": "Wwise Time Stretch",
+       "LibId": "8519683"
+      }
+     ]
+    },
     "Events": [
      {
       "Id": "2409010740",
@@ -73,7 +85,14 @@
        {
         "Id": "859314237"
        }
-      ]
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "571670381"
+        }
+       ]
+      }
      }
     ],
     "GameParameters": [
@@ -82,10 +101,16 @@
       "Name": "S_Roll",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Roll",
       "GUID": "{878403F9-00A7-4E86-A34C-75B2471275B1}"
+     },
+     {
+      "Id": "3564404055",
+      "Name": "S_TimeStretch",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\S_TimeStretch",
+      "GUID": "{26D637F1-4026-404F-909D-1F5839C249B4}"
      }
     ]
    }
   ],
-  "FileHash": "{E731FE0C-A6EF-6D68-2B8C-D1545EFC5E18}"
+  "FileHash": "{D6AA8524-43EF-4886-9E51-CDD43AA900DB}"
  }
 }

@@ -80,6 +80,12 @@ void UPAPhysicsAudioComponent::OnParentDestroyed()
 void UPAPhysicsAudioComponent::OnPickup_Implementation(AActor* InInstigator)
 {
 	bGrounded = false;
+	bPickedUp = true;
+}
+
+void UPAPhysicsAudioComponent::OnDrop_Implementation(AActor* InInstigator)
+{
+	bPickedUp = false;
 }
 
 void UPAPhysicsAudioComponent::OnPhysicsActorHit_Implementation(FVector NormalImpulse, const FHitResult& Hit)
@@ -127,9 +133,10 @@ void UPAPhysicsAudioComponent::OnAttachedToComponent_Internal(UPrimitiveComponen
 		}
 	bIsSliding = false;
 	bIsRolling = false;
-
+	
 	SetMassData();
 	SetCooldownVariables();
+	Activate();
 	LoadAkAudioEvents();
 }
 
@@ -170,11 +177,46 @@ float UPAPhysicsAudioComponent::NormalizeByMass(float InValue, float InMass, flo
 bool UPAPhysicsAudioComponent::ShouldPlayImpact(float InImpulseMagnitude) const
 {
 	if (CurrentImpactCooldown < ImpactCooldownThreshold)
+	{
+		/*UKismetSystemLibrary::DrawDebugString(
+			GetWorld(),
+			GetComponentLocation(),
+			"cooldown fail",
+			0,
+			FLinearColor::Red,
+			1.f
+			);*/
 		return false;
+	}
+		
 	if (CurrentVelocityMagnitude <= UPhysicsAudioSettings::GetMinVelocity())
+	{
+		/*UKismetSystemLibrary::DrawDebugString(
+			GetWorld(),
+			GetComponentLocation(),
+			"velo too low",
+			0,
+			FLinearColor::Red,
+			1.f
+			);*/
 		return false;
-	float velocityThreshold = bGrounded ? ImpactVelocityThreshold * ObjectMass : ImpactVelocityThreshold;    
-	return InImpulseMagnitude > velocityThreshold;
+	}
+		
+	float velocityThreshold = bGrounded ? ImpactVelocityThreshold * ObjectMass : ImpactVelocityThreshold;
+	bool success = InImpulseMagnitude > velocityThreshold;
+	if (!success)
+	{
+		/*UKismetSystemLibrary::DrawDebugString(
+			GetWorld(),
+			GetComponentLocation(),
+			"vel thresh fail",
+			0,
+			FLinearColor::Red,
+			1.f
+			);*/
+		return false;
+	}
+	return success;
 }
 
 void UPAPhysicsAudioComponent::StopContinuousSound(TArray<EPAEventType> InEventTypes)
@@ -259,7 +301,6 @@ void UPAPhysicsAudioComponent::OnAkAudioEventsLoaded()
 		}
 	}
 	SetInfiniteEventsVariables();
-	Activate();
 }
 
 void UPAPhysicsAudioComponent::SetInfiniteEventsVariables(TArray<EPAEventType> InEventTypes)
@@ -307,17 +348,22 @@ void UPAPhysicsAudioComponent::UpdatePhysicsState(float DeltaTime)
 {	
 	// Update velocity tracking
 	PreviousVelocityMagnitude = CurrentVelocityMagnitude;
-	CurrentVelocityMagnitude = ParentComponent->GetPhysicsLinearVelocity().Size();
+	CurrentVelocityMagnitude = ParentComponent->GetPhysicsLinearVelocity().Size();	
 	
-		
+	if (CurrentVelocityMagnitude < UPhysicsAudioSettings::GetMinVelocity())
+	{
+		bIsRolling = false;
+		bIsSliding = false;
+		return;
+	}
 	// Update grounded state
 	if (bGrounded)
 	{
 		// Calculate velocity delta
 		const float velocityMagnitudeDelta = FMath::Abs(CurrentVelocityMagnitude - PreviousVelocityMagnitude);
 		if (velocityMagnitudeDelta >= GroundedThreshold)
-			bGrounded = false;		
-	}		
+			bGrounded = false;
+	}
 	
 	// Update rolling state
 	// Get angular velocity
@@ -328,7 +374,7 @@ void UPAPhysicsAudioComponent::UpdatePhysicsState(float DeltaTime)
 	CurrentAngularSpeed = angularVel.Size();
 	
 	// Determine if rolling (angular velocity above threshold AND on ground)
-	bool bShouldBeRolling = bGrounded && CurrentAngularSpeed > RollThreshold;
+	bool bShouldBeRolling = bGrounded && !bPickedUp && CurrentAngularSpeed > RollThreshold;
 	
 	// Rolling cooldown to prevent rapid toggling
 	if (bShouldBeRolling)
@@ -342,7 +388,7 @@ void UPAPhysicsAudioComponent::UpdatePhysicsState(float DeltaTime)
 	else
 		bIsRolling = bGrounded; // Maintain rolling state during cooldown if grounded
 	
-	bIsSliding = bGrounded && !bIsRolling && CurrentVelocityMagnitude > UPhysicsAudioSettings::GetMinVelocity();
+	bIsSliding = bGrounded && !bPickedUp && !bIsRolling && CurrentVelocityMagnitude > UPhysicsAudioSettings::GetMinVelocity();
 }
 
 void UPAPhysicsAudioComponent::UpdateRTPCValues()

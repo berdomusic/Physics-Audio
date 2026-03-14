@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{09B7BBB7-1B22-4EE3-AF3B-D0C46C49F629}" SchemaVersion="123">
 	<GameParameters>
-		<WorkUnit Name="Default Work Unit" ID="{09B7BBB7-1B22-4EE3-AF3B-D0C46C49F629}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{09B7BBB7-1B22-4EE3-AF3B-D0C46C49F629}" PersistMode="Standalone">
+			<ChildrenList>
+				<GameParameter Name="S_TimeStretch" ID="{26D637F1-4026-404F-909D-1F5839C249B4}">
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="1"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+			</ChildrenList>
+		</WorkUnit>
 	</GameParameters>
 </WwiseDocument>

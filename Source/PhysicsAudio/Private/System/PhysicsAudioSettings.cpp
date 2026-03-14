@@ -36,6 +36,12 @@ float UPhysicsAudioSettings::GetRTPCTolerance()
 	return Settings ? Settings->PhysicsAudioRTPCTolerance : 1.0f;
 }
 
+bool UPhysicsAudioSettings::GetTimeDilationAffectsSound()
+{
+	const UPhysicsAudioSettings* Settings = GetDefault<UPhysicsAudioSettings>();
+	return Settings ? Settings->TimeDilationAffectsSound : false;
+}
+
 #if WITH_EDITOR
 void UPhysicsAudioSettings::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {

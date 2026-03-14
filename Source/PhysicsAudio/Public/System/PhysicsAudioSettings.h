@@ -4,13 +4,6 @@
 #include "Engine/DeveloperSettings.h"
 #include "PhysicsAudioSettings.generated.h"
 
-/*namespace PhysicsAudioSettings
-{
-	static constexpr float PHYSICS_AUDIO_DEACTIVATION_DELAY = 1.f;
-	static constexpr float PHYSICS_AUDIO_MIN_VELOCITY = 50.f;
-	static constexpr float PHYSICS_AUDIO_MIN_VELOCITY_SQUARED = FMath::Square(PHYSICS_AUDIO_MIN_VELOCITY);
-	static constexpr float PHYSICS_AUDIO_RTPC_TOLERANCE = 1.f;
-}*/
 
 UCLASS(Config=Game, DefaultConfig, meta=(DisplayName="PA - Physics Audio Settings"))
 class PHYSICSAUDIO_API UPhysicsAudioSettings : public UDeveloperSettings
@@ -19,12 +12,6 @@ class PHYSICSAUDIO_API UPhysicsAudioSettings : public UDeveloperSettings
 
 public:
     UPhysicsAudioSettings(const FObjectInitializer& ObjectInitializer);
-
-    /*// UDeveloperSettings interface
-    virtual FName GetContainerName() const override { return "Project"; }
-    virtual FName GetCategoryName() const override { return "Game"; }
-    virtual FName GetSectionName() const override { return "Physics Audio"; }
-    // End UDeveloperSettings interface*/
 
     /** Delay before deactivating physics audio attempts */
     UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Physics Audio", meta = (ClampMin = "0.0", Units = "s"))
@@ -41,6 +28,10 @@ public:
     /** Tolerance for RTPC value updates to prevent unnecessary updates */
     UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Physics Audio", meta = (ClampMin = "0.0"))
     float PhysicsAudioRTPCTolerance = 5.f;
+	
+	/** Global Time Dilation affects Wwise Time Stretch effect */
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Physics Audio")
+	bool TimeDilationAffectsSound = false;
 
     UFUNCTION(BlueprintPure, Category = "Physics Audio")
 	static float GetDeactivationDelay();
@@ -50,6 +41,8 @@ public:
     static float GetMinVelocitySquared();
     UFUNCTION(BlueprintPure, Category = "Physics Audio")
     static float GetRTPCTolerance();
+	UFUNCTION(BlueprintPure, Category = "Physics Audio")
+	static bool GetTimeDilationAffectsSound();
 
     // Update the cached squared value when min velocity changes
 #if WITH_EDITOR

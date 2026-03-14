@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{F41A4E9A-BD38-45AC-B796-628CCE4F67AE}",
     "Language": "SFX",
-    "Hash": "{250A9622-43F9-3D59-379F-79A52FAF0E2D}",
+    "Hash": "{9CCC83DB-6AEC-9836-41D2-7EB806F1FBA8}",
     "ObjectPath": "WoodenBoxDebris_Impact",
     "ShortName": "WoodenBoxDebris_Impact",
     "Path": "Event/WoodenBoxDebris_Impact.bnk",
@@ -99,6 +99,14 @@
          "Id": "986466163"
         }
        ]
+      },
+      {
+       "Id": "571670381",
+       "Name": "Time Stretch (Custom)",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\[Effect Slot [0]: (Time Stretch)]\\Time Stretch (Custom)",
+       "GUID": "{81036C4C-0423-470F-B2F9-FAE755687D95}",
+       "LibName": "Wwise Time Stretch",
+       "LibId": "8519683"
       }
      ]
     },
@@ -114,6 +122,9 @@
        "Custom": [
         {
          "Id": "12674208"
+        },
+        {
+         "Id": "571670381"
         }
        ]
       }
@@ -133,6 +144,12 @@
       "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
      },
      {
+      "Id": "3564404055",
+      "Name": "S_TimeStretch",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\S_TimeStretch",
+      "GUID": "{26D637F1-4026-404F-909D-1F5839C249B4}"
+     },
+     {
       "Id": "3874927894",
       "Name": "S_Slide",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
@@ -147,6 +164,6 @@
     ]
    }
   ],
-  "FileHash": "{BD2B1E6E-0FC7-871D-3CFF-F8FC9C197183}"
+  "FileHash": "{FA087CCD-BF8C-1D47-C032-9155B3258A77}"
  }
 }

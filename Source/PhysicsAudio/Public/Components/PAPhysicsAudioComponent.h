@@ -37,6 +37,7 @@ public:
 	}
 protected:
 	virtual void OnPickup_Implementation(AActor* InInstigator) override;
+	virtual void OnDrop_Implementation(AActor* InInstigator) override;
 	virtual void OnPhysicsActorHit_Implementation(FVector NormalImpulse, const FHitResult& Hit) override;
 	UFUNCTION()
 	virtual void OnHitByProjectile_Implementation(AActor* ProjectileActor, const FHitResult& Hit,
@@ -107,7 +108,6 @@ protected:
 	UPrimitiveComponent* ParentComponent;
 	
 	// Cooldowns
-	UPROPERTY(BlueprintReadOnly)
 	float CurrentImpactCooldown = .1f;
 	float ImpactCooldownThreshold = .1f;	
 	float CurrentSlideCooldown = .1f;
@@ -127,6 +127,7 @@ protected:
 	static float NormalizeByMass(float InValue, float InMass, float InExponent = .5f);
 	bool ShouldPlayImpact(float InImpulseMagnitude) const;
 	bool bGrounded;
+	bool bPickedUp;
 	const float GroundedThreshold = 50.f;
 	
 	virtual void Activate(bool bReset = false) override;

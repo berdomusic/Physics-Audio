@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{6A36F9BF-6877-4C36-A128-E8B48104D1D4}",
     "Language": "SFX",
-    "Hash": "{2EF71252-5470-2C05-E558-12C497B58BFA}",
+    "Hash": "{F6DE7A0E-8162-FC3E-F0C3-37E62EEB84BB}",
     "ObjectPath": "Sci_fi_Container_Impact",
     "ShortName": "Sci_fi_Container_Impact",
     "Path": "Event/Sci_fi_Container_Impact.bnk",
@@ -91,6 +91,14 @@
     "Plugins": {
      "Custom": [
       {
+       "Id": "571670381",
+       "Name": "Time Stretch (Custom)",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\[Effect Slot [0]: (Time Stretch)]\\Time Stretch (Custom)",
+       "GUID": "{81036C4C-0423-470F-B2F9-FAE755687D95}",
+       "LibName": "Wwise Time Stretch",
+       "LibId": "8519683"
+      },
+      {
        "Id": "894668602",
        "Name": "Impacter",
        "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\Impact\\Sci_fi_Container_Impact\\Impacter",
@@ -137,6 +145,9 @@
       "PluginRefs": {
        "Custom": [
         {
+         "Id": "571670381"
+        },
+        {
          "Id": "894668602"
         }
        ]
@@ -157,6 +168,12 @@
       "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
      },
      {
+      "Id": "3564404055",
+      "Name": "S_TimeStretch",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\S_TimeStretch",
+      "GUID": "{26D637F1-4026-404F-909D-1F5839C249B4}"
+     },
+     {
       "Id": "3874927894",
       "Name": "S_Slide",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
@@ -171,6 +188,6 @@
     ]
    }
   ],
-  "FileHash": "{020CD31E-F5B1-0F78-34CE-DCEBF5BC7DA9}"
+  "FileHash": "{FC123F25-F0BA-473A-C456-7761D4E4D8E2}"
  }
 }

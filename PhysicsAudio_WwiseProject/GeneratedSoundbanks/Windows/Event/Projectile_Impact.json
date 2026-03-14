@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{F47466CA-B9D9-49EC-B964-3A6BEC6DF42B}",
     "Language": "SFX",
-    "Hash": "{8EE0DF15-0988-CC26-FFCF-C33A3B244675}",
+    "Hash": "{35E82978-BCCD-D25C-E2A6-C70ECBFD2719}",
     "ObjectPath": "Projectile_Impact",
     "ShortName": "Projectile_Impact",
     "Path": "Event/Projectile_Impact.bnk",
@@ -106,6 +106,18 @@
       "CachePath": "AD/{AD52AC33-4878-FB80-0C6E-3A61A5B60492}.wem"
      }
     ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "571670381",
+       "Name": "Time Stretch (Custom)",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\[Effect Slot [0]: (Time Stretch)]\\Time Stretch (Custom)",
+       "GUID": "{81036C4C-0423-470F-B2F9-FAE755687D95}",
+       "LibName": "Wwise Time Stretch",
+       "LibId": "8519683"
+      }
+     ]
+    },
     "Events": [
      {
       "Id": "1515280609",
@@ -114,8 +126,8 @@
       "GUID": "{F47466CA-B9D9-49EC-B964-3A6BEC6DF42B}",
       "MaxAttenuation": "3000",
       "DurationType": "OneShot",
-      "DurationMin": "0.23414905",
-      "DurationMax": "1.3660636",
+      "DurationMin": "0.22100727",
+      "DurationMax": "1.447294",
       "MediaRefs": [
        {
         "Id": "136236821"
@@ -158,6 +170,12 @@
       "GUID": "{878403F9-00A7-4E86-A34C-75B2471275B1}"
      },
      {
+      "Id": "3564404055",
+      "Name": "S_TimeStretch",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\S_TimeStretch",
+      "GUID": "{26D637F1-4026-404F-909D-1F5839C249B4}"
+     },
+     {
       "Id": "3874927894",
       "Name": "S_Slide",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
@@ -172,6 +190,6 @@
     ]
    }
   ],
-  "FileHash": "{E1B1E245-803E-907B-6767-8C8C14D0AF7E}"
+  "FileHash": "{8AC8BFFC-E3C2-8DB2-05CD-BFB834372E97}"
  }
 }

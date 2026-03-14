@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{8DAFD110-2745-47E4-BAE8-CA4960870025}",
     "Language": "SFX",
-    "Hash": "{DA250B7E-4975-1D23-8A6B-51B18795D0A7}",
+    "Hash": "{53003046-1330-229E-BC10-2FD792A721F7}",
     "ObjectPath": "MetalPipe_Projectile",
     "ShortName": "MetalPipe_Projectile",
     "Path": "Event/MetalPipe_Projectile.bnk",
@@ -70,6 +70,18 @@
       "CachePath": "82/{829D8F2A-00FF-A5E9-E93D-8D27F245BBBD}.wem"
      }
     ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "571670381",
+       "Name": "Time Stretch (Custom)",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\[Effect Slot [0]: (Time Stretch)]\\Time Stretch (Custom)",
+       "GUID": "{81036C4C-0423-470F-B2F9-FAE755687D95}",
+       "LibName": "Wwise Time Stretch",
+       "LibId": "8519683"
+      }
+     ]
+    },
     "Events": [
      {
       "Id": "1584434112",
@@ -99,7 +111,14 @@
        {
         "Id": "911053206"
        }
-      ]
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "571670381"
+        }
+       ]
+      }
      }
     ],
     "GameParameters": [
@@ -114,10 +133,16 @@
       "Name": "S_ProjectileSpeed",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_ProjectileSpeed",
       "GUID": "{2A573DD8-4FCF-473F-BB3F-E2188568AB17}"
+     },
+     {
+      "Id": "3564404055",
+      "Name": "S_TimeStretch",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\S_TimeStretch",
+      "GUID": "{26D637F1-4026-404F-909D-1F5839C249B4}"
      }
     ]
    }
   ],
-  "FileHash": "{EE2F21F6-3D3D-4377-77C9-0FB21A9D67C8}"
+  "FileHash": "{1F5ECC3B-98C3-F1C4-E587-E861C5E24355}"
  }
 }

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{57FE86C3-0FBA-418E-8DFD-EA33F13E8B9B}",
     "Language": "SFX",
-    "Hash": "{96B4C2D9-ED81-EBA3-4E21-AEC295A6F0AC}",
+    "Hash": "{9E5CCA39-36D6-ED92-C08E-6E7DD21AC954}",
     "ObjectPath": "WoodenBox_Impact",
     "ShortName": "WoodenBox_Impact",
     "Path": "Event/WoodenBox_Impact.bnk",
@@ -106,6 +106,18 @@
       "CachePath": "0C/{0CC47390-B874-5CA7-8C8E-9F341073D23A}.wem"
      }
     ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "571670381",
+       "Name": "Time Stretch (Custom)",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\[Effect Slot [0]: (Time Stretch)]\\Time Stretch (Custom)",
+       "GUID": "{81036C4C-0423-470F-B2F9-FAE755687D95}",
+       "LibName": "Wwise Time Stretch",
+       "LibId": "8519683"
+      }
+     ]
+    },
     "Events": [
      {
       "Id": "1420461159",
@@ -114,8 +126,8 @@
       "GUID": "{57FE86C3-0FBA-418E-8DFD-EA33F13E8B9B}",
       "MaxAttenuation": "4000",
       "DurationType": "OneShot",
-      "DurationMin": "0.3373684",
-      "DurationMax": "1.0325774",
+      "DurationMin": "0.31843337",
+      "DurationMax": "1.0939776",
       "MediaRefs": [
        {
         "Id": "58457214"
@@ -147,7 +159,14 @@
        {
         "Id": "877420925"
        }
-      ]
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "571670381"
+        }
+       ]
+      }
      }
     ],
     "GameParameters": [
@@ -164,6 +183,12 @@
       "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
      },
      {
+      "Id": "3564404055",
+      "Name": "S_TimeStretch",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\S_TimeStretch",
+      "GUID": "{26D637F1-4026-404F-909D-1F5839C249B4}"
+     },
+     {
       "Id": "3874927894",
       "Name": "S_Slide",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
@@ -178,6 +203,6 @@
     ]
    }
   ],
-  "FileHash": "{9A7E2284-CCF7-A4DA-E1A6-2C5284ABEF6B}"
+  "FileHash": "{C4294669-7F1F-EE21-43A2-93202DF5D65C}"
  }
 }

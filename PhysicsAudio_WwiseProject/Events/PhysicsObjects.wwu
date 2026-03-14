@@ -204,6 +204,17 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="MetalPipeHeavy_Impact" ID="{379FF1F1-853D-4AAF-A9A6-D032F7769FB3}">
+							<ChildrenList>
+								<Action Name="" ID="{75F00210-B505-42C4-8021-4CEF933DAE6F}" ShortID="407994747">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MetalPipeHeavy_Impact" ID="{C196A541-9E7B-4223-BCC0-E00D4F3CCB45}" WorkUnitID="{54793D42-E842-4AC9-814A-EBB297C54335}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Event Name="Stop_Roll" ID="{E0A02FA0-4BC1-480B-9C6A-4558BE261162}">
@@ -211,7 +222,7 @@
 						<Action Name="" ID="{7393FD29-28C7-4EB7-89EC-0B95DFE55EEC}" ShortID="439096330">
 							<PropertyList>
 								<Property Name="ActionType" Type="int16" Value="2"/>
-								<Property Name="FadeTime" Type="Real64" Value="0.2"/>
+								<Property Name="FadeTime" Type="Real64" Value="0.3"/>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Target">
@@ -226,7 +237,7 @@
 						<Action Name="" ID="{602E6DEC-31C7-406E-8E75-91DC68CEFADF}" ShortID="86641266">
 							<PropertyList>
 								<Property Name="ActionType" Type="int16" Value="2"/>
-								<Property Name="FadeTime" Type="Real64" Value="0.2"/>
+								<Property Name="FadeTime" Type="Real64" Value="0.3"/>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Target">

@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{AAADBCEA-6AF8-49AA-AD60-4F6106E3AB4D}",
     "Language": "SFX",
-    "Hash": "{18DFF8D1-92FE-9FF5-C5FC-7C3F1806DF50}",
+    "Hash": "{09A4190C-6CDB-25F6-9B1A-61089E37FD12}",
     "ObjectPath": "MetalPipe_Impact",
     "ShortName": "MetalPipe_Impact",
     "Path": "Event/MetalPipe_Impact.bnk",
@@ -88,6 +88,18 @@
       "CachePath": "2E/{2E46954F-6AF1-0BE0-9F4D-1689073DCD8A}.wem"
      }
     ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "571670381",
+       "Name": "Time Stretch (Custom)",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\PhysicsObjects\\Main\\[Effect Slot [0]: (Time Stretch)]\\Time Stretch (Custom)",
+       "GUID": "{81036C4C-0423-470F-B2F9-FAE755687D95}",
+       "LibName": "Wwise Time Stretch",
+       "LibId": "8519683"
+      }
+     ]
+    },
     "Events": [
      {
       "Id": "2729294339",
@@ -96,8 +108,8 @@
       "GUID": "{AAADBCEA-6AF8-49AA-AD60-4F6106E3AB4D}",
       "MaxAttenuation": "4000",
       "DurationType": "OneShot",
-      "DurationMin": "0.3835802",
-      "DurationMax": "1.4745517",
+      "DurationMin": "0.3620515",
+      "DurationMax": "1.562233",
       "MediaRefs": [
        {
         "Id": "9650817"
@@ -123,7 +135,14 @@
        {
         "Id": "1045146451"
        }
-      ]
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "571670381"
+        }
+       ]
+      }
      }
     ],
     "GameParameters": [
@@ -140,6 +159,12 @@
       "GUID": "{D46BCAFE-384E-4DC6-B17C-FB5B8E1D1F43}"
      },
      {
+      "Id": "3564404055",
+      "Name": "S_TimeStretch",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\S_TimeStretch",
+      "GUID": "{26D637F1-4026-404F-909D-1F5839C249B4}"
+     },
+     {
       "Id": "3874927894",
       "Name": "S_Slide",
       "ObjectPath": "\\Game Parameters\\PhysicsObjects\\S_Slide",
@@ -154,6 +179,6 @@
     ]
    }
   ],
-  "FileHash": "{1780163E-D8A2-5A43-421E-EEF897EFB66C}"
+  "FileHash": "{A383528D-779D-631A-84C6-BDEC6961E654}"
  }
 }

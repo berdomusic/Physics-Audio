@@ -49,6 +49,18 @@
 							</ModifierList>
 						</Property>
 						<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+						<Property Name="Volume" Type="Real64">
+							<ModifierList>
+								<ModifierInfo>
+									<Modifier Name="" ID="{2B24FE19-B3D8-4C6E-A040-CAF7A8CB6E73}">
+										<PropertyList>
+											<Property Name="Enabled" Type="bool" Value="True"/>
+											<Property Name="Min" Type="Real64" Value="-1"/>
+										</PropertyList>
+									</Modifier>
+								</ModifierInfo>
+							</ModifierList>
+						</Property>
 					</PropertyList>
 					<ReferenceList>
 						<Reference Name="Attenuation">
@@ -89,8 +101,8 @@
 											<Modifier Name="" ID="{74C77B72-B30D-40EF-944E-D0F0C613F477}">
 												<PropertyList>
 													<Property Name="Enabled" Type="bool" Value="True"/>
-													<Property Name="Max" Type="Real64" Value="100"/>
-													<Property Name="Min" Type="Real64" Value="-100"/>
+													<Property Name="Max" Type="Real64" Value="200"/>
+													<Property Name="Min" Type="Real64" Value="-200"/>
 												</PropertyList>
 											</Modifier>
 										</ModifierInfo>
@@ -100,6 +112,16 @@
 									<ValueList>
 										<Value>3</Value>
 									</ValueList>
+									<ModifierList>
+										<ModifierInfo>
+											<Modifier Name="" ID="{C72831E3-76DB-468D-977B-82B1545D245F}">
+												<PropertyList>
+													<Property Name="Enabled" Type="bool" Value="True"/>
+													<Property Name="Min" Type="Real64" Value="-1"/>
+												</PropertyList>
+											</Modifier>
+										</ModifierInfo>
+									</ModifierList>
 								</Property>
 							</PropertyList>
 							<ReferenceList>
@@ -112,6 +134,15 @@
 							</ReferenceList>
 							<ChildrenList>
 								<Sound Name="Sci_fi_Container_Impact" ID="{501F7C3E-7AE9-4A41-912C-1498BAB77C5B}" ShortID="578669532">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{60BA0171-B059-439C-9D20-E707DE33EE91}"/>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
@@ -123,8 +154,8 @@
 									<ChildrenList>
 										<SourcePlugin Name="Impacter" ID="{6A775AD7-000D-4C36-83FA-D1680BD6FB15}" ShortID="894668602" PluginName="Impacter" CompanyID="0" PluginID="184">
 											<PropertyList>
-												<Property Name="ImpactPosition" Type="Real32" Value="0.5"/>
-												<Property Name="ImpactPositionRandom" Type="Real32" Value="0.5"/>
+												<Property Name="ExcitationSelectionMode" Type="int16" Value="0"/>
+												<Property Name="FileExcitation" Type="int32" Value="3"/>
 												<Property Name="Mass" Type="Real32" Value="2"/>
 												<Property Name="NumFiles" Type="int32" Value="8"/>
 											</PropertyList>
@@ -2151,6 +2182,7 @@
 																				<XPos>0</XPos>
 																				<YPos>10</YPos>
 																				<Flags>5</Flags>
+																				<SegmentShape>Exp1</SegmentShape>
 																			</Point>
 																			<Point>
 																				<XPos>100</XPos>
@@ -2257,6 +2289,7 @@
 																				<XPos>0.1</XPos>
 																				<YPos>1200</YPos>
 																				<Flags>5</Flags>
+																				<SegmentShape>Exp1</SegmentShape>
 																			</Point>
 																			<Point>
 																				<XPos>500</XPos>
@@ -3187,6 +3220,706 @@
 										</ObjectList>
 									</ObjectLists>
 								</BlendContainer>
+								<BlendContainer Name="MetalPipeHeavy_Impact" ID="{C196A541-9E7B-4223-BCC0-E00D4F3CCB45}" ShortID="813907566">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-6</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<RandomSequenceContainer Name="MetalPipe_Impact" ID="{3F3A9D09-DD0E-4EDC-B30F-BC1294CF1CE3}" ShortID="77511575">
+											<PropertyList>
+												<Property Name="Highpass" Type="int16">
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{7438386F-7D84-4E33-B04F-18E237FC7362}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Max" Type="Real64" Value="10"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+												<Property Name="Lowpass" Type="int16">
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{4C603CA0-E4AF-4678-B0C0-C9D75593B7EC}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Max" Type="Real64" Value="10"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>3</Value>
+													</ValueList>
+												</Property>
+												<Property Name="OverLimitBehavior" Type="int16" Value="1"/>
+												<Property Name="Pitch" Type="int32">
+													<ValueList>
+														<Value>-900</Value>
+													</ValueList>
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{3064706E-9710-4959-918F-2F285CC3D451}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Max" Type="Real64" Value="200"/>
+																	<Property Name="Min" Type="Real64" Value="-200"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+												<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="6"/>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<Sound Name="IMP_MetalPipe-005" ID="{02CFB421-AD2E-4502-BB83-5CA1BC78F365}" ShortID="724534822">
+													<PropertyList>
+														<Property Name="Pitch" Type="int32">
+															<ModifierList>
+																<ModifierInfo>
+																	<Modifier Name="" ID="{69463C1E-8232-4607-BAEC-372E0ED667F6}"/>
+																</ModifierInfo>
+															</ModifierList>
+														</Property>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="IMP_MetalPipe-005" ID="{A9064668-65CB-4219-A3A3-3AC894A73CD9}">
+															<PropertyList>
+																<Property Name="FadeInDuration" Type="Real64" Value="0.0285361621538017"/>
+																<Property Name="FadeOutDuration" Type="Real64" Value="0.375360262982894"/>
+																<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+																<Property Name="TrimEnd" Type="Real64" Value="0.508839586961026"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>IMP_MetalPipe-005.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="1045146451"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="IMP_MetalPipe-005" ID="{A9064668-65CB-4219-A3A3-3AC894A73CD9}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="IMP_MetalPipe-008" ID="{9339A02E-7973-4548-9787-AB4241C83E2B}" ShortID="621347679">
+													<PropertyList>
+														<Property Name="Pitch" Type="int32">
+															<ModifierList>
+																<ModifierInfo>
+																	<Modifier Name="" ID="{4848F978-5448-4338-AA57-71E81F2AD2CE}"/>
+																</ModifierInfo>
+															</ModifierList>
+														</Property>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="IMP_MetalPipe-008" ID="{6592E381-B64A-4557-9912-D543CEFAB05D}">
+															<PropertyList>
+																<Property Name="FadeInDuration" Type="Real64" Value="0.0239015095649832"/>
+																<Property Name="FadeOutDuration" Type="Real64" Value="0.05041721336708"/>
+																<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>IMP_MetalPipe-008.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="911053206"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="IMP_MetalPipe-008" ID="{6592E381-B64A-4557-9912-D543CEFAB05D}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="IMP_MetalPipe-009" ID="{4E30B839-0C5C-403B-AE55-793C7F3E1476}" ShortID="472371422">
+													<PropertyList>
+														<Property Name="Pitch" Type="int32">
+															<ModifierList>
+																<ModifierInfo>
+																	<Modifier Name="" ID="{0B39CD39-2D11-4EF6-9638-C175E68FB926}"/>
+																</ModifierInfo>
+															</ModifierList>
+														</Property>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="IMP_MetalPipe-009" ID="{0FA988FB-AB77-48EA-8FAE-DDDC2DD280BD}">
+															<PropertyList>
+																<Property Name="FadeInDuration" Type="Real64" Value="0.0222276258820105"/>
+																<Property Name="LoopBegin" Type="Real64" Value="0"/>
+																<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>IMP_MetalPipe-009.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="9650817"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="IMP_MetalPipe-009" ID="{0FA988FB-AB77-48EA-8FAE-DDDC2DD280BD}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{FA58DF7F-A904-4E3A-BD02-653EDD7FD86D}" ShortID="159498182">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Highpass"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{BBABEEB8-D6CB-4DED-8B10-1FD66924D336}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>10</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{8F7CE321-26F4-4082-9D0C-2D60C7280F1C}" ShortID="139958149">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Pitch"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{ECF499BC-3D4F-4504-971D-6493FC248D21}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>300</YPos>
+																						<Flags>5</Flags>
+																						<SegmentShape>Log3</SegmentShape>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{0887A37C-A280-4F0C-B644-E1A1508F8A6C}" ShortID="785327141">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Lowpass"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{7FD78670-3DAE-43BD-8BD5-92671EAF502F}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="65537"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>10</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{192C8D6A-CB93-4CE5-A415-0ED5F970278B}" ShortID="745446597">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{7490AD47-2BF8-44D3-BB78-00F0C5087D95}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-6</YPos>
+																						<Flags>5</Flags>
+																						<SegmentShape>Log2</SegmentShape>
+																					</Point>
+																					<Point>
+																						<XPos>100</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+										</RandomSequenceContainer>
+										<RandomSequenceContainer Name="Additional" ID="{81A6B2F3-2C34-409B-A1BC-5B84F8C9794B}" ShortID="243164363">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="Highpass" Type="int16">
+													<ValueList>
+														<Value>15</Value>
+													</ValueList>
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{51A2FB80-89B7-4BEA-959E-1CAC26AF76E9}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Max" Type="Real64" Value="10"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+												<Property Name="OverridePositioning" Type="bool" Value="True"/>
+												<Property Name="Pitch" Type="int32">
+													<ValueList>
+														<Value>600</Value>
+													</ValueList>
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{F123CE70-C34C-441D-9229-B4DBEAE67078}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Max" Type="Real64" Value="150"/>
+																	<Property Name="Min" Type="Real64" Value="-300"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-3</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<Custom CreatedFrom="{222699AC-63CD-496A-9143-BC11BEFE995B}">
+														<Attenuation Name="ATT_PhysicsImpact (Custom)" ID="{302F8AD1-65D1-437B-B997-B8BD8D663B18}" ShortID="303330045">
+															<PropertyList>
+																<Property Name="RadiusMax" Type="Real64" Value="4000"/>
+															</PropertyList>
+															<CurveUsageInfoList>
+																<VolumeDryUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
+																		<Curve Name="VolumeDry" ID="{03216907-409A-4814-A050-AFC166534FE4}">
+																			<PropertyList>
+																				<Property Name="Flags" Type="int32" Value="3"/>
+																			</PropertyList>
+																			<PointList>
+																				<Point>
+																					<XPos>0</XPos>
+																					<YPos>0</YPos>
+																					<Flags>5</Flags>
+																				</Point>
+																				<Point>
+																					<XPos>4000</XPos>
+																					<YPos>-200</YPos>
+																					<Flags>37</Flags>
+																				</Point>
+																			</PointList>
+																		</Curve>
+																	</CurveUsageInfo>
+																</VolumeDryUsage>
+																<VolumeWetGameUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+																</VolumeWetGameUsage>
+																<VolumeWetUserUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+																</VolumeWetUserUsage>
+																<LowPassFilterUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
+																		<Curve Name="LowPassFilter" ID="{B561F0F8-AE28-4AAF-A2C5-7516F8EBF9F6}">
+																			<PropertyList>
+																				<Property Name="Flags" Type="int32" Value="65537"/>
+																			</PropertyList>
+																			<PointList>
+																				<Point>
+																					<XPos>0</XPos>
+																					<YPos>0</YPos>
+																					<Flags>5</Flags>
+																				</Point>
+																				<Point>
+																					<XPos>4000</XPos>
+																					<YPos>25</YPos>
+																					<Flags>37</Flags>
+																				</Point>
+																			</PointList>
+																		</Curve>
+																	</CurveUsageInfo>
+																</LowPassFilterUsage>
+																<HighPassFilterUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
+																		<Curve Name="HighPassFilter" ID="{3D17C26E-E346-4B04-9C7D-CC10E0AD155F}">
+																			<PropertyList>
+																				<Property Name="Flags" Type="int32" Value="65537"/>
+																			</PropertyList>
+																			<PointList>
+																				<Point>
+																					<XPos>0</XPos>
+																					<YPos>0</YPos>
+																					<Flags>5</Flags>
+																					<SegmentShape>Log1</SegmentShape>
+																				</Point>
+																				<Point>
+																					<XPos>4000</XPos>
+																					<YPos>50</YPos>
+																					<Flags>37</Flags>
+																				</Point>
+																			</PointList>
+																		</Curve>
+																	</CurveUsageInfo>
+																</HighPassFilterUsage>
+																<SpreadUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
+																		<Curve Name="Spread" ID="{F680B098-AD92-467B-93DD-6858FA838A32}">
+																			<PropertyList>
+																				<Property Name="Flags" Type="int32" Value="1"/>
+																			</PropertyList>
+																			<PointList>
+																				<Point>
+																					<XPos>0</XPos>
+																					<YPos>60</YPos>
+																					<Flags>5</Flags>
+																				</Point>
+																				<Point>
+																					<XPos>4000</XPos>
+																					<YPos>15</YPos>
+																					<Flags>37</Flags>
+																				</Point>
+																			</PointList>
+																		</Curve>
+																	</CurveUsageInfo>
+																</SpreadUsage>
+																<FocusUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+																</FocusUsage>
+																<ObstructionVolumeUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+																</ObstructionVolumeUsage>
+																<ObstructionLPFUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+																</ObstructionLPFUsage>
+																<ObstructionHPFUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+																</ObstructionHPFUsage>
+																<OcclusionVolumeUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+																</OcclusionVolumeUsage>
+																<OcclusionLPFUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+																</OcclusionLPFUsage>
+																<OcclusionHPFUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+																</OcclusionHPFUsage>
+																<DiffractionVolumeUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+																</DiffractionVolumeUsage>
+																<DiffractionLPFUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+																</DiffractionLPFUsage>
+																<DiffractionHPFUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+																</DiffractionHPFUsage>
+																<TransmissionVolumeUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+																</TransmissionVolumeUsage>
+																<TransmissionLPFUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+																</TransmissionLPFUsage>
+																<TransmissionHPFUsage>
+																	<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+																</TransmissionHPFUsage>
+															</CurveUsageInfoList>
+														</Attenuation>
+													</Custom>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<Sound Name="IMP_Sci-Fi_Container-001" ID="{AA757EE1-981A-45AA-8F35-4458FD534535}" ShortID="454052237">
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Attenuation">
+															<ObjectRef Name="ATT_PhysicsImpact" ID="{222699AC-63CD-496A-9143-BC11BEFE995B}" WorkUnitID="{D0B4EF31-0BAB-4AFC-AC2E-036AB39C5AAF}"/>
+														</Reference>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Impact" ID="{37974C39-7D0A-4CB1-A25B-75C396EBB209}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="IMP_Sci-Fi_Container-001" ID="{287DEDB3-00BB-4069-8A1B-7C23DB8B857C}">
+															<PropertyList>
+																<Property Name="FadeInDuration" Type="Real64" Value="0.102039427292056"/>
+																<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>IMP_Sci-Fi_Container-001.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="374687291"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="IMP_Sci-Fi_Container-001" ID="{287DEDB3-00BB-4069-8A1B-7C23DB8B857C}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="IMP_Sci-Fi_Container-002" ID="{8532FFAA-D2A7-467E-9AF3-5FDE7862B2B4}" ShortID="525003522">
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Attenuation">
+															<ObjectRef Name="ATT_PhysicsImpact" ID="{222699AC-63CD-496A-9143-BC11BEFE995B}" WorkUnitID="{D0B4EF31-0BAB-4AFC-AC2E-036AB39C5AAF}"/>
+														</Reference>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Impact" ID="{37974C39-7D0A-4CB1-A25B-75C396EBB209}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="IMP_Sci-Fi_Container-002" ID="{D7BB242B-78B4-4DE0-9FCE-C6C956E1D6C6}">
+															<PropertyList>
+																<Property Name="FadeInDuration" Type="Real64" Value="0.149247491868531"/>
+																<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>IMP_Sci-Fi_Container-002.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="870176690"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="IMP_Sci-Fi_Container-002" ID="{D7BB242B-78B4-4DE0-9FCE-C6C956E1D6C6}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="IMP_Sci-Fi_Container-003" ID="{057B5820-D37D-4659-8A5C-5AC5744D4AA8}" ShortID="196458790">
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Attenuation">
+															<ObjectRef Name="ATT_PhysicsImpact" ID="{222699AC-63CD-496A-9143-BC11BEFE995B}" WorkUnitID="{D0B4EF31-0BAB-4AFC-AC2E-036AB39C5AAF}"/>
+														</Reference>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Impact" ID="{37974C39-7D0A-4CB1-A25B-75C396EBB209}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="IMP_Sci-Fi_Container-003" ID="{A27CE50A-FBEA-4D65-BADE-1C83F677D209}">
+															<PropertyList>
+																<Property Name="FadeInDuration" Type="Real64" Value="0.124541637374134"/>
+																<Property Name="LoopBegin" Type="Real64" Value="0"/>
+																<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>IMP_Sci-Fi_Container-003.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="300915898"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="IMP_Sci-Fi_Container-003" ID="{A27CE50A-FBEA-4D65-BADE-1C83F677D209}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="IMP_Sci-Fi_Container-004" ID="{5CD4235F-32D1-41DC-BFB2-A26FF046BD83}" ShortID="1013552055">
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Attenuation">
+															<ObjectRef Name="ATT_PhysicsImpact" ID="{222699AC-63CD-496A-9143-BC11BEFE995B}" WorkUnitID="{D0B4EF31-0BAB-4AFC-AC2E-036AB39C5AAF}"/>
+														</Reference>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Impact" ID="{37974C39-7D0A-4CB1-A25B-75C396EBB209}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="IMP_Sci-Fi_Container-004" ID="{9BE3741B-D983-45C7-85D6-2670F4D3BBCA}">
+															<PropertyList>
+																<Property Name="FadeInDuration" Type="Real64" Value="0.210673646229069"/>
+																<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>IMP_Sci-Fi_Container-004.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="939587589"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="IMP_Sci-Fi_Container-004" ID="{9BE3741B-D983-45C7-85D6-2670F4D3BBCA}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="IMP_Sci-Fi_Container-005" ID="{7E9A13E0-5B08-46D7-A43B-B1330C7C1F35}" ShortID="920868892">
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Attenuation">
+															<ObjectRef Name="ATT_PhysicsImpact" ID="{222699AC-63CD-496A-9143-BC11BEFE995B}" WorkUnitID="{D0B4EF31-0BAB-4AFC-AC2E-036AB39C5AAF}"/>
+														</Reference>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{6E090465-190C-4338-8BD3-2F4B73AE701C}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Impact" ID="{37974C39-7D0A-4CB1-A25B-75C396EBB209}" WorkUnitID="{548C1D2F-53FD-4308-BFDB-FD09B4A84618}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="IMP_Sci-Fi_Container-005" ID="{09338F76-9004-4029-94F1-9DAF2505C741}">
+															<PropertyList>
+																<Property Name="FadeInDuration" Type="Real64" Value="0.196767664537197"/>
+																<Property Name="LoopBegin" Type="Real64" Value="0"/>
+																<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>IMP_Sci-Fi_Container-005.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="1015050619"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="IMP_Sci-Fi_Container-005" ID="{09338F76-9004-4029-94F1-9DAF2505C741}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+											</ChildrenList>
+										</RandomSequenceContainer>
+									</ChildrenList>
+								</BlendContainer>
 							</ChildrenList>
 							<ObjectLists>
 								<ObjectList Name="RTPC">
@@ -3211,11 +3944,11 @@
 																		<XPos>0</XPos>
 																		<YPos>0</YPos>
 																		<Flags>5</Flags>
-																		<SegmentShape>Log2</SegmentShape>
+																		<SegmentShape>Exp1</SegmentShape>
 																	</Point>
 																	<Point>
 																		<XPos>100</XPos>
-																		<YPos>-16</YPos>
+																		<YPos>-6</YPos>
 																		<Flags>37</Flags>
 																	</Point>
 																</PointList>
@@ -3247,11 +3980,11 @@
 																		<XPos>0</XPos>
 																		<YPos>0</YPos>
 																		<Flags>5</Flags>
-																		<SegmentShape>Log2</SegmentShape>
+																		<SegmentShape>Exp1</SegmentShape>
 																	</Point>
 																	<Point>
 																		<XPos>100</XPos>
-																		<YPos>-16</YPos>
+																		<YPos>-6</YPos>
 																		<Flags>37</Flags>
 																	</Point>
 																</PointList>
@@ -3264,29 +3997,29 @@
 									</Reference>
 									<Reference>
 										<Local>
-											<RTPC Name="" ID="{DEE44F46-F0F8-448F-A76A-81255FE33F2A}" ShortID="772136568">
+											<RTPC Name="" ID="{1ADB2AB4-D4A1-492A-A6D8-AA09E82FA31C}" ShortID="136119752">
 												<PropertyList>
-													<Property Name="PropertyName" Type="string" Value="Highpass"/>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
 												</PropertyList>
 												<ReferenceList>
 													<Reference Name="ControlInput">
-														<ObjectRef Name="S_Roll" ID="{878403F9-00A7-4E86-A34C-75B2471275B1}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+														<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{5A721AFF-5C4B-41CB-846E-34C7362910C3}">
+															<Curve Name="" ID="{724F8AB9-B7E8-45A0-865B-90D4876F2407}">
 																<PropertyList>
-																	<Property Name="Flags" Type="int32" Value="65537"/>
+																	<Property Name="Flags" Type="int32" Value="3"/>
 																</PropertyList>
 																<PointList>
 																	<Point>
 																		<XPos>0</XPos>
-																		<YPos>0</YPos>
+																		<YPos>-12</YPos>
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
 																		<XPos>100</XPos>
-																		<YPos>15</YPos>
+																		<YPos>0</YPos>
 																		<Flags>37</Flags>
 																	</Point>
 																</PointList>
@@ -3334,29 +4067,29 @@
 									</Reference>
 									<Reference>
 										<Local>
-											<RTPC Name="" ID="{1ADB2AB4-D4A1-492A-A6D8-AA09E82FA31C}" ShortID="136119752">
+											<RTPC Name="" ID="{DEE44F46-F0F8-448F-A76A-81255FE33F2A}" ShortID="772136568">
 												<PropertyList>
-													<Property Name="PropertyName" Type="string" Value="Volume"/>
+													<Property Name="PropertyName" Type="string" Value="Lowpass"/>
 												</PropertyList>
 												<ReferenceList>
 													<Reference Name="ControlInput">
-														<ObjectRef Name="S_Impact" ID="{746BC352-7A9B-4B61-9D1A-2E590ACE9A1F}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
+														<ObjectRef Name="S_Roll" ID="{878403F9-00A7-4E86-A34C-75B2471275B1}" WorkUnitID="{990ACDB5-1593-4A3B-BD8F-EAD900A1285D}"/>
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{724F8AB9-B7E8-45A0-865B-90D4876F2407}">
+															<Curve Name="" ID="{5A721AFF-5C4B-41CB-846E-34C7362910C3}">
 																<PropertyList>
-																	<Property Name="Flags" Type="int32" Value="3"/>
+																	<Property Name="Flags" Type="int32" Value="65537"/>
 																</PropertyList>
 																<PointList>
 																	<Point>
 																		<XPos>0</XPos>
-																		<YPos>-12</YPos>
+																		<YPos>0</YPos>
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
 																		<XPos>100</XPos>
-																		<YPos>0</YPos>
+																		<YPos>15</YPos>
 																		<Flags>37</Flags>
 																	</Point>
 																</PointList>
@@ -3413,6 +4146,9 @@
 									</ModifierList>
 								</Property>
 								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>3</Value>
+									</ValueList>
 									<ModifierList>
 										<ModifierInfo>
 											<Modifier Name="" ID="{02308965-BC32-455C-8678-7B327ED87615}">
@@ -4827,6 +5563,9 @@
 										<Property Name="PlayMechanismStepOrContinuous" Type="int16" Value="0"/>
 										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="3"/>
 										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>3</Value>
+											</ValueList>
 											<ModifierList>
 												<ModifierInfo>
 													<Modifier Name="" ID="{25F335D5-12ED-4823-9F42-B7BF09E655A3}">
@@ -5011,9 +5750,8 @@
 																<PointList>
 																	<Point>
 																		<XPos>0</XPos>
-																		<YPos>-12</YPos>
+																		<YPos>-9</YPos>
 																		<Flags>5</Flags>
-																		<SegmentShape>Exp2</SegmentShape>
 																	</Point>
 																	<Point>
 																		<XPos>100</XPos>
@@ -5047,7 +5785,7 @@
 																<PointList>
 																	<Point>
 																		<XPos>0</XPos>
-																		<YPos>25</YPos>
+																		<YPos>15</YPos>
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
@@ -5082,7 +5820,7 @@
 																<PointList>
 																	<Point>
 																		<XPos>0</XPos>
-																		<YPos>15</YPos>
+																		<YPos>10</YPos>
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
@@ -6636,6 +7374,9 @@
 									</ModifierList>
 								</Property>
 								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>3</Value>
+									</ValueList>
 									<ModifierList>
 										<ModifierInfo>
 											<Modifier Name="" ID="{D03BF61D-A83D-4438-8E0C-9FAF9D3C9772}">
@@ -7229,6 +7970,11 @@
 										<Property Name="PlayMechanismSpecialTransitionsValue" Type="Real64" Value="0.5"/>
 										<Property Name="PlayMechanismStepOrContinuous" Type="int16" Value="0"/>
 										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="3"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>3</Value>
+											</ValueList>
+										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
@@ -7380,7 +8126,7 @@
 																<PointList>
 																	<Point>
 																		<XPos>0</XPos>
-																		<YPos>-30</YPos>
+																		<YPos>-12</YPos>
 																		<Flags>5</Flags>
 																		<SegmentShape>Log1</SegmentShape>
 																	</Point>
@@ -7416,7 +8162,7 @@
 																<PointList>
 																	<Point>
 																		<XPos>0</XPos>
-																		<YPos>25</YPos>
+																		<YPos>15</YPos>
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
@@ -7451,7 +8197,7 @@
 																<PointList>
 																	<Point>
 																		<XPos>0</XPos>
-																		<YPos>25</YPos>
+																		<YPos>15</YPos>
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
@@ -7598,6 +8344,63 @@
 							</ChildrenList>
 						</ActorMixer>
 					</ChildrenList>
+					<ObjectLists>
+						<ObjectList Name="Effects">
+							<Reference>
+								<Local>
+									<EffectSlot Name="" ID="{0AAC03BF-779C-4621-A66E-8642F513A27A}" ShortID="520889333">
+										<ReferenceList>
+											<Reference Name="Effect">
+												<Custom>
+													<Effect Name="Time Stretch (Custom)" ID="{81036C4C-0423-470F-B2F9-FAE755687D95}" ShortID="571670381" PluginName="Wwise Time Stretch" CompanyID="0" PluginID="130" PluginType="3">
+														<ObjectLists>
+															<ObjectList Name="RTPC">
+																<Reference>
+																	<Local>
+																		<RTPC Name="" ID="{E8558E82-D5DC-4E59-AED5-973C766B17BE}" ShortID="894902699">
+																			<PropertyList>
+																				<Property Name="PropertyName" Type="string" Value="TimeStretch"/>
+																			</PropertyList>
+																			<ReferenceList>
+																				<Reference Name="ControlInput">
+																					<ObjectRef Name="S_TimeStretch" ID="{26D637F1-4026-404F-909D-1F5839C249B4}" WorkUnitID="{09B7BBB7-1B22-4EE3-AF3B-D0C46C49F629}"/>
+																				</Reference>
+																				<Reference Name="Curve">
+																					<Custom>
+																						<Curve Name="" ID="{D8D441C4-432F-4193-A218-16830620B641}">
+																							<PropertyList>
+																								<Property Name="Flags" Type="int32" Value="1"/>
+																							</PropertyList>
+																							<PointList>
+																								<Point>
+																									<XPos>0</XPos>
+																									<YPos>500</YPos>
+																									<Flags>5</Flags>
+																								</Point>
+																								<Point>
+																									<XPos>1</XPos>
+																									<YPos>100</YPos>
+																									<Flags>37</Flags>
+																								</Point>
+																							</PointList>
+																						</Curve>
+																					</Custom>
+																				</Reference>
+																			</ReferenceList>
+																		</RTPC>
+																	</Local>
+																</Reference>
+															</ObjectList>
+														</ObjectLists>
+													</Effect>
+												</Custom>
+											</Reference>
+										</ReferenceList>
+									</EffectSlot>
+								</Local>
+							</Reference>
+						</ObjectList>
+					</ObjectLists>
 				</ActorMixer>
 			</ChildrenList>
 		</WorkUnit>

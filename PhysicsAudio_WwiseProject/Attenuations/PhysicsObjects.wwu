@@ -19,7 +19,7 @@
 											<XPos>0</XPos>
 											<YPos>0</YPos>
 											<Flags>5</Flags>
-											<SegmentShape>Log1</SegmentShape>
+											<SegmentShape>SCurve</SegmentShape>
 										</Point>
 										<Point>
 											<XPos>4000</XPos>
@@ -47,10 +47,11 @@
 											<XPos>0</XPos>
 											<YPos>0</YPos>
 											<Flags>5</Flags>
+											<SegmentShape>Log1</SegmentShape>
 										</Point>
 										<Point>
 											<XPos>4000</XPos>
-											<YPos>20</YPos>
+											<YPos>25</YPos>
 											<Flags>37</Flags>
 										</Point>
 									</PointList>
@@ -68,10 +69,11 @@
 											<XPos>0</XPos>
 											<YPos>0</YPos>
 											<Flags>5</Flags>
+											<SegmentShape>Log1</SegmentShape>
 										</Point>
 										<Point>
 											<XPos>4000</XPos>
-											<YPos>20</YPos>
+											<YPos>25</YPos>
 											<Flags>37</Flags>
 										</Point>
 									</PointList>
@@ -87,12 +89,12 @@
 									<PointList>
 										<Point>
 											<XPos>0</XPos>
-											<YPos>75</YPos>
+											<YPos>60</YPos>
 											<Flags>5</Flags>
 										</Point>
 										<Point>
 											<XPos>4000</XPos>
-											<YPos>25</YPos>
+											<YPos>15</YPos>
 											<Flags>37</Flags>
 										</Point>
 									</PointList>
