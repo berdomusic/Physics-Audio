@@ -177,45 +177,15 @@ float UPAPhysicsAudioComponent::NormalizeByMass(float InValue, float InMass, flo
 bool UPAPhysicsAudioComponent::ShouldPlayImpact(float InImpulseMagnitude) const
 {
 	if (CurrentImpactCooldown < ImpactCooldownThreshold)
-	{
-		/*UKismetSystemLibrary::DrawDebugString(
-			GetWorld(),
-			GetComponentLocation(),
-			"cooldown fail",
-			0,
-			FLinearColor::Red,
-			1.f
-			);*/
 		return false;
-	}
 		
 	if (CurrentVelocityMagnitude <= UPhysicsAudioSettings::GetMinVelocity())
-	{
-		/*UKismetSystemLibrary::DrawDebugString(
-			GetWorld(),
-			GetComponentLocation(),
-			"velo too low",
-			0,
-			FLinearColor::Red,
-			1.f
-			);*/
 		return false;
-	}
 		
 	float velocityThreshold = bGrounded ? ImpactVelocityThreshold * ObjectMass : ImpactVelocityThreshold;
 	bool success = InImpulseMagnitude > velocityThreshold;
 	if (!success)
-	{
-		/*UKismetSystemLibrary::DrawDebugString(
-			GetWorld(),
-			GetComponentLocation(),
-			"vel thresh fail",
-			0,
-			FLinearColor::Red,
-			1.f
-			);*/
 		return false;
-	}
 	return success;
 }
 

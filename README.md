@@ -2,6 +2,11 @@ WIP
 
 Case study on audio implementation for physics simulating objects. 
 
+Unreal Engine 5.5.2
+Wwise 2024.1.5.8803
+Fab assets:
+Sci-fi Container Free 02 - cggame
+
 The physics audio system provides realistic, procedurally driven sound feedback for physical interactions in the game world. It dynamically responds to motion based on real-time physics calculations.
 Implementation is mainly in C++, with some functions exposed to blueprints. All other systems (pickup, UI, input etc.) were be treated as non-essential placeholders, 
 thus they are implemented with mixed Blueprint/C++ methodology for faster iteration.
@@ -41,7 +46,7 @@ Sliding: Linear motion across a surface without rotation.
 
 Apart from that, impacts from projectiles and object destruction are handled separately.
 
-Both rolling and sliding handle either one-shot sounds and infinite loops.
+Both rolling and sliding handle either one-shot sounds or infinite loops.
 
 #
 State updates occur both on tick and on component hit, with a flag system preventing double-processing within a single frame.

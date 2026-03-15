@@ -10,7 +10,7 @@
     "Type": "Event",
     "GUID": "{379FF1F1-853D-4AAF-A9A6-D032F7769FB3}",
     "Language": "SFX",
-    "Hash": "{F151CC78-B14A-9C2A-FF6E-607BD1680010}",
+    "Hash": "{72955CCA-F887-5370-2BD0-E20EC1F39855}",
     "ObjectPath": "MetalPipeHeavy_Impact",
     "ShortName": "MetalPipeHeavy_Impact",
     "Path": "Event/MetalPipeHeavy_Impact.bnk",
@@ -31,7 +31,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Sci-Fi_Container-003.wav",
       "Path": "Media/300915898.wem",
-      "CachePath": "3C/{3CE2846D-DAB2-2384-0D13-BA9549AF8E36}.wem"
+      "CachePath": "87/{8752FE92-A9C2-8508-3E7C-932B58B941A0}.wem"
      },
      {
       "Id": "374687291",
@@ -40,7 +40,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Sci-Fi_Container-001.wav",
       "Path": "Media/374687291.wem",
-      "CachePath": "B5/{B5997E9F-9267-0B95-0F0A-2327F60CB4A6}.wem"
+      "CachePath": "A5/{A55F8A50-BD71-F6EB-FCA4-289D74185566}.wem"
      },
      {
       "Id": "870176690",
@@ -49,7 +49,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Sci-Fi_Container-002.wav",
       "Path": "Media/870176690.wem",
-      "CachePath": "F3/{F33BC1EA-5CCD-F5C3-2510-C94E9E61D2A6}.wem"
+      "CachePath": "8E/{8EB1FF30-0CB6-CFA9-1384-B994F7774607}.wem"
      },
      {
       "Id": "911053206",
@@ -67,7 +67,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Sci-Fi_Container-004.wav",
       "Path": "Media/939587589.wem",
-      "CachePath": "17/{17DBD8F4-2DAF-1DBD-8E6F-4A067E132327}.wem"
+      "CachePath": "56/{56370AC4-96EB-45BA-9EE5-99258A422423}.wem"
      },
      {
       "Id": "1015050619",
@@ -76,7 +76,7 @@
       "Location": "Loose",
       "ShortName": "IMP_Sci-Fi_Container-005.wav",
       "Path": "Media/1015050619.wem",
-      "CachePath": "D5/{D5C296CA-D451-B890-A73F-434CF2D65D3F}.wem"
+      "CachePath": "AF/{AF792D0E-D8C3-73CE-77A5-56641BB975B1}.wem"
      },
      {
       "Id": "1045146451",
@@ -173,6 +173,6 @@
     ]
    }
   ],
-  "FileHash": "{9CD474FB-E0BB-2ECC-13C4-CCD4668563B9}"
+  "FileHash": "{2D9831AC-1221-87E5-281B-C9504F47171C}"
  }
 }
