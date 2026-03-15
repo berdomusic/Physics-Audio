@@ -49,7 +49,7 @@ Apart from that, impacts from projectiles and object destruction are handled sep
 Both rolling and sliding handle either one-shot sounds or infinite loops.
 
 #
-State updates occur both on tick and on component hit, with a flag system preventing double-processing within a single frame.
+State updates occur both on tick which is only enabled when component is rendered active by subsystem.
 States use cooldowns to prevent audio overlap and excessive triggering. These cooldowns either use default values or customized per-event values.
 
 -------------------------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ The Physics Audio Subsystem has the following functions exposed to blueprints:
 
 -------------------------------------------------------------------------------------------------------
 Object Pooling 
-Instead of creating and destroying audio components repeatedly, they are taken from and returned to a pool spawned when physics audio is enabled. They can be spawned synchronously or asynchronously (1 per frame).
+Instead of creating and destroying audio components repeatedly, they are taken from and returned to a pool spawned and managed by subsystem when physics audio is enabled. They can be spawned synchronously or asynchronously.
 
 -------------------------------------------------------------------------------------------------------
 Class Separation
