@@ -229,32 +229,11 @@ void UPAPhysicsAudioComponent::LoadAkAudioEvents()
 	AudioEventsSoftRefs[static_cast<int32>(EPAEventType::Projectile)] = PhysicsActorAudioProperties.ProjectileSound;
 	AudioEventsSoftRefs[static_cast<int32>(EPAEventType::Destruction)] = PhysicsActorAudioProperties.DestructionSound;
 	
-	TArray<FSoftObjectPath> assetsToLoadAsync;
-
-	for (int32 i = 0; i < AudioEventsSoftRefs.Num(); ++i)
-	{
-		FPAPhysicsAudioEvent& currentAudioEventSoft = AudioEventsSoftRefs[i];
-		if (currentAudioEventSoft.AkEventSoft.IsNull())
-			continue;
-		if (currentAudioEventSoft.bLoadSynchronous)
-		{
-			currentAudioEventSoft.AkEventSoft.LoadSynchronous();
-			AudioEvents[i] = currentAudioEventSoft.AkEventSoft.Get();
-		}
-		else
-			assetsToLoadAsync.Add(currentAudioEventSoft.AkEventSoft.ToSoftObjectPath());
-	}
-	
-	if (!assetsToLoadAsync.IsEmpty())
-	{
-		FStreamableManager& streamable = UAssetManager::GetStreamableManager();
-		streamable.RequestAsyncLoad(
-			assetsToLoadAsync,
-			FStreamableDelegate::CreateUObject(this, &UPAPhysicsAudioComponent::OnAkAudioEventsLoaded)
-		);
-		return;
-	}
-	OnAkAudioEventsLoaded();
+	FStreamableDelegate delegate = FStreamableDelegate::CreateUObject(
+		this, 
+		&UPAPhysicsAudioComponent::OnAkAudioEventsLoaded
+	);
+	UPAFunctionLibrary::LoadEventsFromHandle(PhysicsActorAudioProperties, delegate);
 }
 
 void UPAPhysicsAudioComponent::OnAkAudioEventsLoaded()
@@ -266,8 +245,7 @@ void UPAPhysicsAudioComponent::OnAkAudioEventsLoaded()
 			FPAPhysicsAudioEvent& currentAudioEventSoft = AudioEventsSoftRefs[i];
 			if (currentAudioEventSoft.AkEventSoft.IsNull())
 				continue;
-			if (!currentAudioEventSoft.bLoadSynchronous)
-				AudioEvents[i] = currentAudioEventSoft.AkEventSoft.Get();			
+			AudioEvents[i] = currentAudioEventSoft.AkEventSoft.Get();			
 		}
 	}
 	SetInfiniteEventsVariables();

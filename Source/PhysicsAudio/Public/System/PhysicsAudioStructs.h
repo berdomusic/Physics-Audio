@@ -111,7 +111,7 @@ public:
 };
 
 UCLASS(BlueprintType)
-class PHYSICSAUDIO_API UPAStopContinousSoundEvents : public UDataAsset
+class PHYSICSAUDIO_API UPAStopContinuousSoundEvents : public UDataAsset
 {
 	GENERATED_BODY()
 
@@ -142,8 +142,6 @@ struct FPAPhysicsAudioEvent
 	TSoftObjectPtr<UAkAudioEvent> AkEventSoft;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound", meta = (ClampMin = "0"))
 	float CooldownThreshold = .1f;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
-	bool bLoadSynchronous;
 };
 
 USTRUCT(BlueprintType)

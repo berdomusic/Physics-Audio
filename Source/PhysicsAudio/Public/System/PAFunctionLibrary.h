@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AkSwitchValue.h"
+#include "Engine/StreamableManager.h"
 #include "System/PhysicsAudioStructs.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "PAFunctionLibrary.generated.h"
@@ -21,6 +22,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	static bool IsAudioHandleNotEmpty(const FPAPhysicsActorAudioProperties& InHandle);
 	static bool ResolveAudioHandle(const FDataTableRowHandle& InRowHandle, FPAPhysicsActorAudioProperties& OutHandle);
+	UFUNCTION(BlueprintPure)
+	static TArray<TSoftObjectPtr<UAkAudioEvent>> GetAkEventsSoftFromHandle(const FPAPhysicsActorAudioProperties& InHandle);
+	static void LoadEventsFromHandle(const FPAPhysicsActorAudioProperties& InHandle, FStreamableDelegate OnLoaded = FStreamableDelegate());
 	
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "InWorldContext", CompactNodeTitle = "GetPickupModifier"))
 	static float GetCurrentPickupLengthModifier(const UObject* InWorldContext);

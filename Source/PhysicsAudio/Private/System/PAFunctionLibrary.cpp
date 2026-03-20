@@ -3,9 +3,11 @@
 
 #include "System/PAFunctionLibrary.h"
 
+#include "Engine/AssetManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "PhysicsAudio/PhysicsAudioCharacter.h"
 #include "System/PAGameReferencesSubsystem.h"
+#include "AkAudioEvent.h"
 #include "System/PhysicsAudioStructs.h"
 
 UAkSwitchValue* UPAFunctionLibrary::GetAkSwitchFromSurface(const TEnumAsByte<EPhysicalSurface> InSurface)
@@ -34,7 +36,7 @@ UAkAudioEvent* UPAFunctionLibrary::GetStopContinousSoundEvent(const EPAEventType
 	if (!(InEventType == EPAEventType::Roll || InEventType == EPAEventType::Slide))
 		return nullptr;
 		if (UDataAsset* dataAsset = UPAGameReferencesSubsystem::Get().GetStopContinuousSoundsDataAsset())
-			if (UPAStopContinousSoundEvents* stopContinousEvents = Cast<UPAStopContinousSoundEvents>(dataAsset))
+			if (UPAStopContinuousSoundEvents* stopContinousEvents = Cast<UPAStopContinuousSoundEvents>(dataAsset))
 				switch (InEventType)
 				{
 				case EPAEventType::Roll: 
@@ -76,6 +78,51 @@ bool UPAFunctionLibrary::ResolveAudioHandle(const FDataTableRowHandle& InRowHand
 		return true;
 	}	
 	return false;
+}
+
+TArray<TSoftObjectPtr<UAkAudioEvent>> UPAFunctionLibrary::GetAkEventsSoftFromHandle(
+	const FPAPhysicsActorAudioProperties& InHandle)
+{
+	TArray<TSoftObjectPtr<UAkAudioEvent>> outArray;
+	if (IsAudioHandleNotEmpty(InHandle))
+	{
+		outArray.Add(InHandle.ImpactSound.AkEventSoft);
+		outArray.Add(InHandle.SlideSound.AkEventSoft);
+		outArray.Add(InHandle.RollSound.AkEventSoft);
+		outArray.Add(InHandle.ProjectileSound.AkEventSoft);
+		outArray.Add(InHandle.DestructionSound.AkEventSoft);
+	}
+	return outArray;
+}
+
+void UPAFunctionLibrary::LoadEventsFromHandle(const FPAPhysicsActorAudioProperties& InHandle, FStreamableDelegate OnLoaded)
+{
+	if (!IsAudioHandleNotEmpty(InHandle))
+	{
+		if (OnLoaded.IsBound())
+			OnLoaded.Execute();
+		return;
+	}
+    
+	TArray<FSoftObjectPath> assetsToLoadAsync;
+	TArray<TSoftObjectPtr<UAkAudioEvent>> eventsArray = GetAkEventsSoftFromHandle(InHandle);
+    
+	for (const TSoftObjectPtr<UAkAudioEvent>& currentAudioEventSoft : eventsArray)
+	{
+		if (currentAudioEventSoft.IsNull())
+			continue;
+		if (IsValid(currentAudioEventSoft.Get()))
+			continue;
+		assetsToLoadAsync.Add(currentAudioEventSoft.ToSoftObjectPath());
+	}
+    
+	if (!assetsToLoadAsync.IsEmpty())
+	{
+		FStreamableManager& streamable = UAssetManager::GetStreamableManager();
+		streamable.RequestAsyncLoad(assetsToLoadAsync, OnLoaded);
+	}
+	else if (OnLoaded.IsBound())
+		OnLoaded.Execute();
 }
 
 float UPAFunctionLibrary::GetCurrentPickupLengthModifier(const UObject* InWorldContext)

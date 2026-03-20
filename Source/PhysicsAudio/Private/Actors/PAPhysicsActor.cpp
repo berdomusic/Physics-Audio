@@ -66,6 +66,20 @@ void APAPhysicsActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 			Execute_OnPhysicsActorHit(child, NormalImpulse, Hit);
 }
 
+void APAPhysicsActor::EnablePhysicsSounds()
+{
+	ActivationSphereCollision->OnComponentBeginOverlap.AddUniqueDynamic(this, &APAPhysicsActor::OnActivationBeginOverlap);
+	ActivationSphereCollision->OnComponentEndOverlap.AddUniqueDynamic(this, &APAPhysicsActor::OnActivationEndOverlap);
+}
+
+void APAPhysicsActor::EnableDestructionSounds()
+{
+	StaticMeshComponent->OnComponentHit.AddUniqueDynamic(this, &APAPhysicsActor::OnHit);
+	HealthComponent->SetCanBeDamaged(true);
+	HealthComponent->OnDeath.AddUniqueDynamic(this, &APAPhysicsActor::OnDeath);
+	SetupHealthWidget();
+}
+
 void APAPhysicsActor::Init()
 {
 	if (!bAllowPhysicsSounds)
@@ -83,15 +97,13 @@ void APAPhysicsActor::Init()
 	
 	if (bAllowPhysicsSounds)
 	{
-		ActivationSphereCollision->OnComponentBeginOverlap.AddUniqueDynamic(this, &APAPhysicsActor::OnActivationBeginOverlap);
-		ActivationSphereCollision->OnComponentEndOverlap.AddUniqueDynamic(this, &APAPhysicsActor::OnActivationEndOverlap);
+		FStreamableDelegate delegate = FStreamableDelegate::CreateUObject(this, &APAPhysicsActor::EnablePhysicsSounds);
+		UPAFunctionLibrary::LoadEventsFromHandle(PhysicsAudioProperties, delegate);
 	}
 	if (bAllowDestructionSounds)
 	{
-		StaticMeshComponent->OnComponentHit.AddUniqueDynamic(this, &APAPhysicsActor::OnHit);
-		HealthComponent->SetCanBeDamaged(true);
-		HealthComponent->OnDeath.AddUniqueDynamic(this, &APAPhysicsActor::OnDeath);
-		SetupHealthWidget();
+		FStreamableDelegate delegate = FStreamableDelegate::CreateUObject(this, &APAPhysicsActor::EnableDestructionSounds);
+		UPAFunctionLibrary::LoadEventsFromHandle(PhysicsAudioProperties, delegate);
 	}
 }
 
