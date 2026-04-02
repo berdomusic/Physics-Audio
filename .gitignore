@@ -76,3 +76,6 @@ DerivedDataCache/*
 
 .idea/*
 PhysicsAudio.sln.DotSettings.user
+
+# Include Wwise SDK libs
+!Plugins/WwiseSoundEngine/ThirdParty/**/*.lib
