@@ -1,0 +1,61 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "358891639",
+    "Type": "Event",
+    "GUID": "{D3B23E16-00DE-4E90-BED1-2E5BC1829DE8}",
+    "Language": "SFX",
+    "Hash": "{CE292C25-719A-612E-20D1-D7502DDB3001}",
+    "ObjectPath": "Test_Synth_Loop",
+    "ShortName": "Test_Synth_Loop",
+    "Path": "Event/Test_Synth_Loop.bnk",
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "594159170",
+       "Name": "Tone Generator",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\Test_Synth_Loop\\Test_Sine_Loop\\Tone Generator",
+       "GUID": "{767AA0A1-8FE1-4AE0-8146-16FA634A6DC2}",
+       "LibName": "Wwise Tone Generator",
+       "LibId": "6684674"
+      },
+      {
+       "Id": "830063639",
+       "Name": "Tone Generator",
+       "ObjectPath": "\\Actor-Mixer Hierarchy\\Default Work Unit\\Test_Synth_Loop\\Test_Sq_Loop\\Tone Generator",
+       "GUID": "{E50223E1-26D7-4CC5-B582-9D8974C55317}",
+       "LibName": "Wwise Tone Generator",
+       "LibId": "6684674"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "358891639",
+      "Name": "Test_Synth_Loop",
+      "ObjectPath": "\\Events\\Default Work Unit\\Test_Synth_Loop",
+      "GUID": "{D3B23E16-00DE-4E90-BED1-2E5BC1829DE8}",
+      "MaxAttenuation": "1000",
+      "DurationType": "Infinite",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "594159170"
+        },
+        {
+         "Id": "830063639"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{E6393796-8051-4ABD-DED4-C405ED4CECB7}"
+ }
+}

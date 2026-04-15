@@ -66,6 +66,10 @@ public:
     
     void TryAddPhysicsAudioToPrimitive(UPrimitiveComponent* InComponent, const FPAPhysicsActorAudioProperties& InAudioProperties);
     void ReturnPhysicsAudioObjectToPool(UPrimitiveComponent* InComponent, UPAPhysicsAudioComponent* InAudioComponent, bool bWasDestroyed);
+
+protected:
+    virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+    virtual void Deinitialize() override;
     
 private:    
     int32 PhysicsAudioPoolSize = 50;
@@ -76,10 +80,8 @@ private:
     UPROPERTY()
     TArray<UPAPhysicsAudioComponent*> AvailablePhysicsAudioComponentsPool;    
     UPROPERTY()
-    TArray<UPAPhysicsAudioComponent*> PendingReturnPool;    
+    TArray<UPAPhysicsAudioComponent*> PendingReturnPool;  
     
-    virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-    virtual void Deinitialize() override;
     
     void PopulatePoolAsync();
     void TryAddComponentToPool(UPAPhysicsAudioComponent* InComponent);
@@ -105,6 +107,7 @@ private:
     
     FPAActivePhysicsAudioObject GetActiveAudioObject(bool& bSuccess, const UPrimitiveComponent* InComponent,
         const UPAPhysicsAudioComponent* InAudioComponent);
+    void ReservePoolMemory();
 
     FTSTicker::FDelegateHandle TickHandle;
     bool Tick(float DeltaTime);

@@ -1,5 +1,4 @@
 #include "Subsystems/PAPhysicsAudioSubsystem.h"
-#include "System/PhysicsAudioSettings.h"
 #include "AkAudioDevice.h"
 #include "TimerManager.h"
 
@@ -283,10 +282,15 @@ FPAActivePhysicsAudioObject UPAPhysicsAudioSubsystem::GetActiveAudioObject(bool&
     return FPAActivePhysicsAudioObject();
 }
 
+void UPAPhysicsAudioSubsystem::ReservePoolMemory()
+{
+    AvailablePhysicsAudioComponentsPool.Reserve(PhysicsAudioPoolSize);
+}
+
 void UPAPhysicsAudioSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
     Super::Initialize(Collection);
-    AvailablePhysicsAudioComponentsPool.Reserve(PhysicsAudioPoolSize);
+    ReservePoolMemory();
 }
 
 void UPAPhysicsAudioSubsystem::Deinitialize()

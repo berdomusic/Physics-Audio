@@ -14,6 +14,17 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="Test_Synth_Loop" ID="{D3B23E16-00DE-4E90-BED1-2E5BC1829DE8}">
+					<ChildrenList>
+						<Action Name="" ID="{925D34D0-93EF-43B1-BF3C-364ABBD6BB7D}" ShortID="79978623">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Test_Synth_Loop" ID="{321E1BAD-7DF9-4A05-96E8-C866842A7E91}" WorkUnitID="{97335998-3D4B-42F6-9672-D1499E5C2F0F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

@@ -24,7 +24,7 @@ public:
 	static bool ResolveAudioHandle(const FDataTableRowHandle& InRowHandle, FPAPhysicsActorAudioProperties& OutHandle);
 	UFUNCTION(BlueprintPure)
 	static TArray<TSoftObjectPtr<UAkAudioEvent>> GetAkEventsSoftFromHandle(const FPAPhysicsActorAudioProperties& InHandle);
-	static void LoadEventsFromHandle(const FPAPhysicsActorAudioProperties& InHandle, FStreamableDelegate OnLoaded = FStreamableDelegate());
+	static void LoadEventsFromHandle(const FPAPhysicsActorAudioProperties& InHandle, const FStreamableDelegate& OnLoaded = FStreamableDelegate());
 	
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "InWorldContext", CompactNodeTitle = "GetPickupModifier"))
 	static float GetCurrentPickupLengthModifier(const UObject* InWorldContext);

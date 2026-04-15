@@ -95,7 +95,7 @@ TArray<TSoftObjectPtr<UAkAudioEvent>> UPAFunctionLibrary::GetAkEventsSoftFromHan
 	return outArray;
 }
 
-void UPAFunctionLibrary::LoadEventsFromHandle(const FPAPhysicsActorAudioProperties& InHandle, FStreamableDelegate OnLoaded)
+void UPAFunctionLibrary::LoadEventsFromHandle(const FPAPhysicsActorAudioProperties& InHandle, const FStreamableDelegate& OnLoaded)
 {
 	if (!IsAudioHandleNotEmpty(InHandle))
 	{

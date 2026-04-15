@@ -6,7 +6,7 @@
 #include "AudioMixerBlueprintLibrary.h"
 #include "Engine/AssetManager.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Subsystems/PAPhysicsAudioSubsystem.h"
+#include "Subsystems/PAPhysicsAudioComponentSubsystem.h"
 #include "System/PAFunctionLibrary.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "System/PhysicsAudioSettings.h"
@@ -26,7 +26,7 @@ UPAPhysicsAudioComponent::UPAPhysicsAudioComponent(const FObjectInitializer& Obj
 
 void UPAPhysicsAudioComponent::TryReturnComponentToPool()
 {
-	UPAPhysicsAudioSubsystem* subsystem = UPAPhysicsAudioSubsystem::Get(GetWorld());
+	UPAPhysicsAudioComponentSubsystem* subsystem = UPAPhysicsAudioComponentSubsystem::Get(GetWorld());
 	if (IsValid(subsystem))
 		subsystem->ReturnPhysicsAudioObjectToPool(nullptr,this, false);
 	else

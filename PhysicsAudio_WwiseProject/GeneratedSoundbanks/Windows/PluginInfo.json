@@ -11,6 +11,13 @@
     "StaticLib": "AkSilenceSource"
    },
    {
+    "LibName": "Wwise Tone Generator",
+    "LibId": "6684674",
+    "Type": "Source",
+    "DLL": "AkToneGen",
+    "StaticLib": "AkToneSource"
+   },
+   {
     "LibName": "Wwise RoomVerb",
     "LibId": "7733251",
     "Type": "Effect",
@@ -42,6 +49,6 @@
     "StaticLib": "AkImpacterSource"
    }
   ],
-  "FileHash": "{9CCB9E8E-9E13-FFA7-BE2D-6806A4341B07}"
+  "FileHash": "{595301E7-374D-42D3-807E-0F53AC65EFC1}"
  }
 }

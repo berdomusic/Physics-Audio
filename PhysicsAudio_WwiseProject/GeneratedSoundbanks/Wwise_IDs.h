@@ -27,6 +27,7 @@ namespace AK
         static const AkUniqueID SCI_FI_CONTAINER_SLIDE = 107651542U;
         static const AkUniqueID STOP_ROLL = 3220749505U;
         static const AkUniqueID STOP_SLIDE = 1116482623U;
+        static const AkUniqueID TEST_SYNTH_LOOP = 358891639U;
         static const AkUniqueID WOODENBOX_DESTRUCTION = 262868839U;
         static const AkUniqueID WOODENBOX_IMPACT = 1420461159U;
         static const AkUniqueID WOODENBOX_PROJECTILE = 2124312604U;
