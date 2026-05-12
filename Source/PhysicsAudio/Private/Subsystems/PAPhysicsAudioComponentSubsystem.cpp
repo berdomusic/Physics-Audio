@@ -1,15 +1,15 @@
-#include "Subsystems/PAPhysicsAudioSubsystem.h"
+#include "Subsystems/PAPhysicsAudioComponentSubsystem.h"
 #include "AkAudioDevice.h"
 #include "TimerManager.h"
 
-UPAPhysicsAudioSubsystem* UPAPhysicsAudioSubsystem::Get(const UWorld* World)
+UPAPhysicsAudioComponentSubsystem* UPAPhysicsAudioComponentSubsystem::Get(const UWorld* World)
 {
     if (IsValid(World))
-        return World->GetSubsystem<UPAPhysicsAudioSubsystem>();
+        return World->GetSubsystem<UPAPhysicsAudioComponentSubsystem>();
     return nullptr;
 }
 
-void UPAPhysicsAudioSubsystem::EnablePhysicsAudio(bool bAsync, int32 InPoolSize)
+void UPAPhysicsAudioComponentSubsystem::EnablePhysicsAudio(bool bAsync, int32 InPoolSize)
 {
     if (!IsValid(GetWorld()))
         return;
@@ -27,12 +27,12 @@ void UPAPhysicsAudioSubsystem::EnablePhysicsAudio(bool bAsync, int32 InPoolSize)
             TryAddComponentToPool(nullptr);
         }
         TickHandle = FTSTicker::GetCoreTicker().AddTicker(
-            FTickerDelegate::CreateUObject(this, &UPAPhysicsAudioSubsystem::Tick)
+            FTickerDelegate::CreateUObject(this, &UPAPhysicsAudioComponentSubsystem::Tick)
         );
     }
 }
 
-void UPAPhysicsAudioSubsystem::DisablePhysicsAudio()
+void UPAPhysicsAudioComponentSubsystem::DisablePhysicsAudio()
 {
     if (!bPhysicsAudioEnabled)
         return;
@@ -57,14 +57,14 @@ void UPAPhysicsAudioSubsystem::DisablePhysicsAudio()
     AvailablePhysicsAudioComponentsPool.Empty();
 }
 
-bool UPAPhysicsAudioSubsystem::CanEnablePhysicsAudio() const
+bool UPAPhysicsAudioComponentSubsystem::CanEnablePhysicsAudio() const
 {
     return !bPhysicsAudioEnabled 
     && AvailablePhysicsAudioComponentsPool.IsEmpty()
     && ActivePhysicsAudioObjects.IsEmpty();
 }
 
-void UPAPhysicsAudioSubsystem::TryAddComponentToPool(UPAPhysicsAudioComponent* InComponent)
+void UPAPhysicsAudioComponentSubsystem::TryAddComponentToPool(UPAPhysicsAudioComponent* InComponent)
 {
     if (CanAddComponentToPool())
     {
@@ -86,7 +86,7 @@ void UPAPhysicsAudioSubsystem::TryAddComponentToPool(UPAPhysicsAudioComponent* I
         InComponent->DestroyComponent();
 }
 
-UPAPhysicsAudioComponent* UPAPhysicsAudioSubsystem::TryGetAudioComponentFromPool()
+UPAPhysicsAudioComponent* UPAPhysicsAudioComponentSubsystem::TryGetAudioComponentFromPool()
 {
     if (!AvailablePhysicsAudioComponentsPool.IsEmpty())
         if (UPAPhysicsAudioComponent* component = AvailablePhysicsAudioComponentsPool.Pop())
@@ -94,14 +94,14 @@ UPAPhysicsAudioComponent* UPAPhysicsAudioSubsystem::TryGetAudioComponentFromPool
     return nullptr;
 }
 
-void UPAPhysicsAudioSubsystem::GetPhysicsAudioComponentCount(int32& Available, int32& Active, int32& PendingReturn) const
+void UPAPhysicsAudioComponentSubsystem::GetPhysicsAudioComponentCount(int32& Available, int32& Active, int32& PendingReturn) const
 {
     Available = AvailablePhysicsAudioComponentsPool.Num();
     Active = ActivePhysicsAudioObjects.Num();
     PendingReturn = PendingReturnPool.Num();
 }
 
-void UPAPhysicsAudioSubsystem::TryAddPhysicsAudioToPrimitive(UPrimitiveComponent* InComponent, const FPAPhysicsActorAudioProperties& InAudioProperties)
+void UPAPhysicsAudioComponentSubsystem::TryAddPhysicsAudioToPrimitive(UPrimitiveComponent* InComponent, const FPAPhysicsActorAudioProperties& InAudioProperties)
 {
     if (!IsValid(InComponent))
         return;
@@ -110,7 +110,7 @@ void UPAPhysicsAudioSubsystem::TryAddPhysicsAudioToPrimitive(UPrimitiveComponent
     PhysicsAudioQueue.AddUnique(FPAPhysicsAudioQueueInfo(InComponent, InAudioProperties));        
 }
 
-void UPAPhysicsAudioSubsystem::ReturnPhysicsAudioObjectToPool(UPrimitiveComponent* InComponent, UPAPhysicsAudioComponent* InAudioComponent, bool bWasDestroyed)
+void UPAPhysicsAudioComponentSubsystem::ReturnPhysicsAudioObjectToPool(UPrimitiveComponent* InComponent, UPAPhysicsAudioComponent* InAudioComponent, bool bWasDestroyed)
 {
     bool bSuccess = false;
     FPAActivePhysicsAudioObject audioObject = GetActiveAudioObject(bSuccess, InComponent, InAudioComponent);
@@ -128,19 +128,19 @@ void UPAPhysicsAudioSubsystem::ReturnPhysicsAudioObjectToPool(UPrimitiveComponen
     }        
 }
 
-void UPAPhysicsAudioSubsystem::RunQueue(bool bOneItem)
+void UPAPhysicsAudioComponentSubsystem::RunQueue(bool bOneItem)
 {
     ProcessPendingReturn(bOneItem);
     if (bPhysicsAudioEnabled)
         ProcessAudioQueue(bOneItem);
 }
 
-void UPAPhysicsAudioSubsystem::FlushQueue()
+void UPAPhysicsAudioComponentSubsystem::FlushQueue()
 {
     RunQueue(false);
 }
 
-void UPAPhysicsAudioSubsystem::ProcessQueueItem(const FPAPhysicsAudioQueueInfo& QueueItem)
+void UPAPhysicsAudioComponentSubsystem::ProcessQueueItem(const FPAPhysicsAudioQueueInfo& QueueItem)
 {
     if (!QueueItem.TargetComponent.IsValid())
         return;
@@ -159,7 +159,7 @@ void UPAPhysicsAudioSubsystem::ProcessQueueItem(const FPAPhysicsAudioQueueInfo& 
     ActivePhysicsAudioObjects.Emplace(FPAActivePhysicsAudioObject{ QueueItem.TargetComponent, componentToProcess });
 }
 
-void UPAPhysicsAudioSubsystem::ProcessPendingReturn(bool bOneItem)
+void UPAPhysicsAudioComponentSubsystem::ProcessPendingReturn(bool bOneItem)
 {
     while (!PendingReturnPool.IsEmpty())
     {
@@ -174,7 +174,7 @@ void UPAPhysicsAudioSubsystem::ProcessPendingReturn(bool bOneItem)
     }
 }
 
-void UPAPhysicsAudioSubsystem::ProcessAudioQueue(bool bOneItem)
+void UPAPhysicsAudioComponentSubsystem::ProcessAudioQueue(bool bOneItem)
 {
     while (!PhysicsAudioQueue.IsEmpty())
     {
@@ -186,7 +186,7 @@ void UPAPhysicsAudioSubsystem::ProcessAudioQueue(bool bOneItem)
     }
 }
 
-bool UPAPhysicsAudioSubsystem::CheckIfCanAttachAudioComponent(const UPrimitiveComponent* InComponent) const
+bool UPAPhysicsAudioComponentSubsystem::CheckIfCanAttachAudioComponent(const UPrimitiveComponent* InComponent) const
 {
     if (!IsValid(InComponent) || !bPhysicsAudioEnabled)
         return false;
@@ -196,7 +196,7 @@ bool UPAPhysicsAudioSubsystem::CheckIfCanAttachAudioComponent(const UPrimitiveCo
     return true;
 }
 
-void UPAPhysicsAudioSubsystem::AddAudioObjectToReturnQueue(const FPAActivePhysicsAudioObject& InAudioObject)
+void UPAPhysicsAudioComponentSubsystem::AddAudioObjectToReturnQueue(const FPAActivePhysicsAudioObject& InAudioObject)
 {
     for (int i = ActivePhysicsAudioObjects.Num() - 1; i >= 0; --i)
         if (ActivePhysicsAudioObjects[i] == InAudioObject)
@@ -208,7 +208,7 @@ void UPAPhysicsAudioSubsystem::AddAudioObjectToReturnQueue(const FPAActivePhysic
         }
 }
 
-void UPAPhysicsAudioSubsystem::CacheListenersPositions()
+void UPAPhysicsAudioComponentSubsystem::CacheListenersPositions()
 {
     ListenersPositions.Empty();
     if (FAkAudioDevice* AudioDevice = FAkAudioDevice::Get())
@@ -220,7 +220,7 @@ void UPAPhysicsAudioSubsystem::CacheListenersPositions()
     }
 }
 
-void UPAPhysicsAudioSubsystem::UpdateDistanceToListeners()
+void UPAPhysicsAudioComponentSubsystem::UpdateDistanceToListeners()
 {
     CacheListenersPositions();
     if (!ListenersPositions.IsEmpty() && !ActivePhysicsAudioObjects.IsEmpty())
@@ -244,7 +244,7 @@ void UPAPhysicsAudioSubsystem::UpdateDistanceToListeners()
     }
 }
 
-bool UPAPhysicsAudioSubsystem::CanAddComponentToPool() const
+bool UPAPhysicsAudioComponentSubsystem::CanAddComponentToPool() const
 {
     return 
         bPhysicsAudioEnabled
@@ -254,7 +254,7 @@ bool UPAPhysicsAudioSubsystem::CanAddComponentToPool() const
                 < PhysicsAudioPoolSize;
 }
 
-FPAActivePhysicsAudioObject UPAPhysicsAudioSubsystem::GetActiveAudioObject(bool& bSuccess, const UPrimitiveComponent* InComponent,
+FPAActivePhysicsAudioObject UPAPhysicsAudioComponentSubsystem::GetActiveAudioObject(bool& bSuccess, const UPrimitiveComponent* InComponent,
     const UPAPhysicsAudioComponent* InAudioComponent)
 {
     bSuccess = false;
@@ -282,24 +282,24 @@ FPAActivePhysicsAudioObject UPAPhysicsAudioSubsystem::GetActiveAudioObject(bool&
     return FPAActivePhysicsAudioObject();
 }
 
-void UPAPhysicsAudioSubsystem::ReservePoolMemory()
+void UPAPhysicsAudioComponentSubsystem::ReservePoolMemory()
 {
     AvailablePhysicsAudioComponentsPool.Reserve(PhysicsAudioPoolSize);
 }
 
-void UPAPhysicsAudioSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+void UPAPhysicsAudioComponentSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
     Super::Initialize(Collection);
     ReservePoolMemory();
 }
 
-void UPAPhysicsAudioSubsystem::Deinitialize()
+void UPAPhysicsAudioComponentSubsystem::Deinitialize()
 {
     FTSTicker::GetCoreTicker().RemoveTicker(TickHandle);
     Super::Deinitialize();
 }
 
-void UPAPhysicsAudioSubsystem::PopulatePoolAsync()
+void UPAPhysicsAudioComponentSubsystem::PopulatePoolAsync()
 {
     if (!IsValid(GetWorld()))
         return;
@@ -308,18 +308,18 @@ void UPAPhysicsAudioSubsystem::PopulatePoolAsync()
     {
         TryAddComponentToPool(nullptr);
         GetWorld()->GetTimerManager().SetTimerForNextTick(
-            FTimerDelegate::CreateUObject(this, &UPAPhysicsAudioSubsystem::PopulatePoolAsync)
+            FTimerDelegate::CreateUObject(this, &UPAPhysicsAudioComponentSubsystem::PopulatePoolAsync)
         );
     }
     if (!AvailablePhysicsAudioComponentsPool.IsEmpty() && !TickHandle.IsValid())
     {
         TickHandle = FTSTicker::GetCoreTicker().AddTicker(
-            FTickerDelegate::CreateUObject(this, &UPAPhysicsAudioSubsystem::Tick)
+            FTickerDelegate::CreateUObject(this, &UPAPhysicsAudioComponentSubsystem::Tick)
         );
     }
 }
 
-bool UPAPhysicsAudioSubsystem::Tick(float DeltaTime)
+bool UPAPhysicsAudioComponentSubsystem::Tick(float DeltaTime)
 {
     if (CanAddComponentToPool())
         PopulatePoolAsync();

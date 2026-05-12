@@ -3,9 +3,6 @@
 #include "Components/PAPhysicsAudioComponent.h"
 
 #include "AkGameplayStatics.h"
-#include "AudioMixerBlueprintLibrary.h"
-#include "Engine/AssetManager.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "Subsystems/PAPhysicsAudioComponentSubsystem.h"
 #include "System/PAFunctionLibrary.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"

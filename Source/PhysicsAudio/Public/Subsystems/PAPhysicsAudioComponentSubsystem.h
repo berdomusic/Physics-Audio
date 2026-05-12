@@ -5,7 +5,7 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "System/PhysicsAudioStructs.h"
 
-#include "PAPhysicsAudioSubsystem.generated.h"
+#include "PAPhysicsAudioComponentSubsystem.generated.h"
 
 struct FPAPhysicsAudioQueueInfo
 {
@@ -41,11 +41,11 @@ struct FPAActivePhysicsAudioObject
 };
 
 UCLASS()
-class PHYSICSAUDIO_API UPAPhysicsAudioSubsystem : public UWorldSubsystem
+class PHYSICSAUDIO_API UPAPhysicsAudioComponentSubsystem : public UWorldSubsystem
 {
     GENERATED_BODY()
 public:
-    static UPAPhysicsAudioSubsystem* Get(const UWorld* World);
+    static UPAPhysicsAudioComponentSubsystem* Get(const UWorld* World);
     
     UFUNCTION(BlueprintPure, Category = "PhysicsAudio")
     int32 GetCurrentPoolSize() const { return PhysicsAudioPoolSize; }

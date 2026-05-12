@@ -5,7 +5,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "PhysicsAudio/PhysicsAudioProjectile.h"
-#include "Subsystems/PAPhysicsAudioSubsystem.h"
+#include "Subsystems/PAPhysicsAudioComponentSubsystem.h"
 #include "System/PAFunctionLibrary.h"
 #include "System/PhysicsAudioSettings.h"
 
@@ -175,7 +175,7 @@ void APAPhysicsActor::OnActivationBeginOverlap(UPrimitiveComponent* OverlappedCo
 		return;	
 	
 	OverlappedActors.AddUnique(OtherActor);	
-	UPAPhysicsAudioSubsystem* subsystem = UPAPhysicsAudioSubsystem::Get(GetWorld());
+	UPAPhysicsAudioComponentSubsystem* subsystem = UPAPhysicsAudioComponentSubsystem::Get(GetWorld());
 	if (!IsValid(subsystem))
 		return;
 	subsystem->TryAddPhysicsAudioToPrimitive(StaticMeshComponent, PhysicsAudioProperties);
@@ -199,7 +199,7 @@ void APAPhysicsActor::OnDeath(AActor* Dealer, const FHitResult& Hit, const FVect
 	UWorld* world = GetWorld();
 	if (!IsValid(world))
 		return;
-	UPAPhysicsAudioSubsystem* subsystem = UPAPhysicsAudioSubsystem::Get(world);
+	UPAPhysicsAudioComponentSubsystem* subsystem = UPAPhysicsAudioComponentSubsystem::Get(world);
 	if (!IsValid(subsystem))
 		return;
 	subsystem->ReturnPhysicsAudioObjectToPool(StaticMeshComponent, nullptr, true);
@@ -293,7 +293,7 @@ void APAPhysicsActor::DeactivatePhysicsAudio()
 {
 	if (!ShouldDeactivatePhysicsAudio())
 		return;
-	UPAPhysicsAudioSubsystem* subsystem = UPAPhysicsAudioSubsystem::Get(GetWorld());
+	UPAPhysicsAudioComponentSubsystem* subsystem = UPAPhysicsAudioComponentSubsystem::Get(GetWorld());
 	if (!IsValid(subsystem))
 		return;
 	subsystem->ReturnPhysicsAudioObjectToPool(StaticMeshComponent, nullptr, false);
