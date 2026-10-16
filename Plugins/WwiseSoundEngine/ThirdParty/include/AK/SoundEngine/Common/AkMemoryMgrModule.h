@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file
@@ -176,6 +176,7 @@ struct AkMemSettings
 	AkMemDebugReallocAligned                   pfDebugReallocAligned;          ///< (Optional) Memory allocation debugging hook. Used for tracking calls to pfReallocAligned.
 	AkMemDebugFree                             pfDebugFree;                    ///< (Optional) Memory allocation debugging hook. Used for tracking calls to pfFree.
 	AkUInt32                                   uMemoryDebugLevel;              ///< Default 0 disabled. 1 debug enabled. 2 stomp allocator enabled. 3 stomp allocator and debug enabled. User implementations may use multiple non-zero values to offer different features.
+	AkUInt32                                   uStompDebugMemIDMask;           ///< Bitmask indicating which AkMemID allocation should go through the stomp allocator. Default 0xFFFFFFFF. 
 	//@}
 };
 //@}

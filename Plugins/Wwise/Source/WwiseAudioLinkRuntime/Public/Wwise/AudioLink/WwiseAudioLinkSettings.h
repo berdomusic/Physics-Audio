@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -64,7 +64,7 @@ private:
 
 using FSharedAudioLinkSettingProxyWwisePtr = TSharedPtr<FWwiseAudioLinkSettingsProxy, ESPMode::ThreadSafe>;
 
-UCLASS(config = Game, defaultconfig)
+UCLASS(config = Game, defaultconfig, meta=(ScriptName="UWwiseAudioLinkSettings"))
 class WWISEAUDIOLINKRUNTIME_API UWwiseAudioLinkSettings : public UAudioLinkSettingsAbstract
 {
 	GENERATED_BODY()
@@ -96,6 +96,7 @@ protected:
 	TObjectPtr<UAkAudioEvent> StartEventResolved;
 
 	void PostLoad() override;
+	void CastLoadedAsset(UObject* LoadedAsset);
 	void OnLoadCompleteCallback();
 	void FinishDestroy() override;
 

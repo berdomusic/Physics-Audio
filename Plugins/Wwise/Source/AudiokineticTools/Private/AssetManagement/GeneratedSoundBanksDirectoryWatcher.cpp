@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AssetManagement/GeneratedSoundBanksDirectoryWatcher.h"
@@ -255,7 +255,7 @@ void GeneratedSoundBanksDirectoryWatcher::EndParseTimer()
 
 void GeneratedSoundBanksDirectoryWatcher::OnSoundBankGenerationDone() const
 {
-	UE_LOG(LogAudiokineticTools, Verbose, TEXT("GeneratedSoundBanksDirectoryWatcher: Soundbank generation done."));
+	UE_LOG(LogAudiokineticTools, Verbose, TEXT("GeneratedSoundBanksDirectoryWatcher: SoundBank generation complete."));
 	OnSoundBanksGenerated.Broadcast();
 }
 
@@ -268,7 +268,7 @@ void GeneratedSoundBanksDirectoryWatcher::NotifyFilesChanged()
 	AsyncTask(ENamedThreads::Type::GameThread, [this]
 	{
 
-		FText InfoString = LOCTEXT("GeneratedSoundbanksWatcherInfoString", "Changes in generated soundbanks detected. \nProject data will be re-parsed in {parseSeconds} seconds.");
+		FText InfoString = LOCTEXT("GeneratedSoundbanksWatcherInfoString", "Changes in generated SoundBanks detected. \nProject data will be re-parsed in {parseSeconds} seconds.");
 		FFormatNamedArguments NamedArguments;
 		NamedArguments.Add(TEXT("parseSeconds"), static_cast<int>(this->ParseTimer));
 		InfoString = FText::Format(InfoString, NamedArguments);
@@ -326,7 +326,7 @@ void GeneratedSoundBanksDirectoryWatcher::UpdateNotification() const
 	{
 		if (this->NotificationItem)
 		{
-			FText InfoString = LOCTEXT("GeneratedSoundbanksWatcherInfoString", "Changes in generated soundbanks detected. \nProject data will be re-parsed in {parseSeconds} seconds.");
+			FText InfoString = LOCTEXT("GeneratedSoundbanksWatcherInfoString", "Changes in generated SoundBanks detected. \nProject data will be re-parsed in {parseSeconds} seconds.");
 			FFormatNamedArguments NamedArguments;
 			NamedArguments.Add(TEXT("parseSeconds"), static_cast<int>(this->ParseTimer));
 			InfoString = FText::Format(InfoString, NamedArguments);

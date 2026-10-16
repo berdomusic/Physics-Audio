@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseSoundEngine_Null.h"
@@ -20,7 +20,6 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "Wwise/API_Null/WwiseCommAPI_Null.h"
 #include "Wwise/API_Null/WwiseMemoryMgrAPI_Null.h"
 #include "Wwise/API_Null/WwiseMonitorAPI_Null.h"
-#include "Wwise/API_Null/WwiseMusicEngineAPI_Null.h"
 #include "Wwise/API_Null/WwiseSoundEngineAPI_Null.h"
 #include "Wwise/API_Null/WwiseSpatialAudioAPI_Null.h"
 #include "Wwise/API_Null/WwiseStreamMgrAPI_Null.h"
@@ -39,11 +38,6 @@ IWwiseMemoryMgrAPI* FWwiseSoundEngine_Null::GetMemoryMgr()
 IWwiseMonitorAPI* FWwiseSoundEngine_Null::GetMonitor()
 {
 	return new FWwiseMonitorAPI_Null;
-}
-
-IWwiseMusicEngineAPI* FWwiseSoundEngine_Null::GetMusicEngine()
-{
-	return new FWwiseMusicEngineAPI_Null;
 }
 
 IWwiseSoundEngineAPI* FWwiseSoundEngine_Null::GetSoundEngine()

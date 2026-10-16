@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwisePackagedFile.h"
@@ -132,7 +132,7 @@ void FWwisePackagedFile::SerializeBulkData(FArchive& Ar, const FWwisePackagedFil
 		// Retrieve full file or Prefetch Size as inline data
 		if ((PackagingStrategy == EWwisePackagingStrategy::BulkData && !bStreaming) || PrefetchSize > 0)
 		{
-			auto& BulkData { BulkDataArray[BulkDataArray.Emplace(MakeShared<FByteBulkData, ESPMode::ThreadSafe>())].Get() };
+			auto& BulkData { BulkDataArray.Emplace_GetRef(MakeShared<FByteBulkData, ESPMode::ThreadSafe>()).Get() };
 			{
 				SCOPED_WWISEFILEHANDLER_EVENT_3(TEXT("FWwisePackagedFile::SerializeBulkData.Serialize Inline"));
 				BulkData.Serialize(Ar, Options.Owner);
@@ -154,7 +154,7 @@ void FWwisePackagedFile::SerializeBulkData(FArchive& Ar, const FWwisePackagedFil
 		// Retrieve Streaming data
 		if (PackagingStrategy == EWwisePackagingStrategy::BulkData && bStreaming)
 		{
-			auto& BulkData { BulkDataArray[BulkDataArray.Emplace(MakeShared<FByteBulkData, ESPMode::ThreadSafe>())].Get() };
+			auto& BulkData { BulkDataArray.Emplace_GetRef(MakeShared<FByteBulkData, ESPMode::ThreadSafe>()).Get() };
 			{
 				SCOPED_WWISEFILEHANDLER_EVENT_3(TEXT("FWwisePackagedFile::SerializeBulkData.Serialize Streaming"));
 				BulkData.Serialize(Ar, Options.Owner);
@@ -184,8 +184,25 @@ void FWwisePackagedFile::SerializeBulkData(FArchive& Ar, const FWwisePackagedFil
 				EventRef->Trigger();
 			};
 			
+			// Package full file or Prefetch Size as inline data
+			bool bPackageFullFileOrPrefetch = (PackagingStrategy == EWwisePackagingStrategy::BulkData && !bStreaming) || PrefetchSize > 0;
+			
+			// Package Streaming data
+			bool bPackageStreaming = PackagingStrategy == EWwisePackagingStrategy::BulkData && bStreaming;
 			if (UNLIKELY(!bResult))
 			{
+				UE_LOG(LogWwiseFileHandler, Warning, TEXT("FWwisePackagedFile::SerializeBulkData %s could not be opened."), *SourcePathName);
+				if (bPackageFullFileOrPrefetch)
+				{
+					FByteBulkData BulkData;
+					BulkData.Serialize(Ar, Options.Owner);
+				}
+				if (bPackageStreaming)
+				{
+					FByteBulkData BulkData;
+					BulkData.Serialize(Ar, Options.Owner);
+				}
+
 				return;
 			}
 
@@ -196,8 +213,7 @@ void FWwisePackagedFile::SerializeBulkData(FArchive& Ar, const FWwisePackagedFil
 				return;
 			}
 
-			// Package full file or Prefetch Size as inline data
-			if ((PackagingStrategy == EWwisePackagingStrategy::BulkData && !bStreaming) || PrefetchSize > 0)
+			if (bPackageFullFileOrPrefetch)
 			{
 				FByteBulkData BulkData;
 				const auto* DataPtr = Ptr;
@@ -239,8 +255,7 @@ void FWwisePackagedFile::SerializeBulkData(FArchive& Ar, const FWwisePackagedFil
 				BulkData.Serialize(Ar, Options.Owner);
 			}
 
-			// Package Streaming data
-			if (PackagingStrategy == EWwisePackagingStrategy::BulkData && bStreaming)
+			if (bPackageStreaming)
 			{
 				FByteBulkData BulkData;
 				const auto* DataPtr = (const int8*)(Ptr);

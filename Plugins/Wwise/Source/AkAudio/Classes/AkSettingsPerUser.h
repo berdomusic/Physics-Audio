@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -26,6 +26,16 @@ DECLARE_EVENT(UAkSettingsPerUser, ShowReverbInfoChanged)
 DECLARE_EVENT(UAkSettingsPerUser, AutoConnectChanged);
 DECLARE_EVENT(UAkSettingsPerUser, AutoSyncWaapiNamesChanged);
 DECLARE_MULTICAST_DELEGATE(FOnSoundBanksPathChangedDelegate);
+
+UENUM()
+enum class EWwiseProjectDatabaseLoadMode : uint8
+{
+	/** Load the Project Database synchronously during module startup. Blocks editor loading but ensures data is ready immediately. */
+	Synchronous UMETA(DisplayName = "Synchronous"),
+	
+	/** Load the Project Database asynchronously in the background. Faster editor startup but data is not ready on editor load. */
+	Asynchronous UMETA(DisplayName = "Asynchronous"),
+};
 
 UCLASS(config = EditorPerProjectUserSettings)
 class AKAUDIO_API UAkSettingsPerUser : public UObject
@@ -50,28 +60,32 @@ public:
 	UPROPERTY(Config)
 	FDirectoryPath GeneratedSoundBanksFolderOverride_DEPRECATED;
 
+	// Controls how the Wwise Project Database is loaded during editor startup. Requires Editor restart to take effect.
+	UPROPERTY(Config, EditAnywhere, Category = "Performance", Meta = (DisplayName = "Project Database Load Mode"))
+	EWwiseProjectDatabaseLoadMode ProjectDatabaseLoadMode = EWwiseProjectDatabaseLoadMode::Synchronous;
+
 	// IP Address used to connect to WAAPI. Changing this requires Editor restart
-	UPROPERTY(Config, EditAnywhere, Category = "WAAPI")
+	UPROPERTY(Config, EditAnywhere, Meta = (DisplayName = "WAAPI IP Address", Category = "WAAPI", EditCondition = "AutoConnectToWAAPI"))
 	FString WaapiIPAddress = WAAPI_LOCAL_HOST_IP_STRING;
 
 	// Network Port used to connect to WAAPI. Changing this requires Editor restart
-	UPROPERTY(Config, EditAnywhere, Category = "WAAPI")
+	UPROPERTY(Config, EditAnywhere, Meta = (DisplayName = "WAAPI Port", Category = "WAAPI", EditCondition = "AutoConnectToWAAPI"))
 	uint32 WaapiPort = WAAPI_PORT;
 
 	// Whether to connect to WAAPI or not
-	UPROPERTY(Config, EditAnywhere, Category = "WAAPI")
-	bool bAutoConnectToWAAPI = true;
+	UPROPERTY(Config, EditAnywhere, Meta = (DisplayName = "Auto-Connect to WAAPI", Category = "WAAPI"))
+	bool AutoConnectToWAAPI = true;
 
-	// Whether to synchronize the selection between the WAAPI picker and the Wwise Project Explorer
-	UPROPERTY(Config, EditAnywhere, Category = "WAAPI")
+	// Whether to synchronize the selection between the Wwise Browser and the Wwise Project Explorer
+	UPROPERTY(Config, EditAnywhere, Meta = (DisplayName = "Auto-Sync Selection", Category = "WAAPI", EditCondition = "AutoConnectToWAAPI"))
 	bool AutoSyncSelection = true;
 
-	// Time out value for Waapi calls (in ms). If set to -1, Waapi calls will never time out
-	UPROPERTY(Config, EditAnywhere, Category = "WAAPI", meta=(ClampMin=-1))
+	// Time out value for WAAPI calls (in ms). If set to -1, WAAPI calls will never time out
+	UPROPERTY(Config, EditAnywhere, Meta = (DisplayName = "WAAPI Calls Timeout", Category = "WAAPI", EditCondition = "AutoConnectToWAAPI", ClampMin = -1))
 	int32 WaapiCallsTimeout = 500;
 	
-	// Time out value for the waapi error message translator to translate an error message (in ms). If set to 0, disable the translator entirely
-	UPROPERTY(Config, EditAnywhere, Category = "Error Message Translator")
+	// Time out value for the WAAPI error message translator to translate an error message (in ms). If set to 0, disable the translator entirely
+	UPROPERTY(Config, EditAnywhere, DisplayName = "WAAPI Translator Timeout", Category = "Error Message Translator")
 	uint32 WaapiTranslatorTimeout = 0;
 
 	UPROPERTY(Config)
@@ -79,6 +93,9 @@ public:
 
 	UPROPERTY(Config)
 	bool SoundDataGenerationSkipLanguage = false;
+
+	UPROPERTY(Config)
+	bool VerboseSoundBankGeneration = false;
 
 	//Opens a notification that the user must accept before reloading Wwise Asset Data
 	UPROPERTY(Config, EditAnywhere, Category = "Asset Reload")

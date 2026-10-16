@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -165,7 +165,7 @@ public:
 	/// AK::StreamMgr::IAkFileLocationResolver implementations query this string. They may use it to 
 	/// construct a file path (for e.g. SDK/samples/SoundEngine/Common/AkFileLocationBase.cpp), or to
 	/// find a language-specific file within a look-up table (for e.g. SDK/samples/SoundEngine/Common/AkFilePackageLUT.cpp).
-	/// \return Current language.
+	/// \return Current language in string format, as specified in AK::StreamMgr::SetCurrentLanguage().
 	/// \sa AK::StreamMgr::SetCurrentLanguage()
 	virtual const AkOSChar* GetCurrentLanguage() = 0;
 

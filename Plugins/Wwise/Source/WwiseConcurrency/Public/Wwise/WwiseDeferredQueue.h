@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -97,8 +97,8 @@ struct WWISECONCURRENCY_API FWwiseDeferredQueue
 protected:
 	FWwiseExecutionQueue AsyncExecutionQueue;
 
-	using FOps = TQueue<FFunction, EQueueMode::Mpsc>;
-	using FSyncOps = TQueue<FSyncFunction, EQueueMode::Mpsc>;
+	using FOps = TLockFreePointerListFIFO<FFunction, PLATFORM_CACHE_LINE_SIZE>;
+	using FSyncOps = TLockFreePointerListFIFO<FSyncFunction, PLATFORM_CACHE_LINE_SIZE>;
 	FOps AsyncOpQueue;
 	FSyncOps SyncOpQueue;
 	FOps GameOpQueue;

@@ -19,7 +19,7 @@
 //    S.Haker, S.Angenent, A.Tannenbaum, R.Kikinis, G.Sapiro, and M.Halle.
 //    Conformal surface parameterization for texture mapping,
 //    IEEE Transactions on Visualization and Computer Graphics,
-//    Volume 6, Number 2, pages 181–189, 2000
+//    Volume 6, Number 2, pages 181â€“189, 2000
 // The paper is available at https://ieeexplore.ieee.org/document/856998 but
 // is not freely downloadable.
 

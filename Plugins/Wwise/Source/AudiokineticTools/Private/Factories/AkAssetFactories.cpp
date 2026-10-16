@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkAssetFactories.h"
@@ -21,7 +21,9 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "AkAudioBank.h"
 #include "AkAudioDevice.h"
 #include "AkAudioEvent.h"
+#include "AkAudioNode.h"
 #include "AkAuxBus.h"
+#include "AkDialogueEvent.h"
 #include "AkRtpc.h"
 #include "AkSettings.h"
 #include "AkSettingsPerUser.h"
@@ -180,6 +182,46 @@ UObject* UAkAudioEventFactory::FactoryCreateNew(UClass* Class, UObject* InParent
 bool UAkAudioEventFactory::CanCreateNew() const
 {
 	return AkAssetFactory_Helper::CanCreateNew<UAkAudioEvent>();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// UAkAudioNodeFactory
+
+UAkAudioNodeFactory::UAkAudioNodeFactory(const class FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	SupportedClass = UAkAudioNode::StaticClass();
+	bCreateNew = bEditorImport = bEditAfterNew = true;
+}
+
+UObject* UAkAudioNodeFactory::FactoryCreateNew(UClass* Class, UObject* InParent, FName Name, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn)
+{
+	return AkAssetFactory_Helper::FactoryCreateNew<UAkAudioNode>(Class, InParent, Name, Flags, AssetID, ShortID, WwiseObjectName);
+}
+
+bool UAkAudioNodeFactory::CanCreateNew() const
+{
+	return AkAssetFactory_Helper::CanCreateNew<UAkAudioNode>();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// UAkDialogueEventFactory
+
+UAkDialogueEventFactory::UAkDialogueEventFactory(const class FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	SupportedClass = UAkDialogueEvent::StaticClass();
+	bCreateNew = bEditorImport = bEditAfterNew = true;
+}
+
+UObject* UAkDialogueEventFactory::FactoryCreateNew(UClass* Class, UObject* InParent, FName Name, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn)
+{
+	return AkAssetFactory_Helper::FactoryCreateNew<UAkDialogueEvent>(Class, InParent, Name, Flags, AssetID, ShortID, WwiseObjectName);
+}
+
+bool UAkDialogueEventFactory::CanCreateNew() const
+{
+	return AkAssetFactory_Helper::CanCreateNew<UAkDialogueEvent>();
 }
 
 //////////////////////////////////////////////////////////////////////////

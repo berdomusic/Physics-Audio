@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Packaging/WwiseAssetLibraryPreCooker.h"
@@ -56,7 +56,7 @@ FWwiseAssetLibraryPreCooker::FAssetLibraryInfoMap FWwiseAssetLibraryPreCooker::P
 	for (int Iter = 0; Iter < AssetLibraryArray.Num(); ++Iter)
 	{
 		const auto& AssetLibrarySoftPtr { AssetLibraryArray[Iter] };
-		if (AssetLibrarySoftPtr.IsNull())
+		if (AssetLibrarySoftPtr == nullptr)
 		{
 			UE_LOG(LogWwisePackagingEditor, Verbose, TEXT("FWwiseAssetLibraryPreCooker::Process: Skipping Null Wwise Asset Library at location %d."), Iter);
 			continue;
@@ -64,7 +64,7 @@ FWwiseAssetLibraryPreCooker::FAssetLibraryInfoMap FWwiseAssetLibraryPreCooker::P
 		auto* AssetLibrary = AssetLibrarySoftPtr.LoadSynchronous();
 		if (UNLIKELY(!AssetLibrary))
 		{
-			UE_LOG(LogWwisePackagingEditor, Log, TEXT("FWwiseAssetLibraryPreCooker::Process: Could not retrieve Asset Library at location %d (%s). Skipping."), Iter, *AssetLibrarySoftPtr.ToString());
+			UE_LOG(LogWwisePackagingEditor, Log, TEXT("FWwiseAssetLibraryPreCooker::Process: Could not retrieve Asset Library at location %d (%s). Skipping."), Iter, *AssetLibrarySoftPtr.Get()->GetName());
 			continue;
 		}
 
@@ -82,7 +82,7 @@ FWwiseAssetLibraryPreCooker::FAssetLibraryInfoMap FWwiseAssetLibraryPreCooker::P
 		}
 
 		AssetLibrary->Info.PreloadFilters();
-		FWwiseAssetLibraryProcessor::GetRelevantAssets(AssetLibrary->GetPathName(), FilteringSharedData->AssetsData);
+		FWwiseAssetLibraryProcessor::GetRelevantAssets(AssetLibrary->RelevantGameplayModulePaths, FilteringSharedData->AssetsData, AssetLibrary->ExcludedGameplayModulePaths);
 		Processor->FilterLibraryAssets(*FilteringSharedData, AssetLibrary->Info,
 			!AssetLibrary->bFallthrough && Iter < AssetLibraryArray.Num() - 1);
 		Result.Add(AssetLibrary, MakeShared<FWwiseAssetLibraryInfo>(AssetLibrary->Info));

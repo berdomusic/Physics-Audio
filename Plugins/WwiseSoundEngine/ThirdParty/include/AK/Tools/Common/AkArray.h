@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AKARRAY_H
@@ -53,7 +53,7 @@ struct AkArrayAllocatorNoAlign
 		AkFree(T_MEMID, in_pAddress);
 	}
 
-	static AkForceInline void TransferMem(void *& io_pDest, AkArrayAllocatorNoAlign<T_MEMID> in_srcAlloc, void * in_pSrc )
+	static AkForceInline void TransferMem(void *& io_pDest, AkArrayAllocatorNoAlign<T_MEMID>, void * in_pSrc )
 	{
 		io_pDest = in_pSrc;
 	}
@@ -77,7 +77,7 @@ struct AkArrayAllocatorAlignedSimd
 		AkFree(T_MEMID, in_pAddress);
 	}
 
-	AkForceInline void TransferMem(void *& io_pDest, AkArrayAllocatorAlignedSimd<T_MEMID> in_srcAlloc, void * in_pSrc )
+	AkForceInline void TransferMem(void *& io_pDest, AkArrayAllocatorAlignedSimd<T_MEMID>, void * in_pSrc )
 	{
 		io_pDest = in_pSrc;
 	}

@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -33,6 +33,7 @@ public:
 	FWwiseSimpleExtSrcManager();
 	~FWwiseSimpleExtSrcManager();
 
+	void OnObjectReimported(UObject* ReimportedObject);
 	virtual void LoadMediaTables();
 	virtual void ReloadExternalSources();
 
@@ -63,6 +64,7 @@ protected:
 
 	TStrongObjectPtr<UDataTable> MediaInfoTable;
 	TStrongObjectPtr<UDataTable> ExternalSourceDefaultMedia;
+	FDelegateHandle PreReimportDelegateHandle;
 	FStreamableManager StreamableManager;
 	TMap<uint32, uint32> CookieToMediaId;
 	TMap<uint32, int> CookieLoadCount;

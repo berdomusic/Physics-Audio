@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -42,4 +42,6 @@ public:
 	virtual void LoadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, FLoadSoundBankCallback&& InCallback) = 0;
 	virtual void UnloadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, FUnloadSoundBankCallback&& InCallback) = 0;
 	virtual void SetGranularity(uint32 Uint32) = 0;
+
+	virtual void DoPostTerm() = 0;
 };

@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkTypes.h
@@ -34,10 +34,6 @@ the specific language governing permissions and limitations under the License.
 #include <AK/SoundEngine/Common/AkNumeralTypes.h>
 
 #include <limits.h>
-
-#ifndef __cplusplus
-	#include <wchar.h> // wchar_t not a built-in type in C
-#endif
 
 #if !defined(AK_WIN )
 	#define AK_WIN ///< Compiling for Windows
@@ -89,12 +85,19 @@ the specific language governing permissions and limitations under the License.
 #endif
 
 #define AK_SUPPORT_WCHAR						///< Can support wchar
+#ifndef __cplusplus
+	#include <wchar.h> // wchar_t not a built-in type in C
+#endif
 #define AK_OS_WCHAR								///< Use wchar natively
 
 #define AK_SUPPORT_THREAD_LOCAL					///< Support thread_local C++11 keyword with no restrictions
 
 #define AK_RESTRICT		__restrict				///< Refers to the __restrict compilation flag available on some platforms
+#if  (_MSVC_LANG >= 202002L)
+#define AK_EXPECT_FALSE( _x )	(_x) [[unlikely]]
+#else
 #define AK_EXPECT_FALSE( _x )	(_x)
+#endif
 #define AkForceInline	__forceinline			///< Force inlining
 #define AkNoInline		__declspec(noinline)	///< Disable inlining
 
@@ -154,7 +157,7 @@ typedef AkUInt32			AkFourcc;			///< Riff chunk
 /// \remark Usage: AKPLATFORM::OutputDebugMsgV(AKTEXT("Print this string: " AK_OSCHAR_FMT "\n", msg));
 #define AK_OSCHAR_FMT "%ls"
 
-/// Macro that takes a string litteral and changes it to an AkOSChar string at compile time
+/// Macro that takes a string literal and changes it to an AkOSChar string at compile time
 /// \remark This is similar to the TEXT() and _T() macros that can be used to turn string litterals into wchar_t strings
 /// \remark Usage: AKTEXT( "Some Text" )
 #define AKTEXT(x) L ## x

@@ -12,10 +12,11 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkAudioDeviceShareSet.h"
+#include "Wwise/Stats/AkAudio.h"
 
 #if WITH_EDITORONLY_DATA
 #include "Wwise/WwiseProjectDatabase.h"
@@ -25,6 +26,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 
 void UAkAudioDeviceShareSet::Serialize(FArchive& Ar)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAudioDeviceShareSet::Serialize"));
 	Super::Serialize(Ar);
 
 	if (HasAnyFlags(RF_ClassDefaultObject))
@@ -51,12 +53,14 @@ void UAkAudioDeviceShareSet::Serialize(FArchive& Ar)
 #if WITH_EDITORONLY_DATA
 void UAkAudioDeviceShareSet::PostLoad()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAudioDeviceShareSet::PostLoad"));
 	Super::PostLoad();
 	GetAudioDeviceShareSetCookedData();
 }
 
 void UAkAudioDeviceShareSet::FillInfo()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAudioDeviceShareSet::FillInfo"));
 	auto* ResourceCooker = IWwiseResourceCooker::GetDefault();
 	if (UNLIKELY(!ResourceCooker))
 	{

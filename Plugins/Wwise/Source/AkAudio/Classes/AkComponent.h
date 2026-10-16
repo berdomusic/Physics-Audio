@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*=============================================================================
@@ -44,7 +44,7 @@ enum class EReflectionFilterBits
 // Make sure AkPlayingID is always 32 bits, or else we're gonna have a bad time.
 static_assert(sizeof(AkPlayingID) == sizeof(int32), "AkPlayingID is not 32 bits anymore. Change return value of PostEvent functions!");
 
-struct AkReverbFadeControl
+struct AKAUDIO_API AkReverbFadeControl
 {
 public:
 	uint32 AuxBusId;
@@ -130,7 +130,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Audiokinetic|AkComponent")
 	void SetEnableSpotReflectors(bool in_enable);
 
-private:
+protected:
 	/** 
 	*	Send to an Auxiliary Bus containing the Wwise Reflect plugin for early reflections rendering.
 	*	Note that the Wwise Auxiliary Bus for early reflections can also be set per-sound in the Sound Property Editor in the Wwise Authoring tool. 
@@ -167,10 +167,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AkComponent|Spatial Audio|Debug Draw")
 	bool DrawDiffraction = false;
 
-	/** Stop sound when owner is destroyed? */
-	UPROPERTY()
-	bool StopWhenOwnerDestroyed = false;
-
 	/**
 	 * Posts this component's AkAudioEvent to Wwise, using this component as the game object source, and wait until the event is 
 	 * done playing to continue execution. Extra calls while the event is playing are ignored.
@@ -191,22 +187,6 @@ public:
 
 	int32 PostAkEvent(UAkAudioEvent* AkEvent, int32 CallbackMask, const FOnAkPostEventCallback& PostEventCallback) override;
 	AkPlayingID PostAkEvent(UAkAudioEvent* AkEvent, AkUInt32 Flags = 0, AkCallbackFunc UserCallback = nullptr, void* UserCookie = nullptr) override;
-	/**
-	 * Posts a trigger to wwise, using this component as the game object source
-	 *
-	 * @param Trigger		The name of the trigger
-	 */
-	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category="Audiokinetic|AkComponent", meta = (AdvancedDisplay = "1"))
-	void PostTrigger(class UAkTrigger const* TriggerValue);
-	
-	/**
-	 * Sets a switch group in wwise, using this component as the game object source
-	 *
-	 * @param SwitchGroup	The name of the switch group
-	 * @param SwitchState	The new state of the switch
-	 */
-	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category="Audiokinetic|AkComponent", meta = (AdvancedDisplay = "1"))
-	void SetSwitch(class UAkSwitchValue const* SwitchValue);
 
 	/**
 	 * Sets whether or not to stop sounds when the component's owner is destroyed
@@ -222,7 +202,7 @@ public:
 	 * @param Listeners	The array of components that listen to this component
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category="Audiokinetic|AkComponent")
-	void SetListeners( const TArray<UAkComponent*>& Listeners );
+	virtual void SetListeners( const TArray<UAkComponent*>& Listeners );
 
 	// Reverb volumes functions
 
@@ -264,7 +244,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category="Audiokinetic|AkComponent")
 	float GetAttenuationRadius() const;
 
-	void UpdateGameObjectPosition();
+	virtual void UpdateGameObjectPosition();
 
 	void GetAkGameObjectName(FString& Name) const;
 
@@ -313,9 +293,10 @@ public:
 	 * 
 	 * @param Location			The location of the AkComponent
 	 */
-	void UpdateSpatialAudioRoom(FVector Location);
+	virtual void UpdateSpatialAudioRoom(FVector Location);
 
 	void SetAutoDestroy(bool in_AutoDestroy) { bAutoDestroy = in_AutoDestroy; }
+	bool AutoDestroy() const { return bAutoDestroy; }
 
 	bool UseDefaultListeners() const { return bUseDefaultListeners; }
 
@@ -347,16 +328,16 @@ public:
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
 
-private:
+protected:
 	/**
 	 * Register the component with Wwise
 	 */
-	void RegisterGameObject();
+	virtual void RegisterGameObject();
 
 	/**
 	 * Unregister the component from Wwise
 	 */
-	void UnregisterGameObject();
+	virtual void UnregisterGameObject();
 
 	/*
 	* Called after registering the component with Wwise
@@ -374,7 +355,7 @@ private:
 	 *
 	 * @param DeltaTime		The given time increment since last fade computation
 	 */
-	void ApplyAkReverbVolumeList(float DeltaTime);
+	virtual void ApplyAkReverbVolumeList(float DeltaTime);
 
 	AkComponentObstructionAndOcclusionService ObstructionService;
 
@@ -395,6 +376,8 @@ private:
 
 	/** Previous known position. Used to avoid Spamming SetPosition on a listener */
 	AkSoundPosition CurrentSoundPosition;
+
+private:
 	bool HasMoved();
 
 #endif
@@ -404,6 +387,7 @@ private:
 	void UpdateSpriteTexture();
 #endif
 
+protected:
 	bool bUseDefaultListeners;
 	FCriticalSection ListenerCriticalSection;
 	// Using TWeakObjectPtrSetKeyFuncs since different stale items will be indistinguishable using the default key func

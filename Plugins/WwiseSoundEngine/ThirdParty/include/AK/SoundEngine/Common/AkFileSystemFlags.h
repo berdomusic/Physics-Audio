@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file 
@@ -40,16 +40,17 @@ struct AkFileSystemFlags
 		, pCustomParam(0)
 		, bIsLanguageSpecific(false)
 		, bIsAutomaticStream(false)
-		, uCacheID(AK_INVALID_FILE_ID)
+		, uCacheID(AK_INVALID_CACHE_ID)
 		, uNumBytesPrefetch(0)
 		, uDirectoryHash(AK_INVALID_FILE_ID) {}
 
-	AkFileSystemFlags( AkUInt32 in_uCompanyID, AkUInt32 in_uCodecID, AkUInt32 in_uCustomParamSize, void * in_pCustomParam, bool in_bIsLanguageSpecific, AkCacheID in_uCacheID )
-		: uCompanyID( in_uCompanyID )
-		, uCodecID( in_uCodecID )
-		, uCustomParamSize( in_uCustomParamSize )
-		, pCustomParam( in_pCustomParam )
-		, bIsLanguageSpecific( in_bIsLanguageSpecific )
+	AkFileSystemFlags(AkUInt32 in_uCompanyID, AkUInt32 in_uCodecID, AkUInt32 in_uCustomParamSize, void* in_pCustomParam, bool in_bIsLanguageSpecific, AkCacheID in_uCacheID)
+		: uCompanyID(in_uCompanyID)
+		, uCodecID(in_uCodecID)
+		, uCustomParamSize(in_uCustomParamSize)
+		, pCustomParam(in_pCustomParam)
+		, bIsLanguageSpecific(in_bIsLanguageSpecific)
+		, bIsAutomaticStream(false)
 		, uCacheID( in_uCacheID )
 		, uNumBytesPrefetch( 0 )
 		, uDirectoryHash(AK_INVALID_FILE_ID) {}

@@ -12,13 +12,14 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "WaapiDataSource.h"
 
 #include <Wwise/Stats/AudiokineticTools.h>
 
+#include "AkAudioModule.h"
 #include "AkSettings.h"
 #include "AkSettingsPerUser.h"
 #include "AkWaapiUtils.h"
@@ -28,8 +29,29 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "WwiseUnrealHelper.h"
 #include "Async/Async.h"
 #include "Dom/JsonObject.h"
+#include "Editor.h"
 #include "Misc/Paths.h"
 #include "Wwise/WwiseTreeItem.h"
+
+const FString SOUND = TEXT("Sound");
+const FString AUDIO_FILE_SOURCE = TEXT("AudioFileSource");
+
+bool WaapiNotificationStruct::operator<(const WaapiNotificationStruct& Rhs) const
+{
+	FString LhsPath;
+	FString RhsPath;
+	Object->Get()->TryGetStringField(WwiseWaapiHelper::PATH, LhsPath);
+	Rhs.Object->Get()->TryGetStringField(WwiseWaapiHelper::PATH, RhsPath);
+	if (LhsPath.Contains(RhsPath))
+	{
+		return false;
+	}
+	if (RhsPath.Contains(LhsPath))
+	{
+		return true;
+	}
+	return LhsPath.Len() < RhsPath.Len();
+}
 
 FWaapiDataSource::~FWaapiDataSource()
 {
@@ -56,6 +78,26 @@ bool FWaapiDataSource::Init()
 		this, &FWaapiDataSource::OnWaapiClientBeginDestroyCallback);
 
 	SubscribeWaapiCallbacks();
+
+	// Initial connection status refresh
+	RefreshConnectionStatus();
+
+	// Set up heartbeat timer for periodic connection status refresh
+	if (GEngine && !ConnectionStatusTickHandle.IsValid())
+	{
+		ConnectionStatusTickHandle = GEngine->OnPostEditorTick().AddRaw(this, &FWaapiDataSource::OnConnectionStatusTick);
+		ConnectionStatusTimer = ConnectionStatusHeartbeatInterval;
+	}
+
+	// Subscribe to RootOutputPath change events for immediate updates
+	if (UAkSettings* AkSettings = GetMutableDefault<UAkSettings>())
+	{
+		RootOutputPathChangedHandle = AkSettings->OnGeneratedSoundBanksPathChanged.AddRaw(this, &FWaapiDataSource::RefreshConnectionStatus);
+	}
+	if (UAkSettingsPerUser* AkSettingsPerUser = GetMutableDefault<UAkSettingsPerUser>())
+	{
+		RootOutputPathOverrideChangedHandle = AkSettingsPerUser->OnGeneratedSoundBanksPathChanged.AddRaw(this, &FWaapiDataSource::RefreshConnectionStatus);
+	}
 
 	return true;
 }
@@ -86,6 +128,25 @@ bool FWaapiDataSource::TearDown()
 
 	WaapiClient->OnClientBeginDestroy.Remove(ClientBeginDestroyHandle);
 
+	// Clean up connection status heartbeat timer
+	if (GEngine && ConnectionStatusTickHandle.IsValid())
+	{
+		GEngine->OnPostEditorTick().Remove(ConnectionStatusTickHandle);
+		ConnectionStatusTickHandle.Reset();
+	}
+
+	// Unsubscribe from RootOutputPath change events
+	if (UAkSettings* AkSettings = GetMutableDefault<UAkSettings>())
+	{
+		AkSettings->OnGeneratedSoundBanksPathChanged.Remove(RootOutputPathChangedHandle);
+		RootOutputPathChangedHandle.Reset();
+	}
+	if (UAkSettingsPerUser* AkSettingsPerUser = GetMutableDefault<UAkSettingsPerUser>())
+	{
+		AkSettingsPerUser->OnGeneratedSoundBanksPathChanged.Remove(RootOutputPathOverrideChangedHandle);
+		RootOutputPathOverrideChangedHandle.Reset();
+	}
+
 	return true;
 }
 
@@ -104,11 +165,9 @@ bool FWaapiDataSource::ConstructTree(bool bShouldRefresh)
 		NodesByPath.Empty();
 	}
 
-	for (int i = EWwiseItemType::Event; i <= EWwiseItemType::LastWwiseBrowserType; ++i)
+	for (auto i = EWwiseItemType::First; i <= EWwiseItemType::LastWwiseBrowserType; ++i)
 	{
-
-		FWwiseTreeItemPtr TreeRoot = ConstructTreeRoot(static_cast<EWwiseItemType::Type>(i));
-		if(TreeRoot)
+		if(FWwiseTreeItemPtr TreeRoot = ConstructTreeRoot(i))
 		{
 			FScopeLock AutoLock(&WaapiRootItemsLock);
 			RootItems.Add(TreeRoot);
@@ -124,13 +183,13 @@ bool FWaapiDataSource::ConstructTree(bool bShouldRefresh)
 	return true;
 }
 
-FWwiseTreeItemPtr FWaapiDataSource::ConstructTreeRoot(EWwiseItemType::Type Type)
+FWwiseTreeItemPtr FWaapiDataSource::ConstructTreeRoot(EWwiseItemType Type)
 {
 	FGuid InItemGuid = FGuid();
 	uint32 ShortId = 0;
 	TSharedPtr<FJsonObject> Result;
 	uint32_t ItemChildrenCount = 0;
-	FString Path = WwiseWaapiHelper::BACK_SLASH + EWwiseItemType::FolderNames[static_cast<int>(Type)];
+	FString Path = WwiseWaapiHelper::BACK_SLASH + WwiseItemType::FolderNames[static_cast<int>(Type)];
 
 	if (IsProjectLoaded() != EWwiseConnectionStatus::Connected)
 	{
@@ -159,7 +218,7 @@ FWwiseTreeItemPtr FWaapiDataSource::ConstructTreeRoot(EWwiseItemType::Type Type)
 	}
 
 	// Create the new tree item
-	FWwiseTreeItemPtr NewRootParent = MakeShared<FWwiseTreeItem>(EWwiseItemType::BrowserDisplayNames[static_cast<int>(Type)], Path, nullptr, EWwiseItemType::Folder, InItemGuid, ShortId);
+	FWwiseTreeItemPtr NewRootParent = MakeShared<FWwiseTreeItem>(WwiseItemType::BrowserDisplayNames[static_cast<int>(Type)], Path, nullptr, EWwiseItemType::Folder, InItemGuid, ShortId);
 	NewRootParent->bWaapiRefExists = true;
 	NewRootParent->ChildCountInWwise = ItemChildrenCount;
 
@@ -169,7 +228,7 @@ FWwiseTreeItemPtr FWaapiDataSource::ConstructTreeRoot(EWwiseItemType::Type Type)
 FWwiseTreeItemPtr FWaapiDataSource::ConstructWwiseTreeItem(const TSharedPtr<FJsonObject>& InItemInfoObj)
 {
 	static auto IsValidPath = [](const FString& Input) -> bool {
-		for (const auto& Item : EWwiseItemType::FolderNames)
+		for (const auto& Item : WwiseItemType::FolderNames)
 		{
 			if (Input.StartsWith(WwiseWaapiHelper::BACK_SLASH + Item))
 			{
@@ -181,7 +240,7 @@ FWwiseTreeItemPtr FWaapiDataSource::ConstructWwiseTreeItem(const TSharedPtr<FJso
 
 	const FString ItemTypeString = InItemInfoObj->GetStringField(WwiseWaapiHelper::TYPE);
 
-	auto ItemType = EWwiseItemType::FromString(ItemTypeString);
+	auto ItemType = WwiseItemType::FromString(ItemTypeString);
 	if (ItemType == EWwiseItemType::None)
 	{
 		return {};
@@ -378,9 +437,12 @@ void FWaapiDataSource::FindAndCreateItems(FWwiseTreeItemPtr CurrentItem)
 		{
 			// Recover the information from the Json object Result and use it to construct the tree item.
 			FWwiseTreeItemPtr NewRootItem = ConstructWwiseTreeItem(Result->GetArrayField(WwiseWaapiHelper::RETURN)[0]);
-			CurrentItem->Parent = NewRootItem;
-			NewRootItem->AddChild(CurrentItem);
-			FindAndCreateItems(NewRootItem);
+			if (NewRootItem.IsValid())
+			{
+				CurrentItem->Parent = NewRootItem;
+				NewRootItem->AddChild(CurrentItem);
+				FindAndCreateItems(NewRootItem);
+			}
 		}
 		else
 		{
@@ -425,7 +487,7 @@ FString FWaapiDataSource::GetItemWorkUnitPath(FWwiseTreeItemPtr InItem)
 #endif
 }
 
-FWwiseTreeItemPtr FWaapiDataSource::GetRootItem(EWwiseItemType::Type RootType)
+FWwiseTreeItemPtr FWaapiDataSource::GetRootItem(EWwiseItemType RootType)
 {
 	if (IsProjectLoaded() != EWwiseConnectionStatus::Connected)
 	{
@@ -434,45 +496,45 @@ FWwiseTreeItemPtr FWaapiDataSource::GetRootItem(EWwiseItemType::Type RootType)
 
 	check(RootType <= EWwiseItemType::LastWwiseBrowserType)
 
-	if (RootType > RootItems.Num() - 1)
+	if (static_cast<int32>(RootType) > RootItems.Num() - 1)
 	{
 		UE_LOG(LogAudiokineticTools, Error, TEXT("Failed to get Waapi Root Items. Index out of range."));
 		return nullptr;
 	}
 
-	return RootItems[RootType];
+	return RootItems[static_cast<int32>(RootType)];
 }
 
 FWwiseTreeItemPtr FWaapiDataSource::GetRootItem(const FString& InFullPath)
 {
-	for (int i = EWwiseItemType::Event; i <= EWwiseItemType::LastWwiseBrowserType; ++i)
+	for (auto i = EWwiseItemType::First; i <= EWwiseItemType::LastWwiseBrowserType; ++i)
 	{
-		if (InFullPath.StartsWith(RootItems[i]->FolderPath))
+		if (InFullPath.StartsWith(RootItems[static_cast<int32>(i)]->FolderPath))
 		{
-			return RootItems[i];
+			return RootItems[static_cast<int32>(i)];
 		}
 	}
 
 	return {};
 }
 
-FWwiseTreeItemPtr FWaapiDataSource::LoadFilteredRootItem(EWwiseItemType::Type RootType, TSharedPtr<StringFilter> CurrentFilter)
+FWwiseTreeItemPtr FWaapiDataSource::LoadFilteredRootItem(EWwiseItemType RootType, TSharedPtr<StringFilter> CurrentFilter)
 {
 
 	check(CurrentFilter.IsValid())
 
-	if (RootType > RootItems.Num() - 1)
+	if (static_cast<int32>(RootType) > RootItems.Num() - 1)
 	{
 		UE_LOG(LogAudiokineticTools, Error, TEXT("Failed to get Waapi Root Items. Index out of range."));
 		return nullptr;
 	}
 
 	FString CurrentFilterText = CurrentFilter->GetRawFilterText().ToString();
-	FString Path = WwiseWaapiHelper::BACK_SLASH + EWwiseItemType::FolderNames[static_cast<int>(RootType)];
+	FString Path = WwiseWaapiHelper::BACK_SLASH + WwiseItemType::FolderNames[static_cast<int>(RootType)];
 	FScopeLock Autolock(&WaapiRootItemsLock);
-	for (int i = EWwiseItemType::Event; i <= EWwiseItemType::LastWwiseBrowserType; ++i)
+	for (auto i = EWwiseItemType::First; i <= EWwiseItemType::LastWwiseBrowserType; ++i)
 	{
-		RootItems[i]->EmptyChildren();
+		RootItems[static_cast<int32>(i)]->EmptyChildren();
 	}
 	TSharedPtr<FJsonObject> Result;
 	if (LoadWaapiInfo(WwiseWaapiHelper::PATH, Path, Result,
@@ -749,6 +811,7 @@ void FWaapiDataSource::HandleFindWwiseItemInProjectExplorerCommandExecute(
 void FWaapiDataSource::OnProjectLoadedCallback()
 {
 	SubscribeWaapiCallbacks();
+	RefreshConnectionStatus();
 	ConstructTree(true);
 }
 
@@ -760,6 +823,7 @@ void FWaapiDataSource::OnConnectionLostCallback()
 		NodesByPath.Empty();
 	}
 
+	RefreshConnectionStatus();
 	WaapiDataSourceRefreshed.ExecuteIfBound();
 
 	UnsubscribeWaapiCallbacks();
@@ -786,6 +850,213 @@ void FWaapiDataSource::OnWaapiClientBeginDestroyCallback()
 	UnsubscribeWaapiCallbacks();
 }
 
+void FWaapiDataSource::OnWwiseSelectionChanged(uint64_t Id, TSharedPtr<FJsonObject> Response)
+{
+	AsyncTask(ENamedThreads::GameThread, [this, Response]()
+	{
+		const UAkSettingsPerUser* AkSettingsPerUser = GetDefault<UAkSettingsPerUser>();
+		if (AkSettingsPerUser && AkSettingsPerUser->AutoSyncSelection)
+		{
+			const TArray<TSharedPtr<FJsonValue>>* objectsJsonArray = nullptr;
+			if (Response->TryGetArrayField(WwiseWaapiHelper::OBJECTS, objectsJsonArray))
+			{
+				TArray<TSharedPtr<FWwiseTreeItem>> TreeItems;
+				for (auto JsonObject : *objectsJsonArray)
+				{
+					auto TreeItem = FindOrConstructTreeItemFromJsonObject(JsonObject->AsObject());
+					if (TreeItem)
+					{
+						TreeItems.Add(TreeItem);
+					}
+				}
+				WwiseSelectionChange.ExecuteIfBound(TreeItems);
+			}
+		}
+	});
+}
+
+#if WWISE_2025_1_OR_LATER
+void FWaapiDataSource::OnStructureChanged(uint64_t Id, TSharedPtr<FJsonObject> Response)
+{
+	TMap<EWaapiOperation, TArray<WaapiNotificationStruct>> Operations;
+	Operations.Add(WaapiOperationCreate, {});
+	Operations.Add(WaapiOperationNameChange, {});
+	Operations.Add(WaapiOperationParentChange, {});
+	const TArray<TSharedPtr<FJsonValue>>* objectsJsonArray = nullptr;
+	if (Response->TryGetArrayField(WwiseWaapiHelper::OBJECTS, objectsJsonArray))
+	{
+		for (auto& object : *objectsJsonArray)
+		{
+			const TSharedPtr<FJsonObject>* JsonObject;
+			if (object->TryGetObject(JsonObject))
+			{
+				const TSharedPtr<FJsonObject>* WwiseObject;
+				JsonObject->Get()->TryGetObjectField(WwiseWaapiHelper::OBJECT,WwiseObject);
+				FString GuidString;
+				if (!WwiseObject->Get()->TryGetStringField(WwiseWaapiHelper::ID, GuidString))
+				{
+					continue;
+				}
+				FGuid Guid = FGuid(GuidString);
+				const TArray<TSharedPtr<FJsonValue>>* changesJsonArray = nullptr;
+				if (JsonObject->Get()->TryGetArrayField(WwiseWaapiHelper::CHANGES, changesJsonArray))
+				{
+					for (auto& change : *changesJsonArray)
+					{
+						const TSharedPtr<FJsonObject>* jsonChangeObject;
+						if (change->TryGetObject(jsonChangeObject))
+						{
+							FString jsonString;
+							if (jsonChangeObject->Get()->TryGetStringField(WwiseWaapiHelper::TYPE, jsonString))
+							{
+								if (jsonString == WwiseWaapiHelper::CREATE)
+								{
+									Operations[WaapiOperationCreate].Add(WaapiNotificationStruct{WwiseObject, Guid, nullptr});
+								}
+								if (jsonString == WwiseWaapiHelper::NAME_CHANGE)
+								{
+									const TSharedPtr<FJsonObject>* OperationInfo;
+									if (jsonChangeObject->Get()->TryGetObjectField(WwiseWaapiHelper::NAME_CHANGE, OperationInfo))
+									{
+										Operations[WaapiOperationNameChange].Add(WaapiNotificationStruct{WwiseObject, Guid, OperationInfo});
+									}
+								}
+								if (jsonString == WwiseWaapiHelper::PARENT_CHANGE)
+								{
+									const TSharedPtr<FJsonObject>* OperationInfo;
+									if (jsonChangeObject->Get()->TryGetObjectField(WwiseWaapiHelper::PARENT_CHANGE, OperationInfo))
+									{
+										Operations[WaapiOperationParentChange].Add(WaapiNotificationStruct{WwiseObject, Guid, OperationInfo});
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		Operations[WaapiOperationCreate].Sort();
+		Operations[WaapiOperationParentChange].Sort();
+		Operations[WaapiOperationNameChange].Sort();
+		for (auto& info : Operations[WaapiOperationParentChange])
+		{
+			OnWaapiChildMoved(info.Object, info.OperationInfo);
+		}
+		for (auto& info : Operations[WaapiOperationCreate])
+		{
+			OnWaapiChildAdded(info.Object);
+		}
+		for (auto& info : Operations[WaapiOperationNameChange])
+		{
+			OnWaapiRenamed(info.Object, info.OperationInfo);
+		}
+
+
+		WaapiDataSourceRefreshed.ExecuteIfBound();
+	}
+}
+
+void FWaapiDataSource::OnWaapiChildAdded(const TSharedPtr<FJsonObject>*& ChildJsonPtr)
+{
+	FString ChildName;
+	if (!ChildJsonPtr->Get()->TryGetStringField(WwiseWaapiHelper::NAME, ChildName))
+	{
+		return;
+	}
+
+	FString ChildPath;
+	if (!ChildJsonPtr->Get()->TryGetStringField(WwiseWaapiHelper::PATH, ChildPath))
+	{
+		return;
+	}
+
+	FString Type;
+	if (!ChildJsonPtr->Get()->TryGetStringField(WwiseWaapiHelper::TYPE, Type))
+	{
+		return;
+	}
+
+	if (Type == SOUND || Type == AUDIO_FILE_SOURCE)
+	{
+		return;
+	}
+
+	FString TreeItemParentPath = ChildPath;
+	TreeItemParentPath.RemoveFromEnd(WwiseWaapiHelper::BACK_SLASH + ChildName);
+	
+ 	if (auto ParentItem = NodesByPath.Find(TreeItemParentPath))
+	{
+		if (!ParentItem->Get()->FindItemRecursive(ChildPath))
+		{
+			auto ChildItem = ConstructWwiseTreeItem(*ChildJsonPtr);
+			if (ChildItem)
+			{
+				ParentItem->Get()->AddChild(ChildItem);
+				if(ChildItem->IsFolder())
+				{
+					NodesByPath.Add(ChildItem->FolderPath, ChildItem);
+				}
+			}
+		}
+	}
+}
+
+void FWaapiDataSource::OnWaapiRenamed(const TSharedPtr<FJsonObject>*& ObjectJsonPtr, const TSharedPtr<FJsonObject>*& NameChange)
+{
+	FString OldName;
+	FString NewName;
+	if(!NameChange->Get()->TryGetStringField(WwiseWaapiHelper::OLD_NAME, OldName))
+	{
+		return;
+	}
+	if(!NameChange->Get()->TryGetStringField(WwiseWaapiHelper::NEW_NAME, NewName))
+	{
+		return;
+	}
+
+	FString ObjectPath;
+	if (!ObjectJsonPtr->Get()->TryGetStringField(WwiseWaapiHelper::PATH, ObjectPath))
+	{
+		return;
+	}
+
+	FString Type;
+	if (!ObjectJsonPtr->Get()->TryGetStringField(WwiseWaapiHelper::TYPE, Type))
+	{
+		return;
+	}
+
+	if (Type == SOUND || Type == AUDIO_FILE_SOURCE)
+	{
+		return;
+	}
+
+	FString OldPath(ObjectPath);
+	OldPath.RemoveFromEnd(WwiseWaapiHelper::BACK_SLASH + NewName);
+	auto TreeItem = FindItemFromPath(OldPath);
+	
+	OldPath += WwiseWaapiHelper::BACK_SLASH + OldName;
+	NodesByPath.Remove(OldPath);
+	if(TreeItem)
+	{
+		for(auto& Child : TreeItem->GetChildren())
+		{
+			if(Child->DisplayName == OldName)
+			{
+				Child->DisplayName = UPackageTools::SanitizePackageName(NewName);
+				Child->WaapiName = NewName;
+				Child->FolderPath = ObjectPath;
+				if(Child->IsFolder())
+				{
+					NodesByPath.Add(ObjectPath, Child);
+					UpdateChildrenPath(Child, ObjectPath);
+				}
+				break;
+			}
+		}		
+	}
+}
+#else
 void FWaapiDataSource::OnWaapiRenamed(uint64_t Id, TSharedPtr<FJsonObject> Response)
 {
 	FString OldName;
@@ -984,30 +1255,80 @@ void FWaapiDataSource::OnWaapiChildRemoved(uint64_t Id, TSharedPtr<FJsonObject> 
 	WaapiDataSourceRefreshed.ExecuteIfBound();
 
 }
-
-void FWaapiDataSource::OnWwiseSelectionChanged(uint64_t Id, TSharedPtr<FJsonObject> Response)
+#endif
+void FWaapiDataSource::OnWaapiChildMoved(const TSharedPtr<FJsonObject>*& ChildJsonPtr, const TSharedPtr<FJsonObject>*& NameChange)
 {
-	AsyncTask(ENamedThreads::GameThread, [this, Response]()
+	const TSharedPtr<FJsonObject>* OldParent;
+	const TSharedPtr<FJsonObject>* NewParent;
+	if(!NameChange->Get()->TryGetObjectField(WwiseWaapiHelper::OLD_PARENT, OldParent))
 	{
-		const UAkSettingsPerUser* AkSettingsPerUser = GetDefault<UAkSettingsPerUser>();
-		if (AkSettingsPerUser && AkSettingsPerUser->AutoSyncSelection)
+		return;
+	}
+	if(!NameChange->Get()->TryGetObjectField(WwiseWaapiHelper::NEW_PARENT, NewParent))
+	{
+		return;
+	}
+
+	FString OldParentPath;
+	FString NewParentPath;
+	if(!OldParent->Get()->TryGetStringField(WwiseWaapiHelper::PATH, OldParentPath))
+	{
+		return;
+	}
+	NewParent->Get()->TryGetStringField(WwiseWaapiHelper::PATH, NewParentPath);
+
+	FString Name;
+	if(!ChildJsonPtr->Get()->TryGetStringField(WwiseWaapiHelper::NAME, Name))
+	{
+		return;
+	}
+
+	FString Type;
+	if (!ChildJsonPtr->Get()->TryGetStringField(WwiseWaapiHelper::TYPE, Type))
+	{
+		return;
+	}
+
+	if (Type == SOUND || Type == AUDIO_FILE_SOURCE)
+	{
+		return;
+	}
+
+	FString OldPath = OldParentPath + WwiseWaapiHelper::BACK_SLASH + Name;
+
+	if (auto OldParentObject = FindItemFromPath(OldParentPath))
+	{
+		if (auto TreeItem = OldParentObject->GetChild(Name))
 		{
-			const TArray<TSharedPtr<FJsonValue>>* objectsJsonArray = nullptr;
-			if (Response->TryGetArrayField(WwiseWaapiHelper::OBJECTS, objectsJsonArray))
+			//If the new parent does not exist, it means the item was deleted.
+			if (auto NewParentObject = FindItemFromPath(NewParentPath))
 			{
-				TArray<TSharedPtr<FWwiseTreeItem>> TreeItems;
-				for (auto JsonObject : *objectsJsonArray)
-				{
-					auto TreeItem = FindOrConstructTreeItemFromJsonObject(JsonObject->AsObject());
-					if (TreeItem)
-					{
-						TreeItems.Add(TreeItem);
-					}
-				}
-				WwiseSelectionChange.ExecuteIfBound(TreeItems);
+				NewParentObject->AddChild(TreeItem);
 			}
+			OldParentObject->RemoveChild(TreeItem);
+			NodeByPathCleanup(TreeItem);
 		}
-	});
+	}
+}
+
+void FWaapiDataSource::NodeByPathCleanup(FWwiseTreeItemPtr& Root)
+{
+	NodesByPath.Remove(Root->FolderPath);
+	for (auto Child : Root->GetChildren())
+	{
+		NodeByPathCleanup(Child);
+	}
+}
+
+void FWaapiDataSource::UpdateChildrenPath(const FWwiseTreeItemPtr& Root, const FString& Path)
+{
+	for (auto& Child : Root->GetChildren())
+	{
+		NodesByPath.Remove(Child->FolderPath);
+		Child->FolderPath = Path / Child->DisplayName;
+		NodesByPath.Add(Child->FolderPath, Child);
+		UpdateChildrenPath(Child, Child->FolderPath / Child->DisplayName);
+	}
 }
 
 void FWaapiDataSource::SubscribeWaapiCallbacks()
@@ -1021,10 +1342,14 @@ void FWaapiDataSource::SubscribeWaapiCallbacks()
 
 #if AK_SUPPORT_WAAPI
 	const SubscriptionData Subscriptions[] = {
+#if WWISE_2025_1_OR_LATER
+		{ak::wwise::core::object::structureChanged, WampEventCallback::CreateRaw(this, &FWaapiDataSource::OnStructureChanged), &WaapiSubscriptionIds.StructureChanged},
+		{ak::wwise::ui::selectionChanged, WampEventCallback::CreateRaw(this, &FWaapiDataSource::OnWwiseSelectionChanged), &WaapiSubscriptionIds.SelectionChanged},
+#else
 		{ak::wwise::core::object::nameChanged, WampEventCallback::CreateRaw(this, &FWaapiDataSource::OnWaapiRenamed), &WaapiSubscriptionIds.Renamed},
 		{ak::wwise::core::object::childAdded, WampEventCallback::CreateRaw(this, &FWaapiDataSource::OnWaapiChildAdded), &WaapiSubscriptionIds.ChildAdded},
 		{ak::wwise::core::object::childRemoved, WampEventCallback::CreateRaw(this, &FWaapiDataSource::OnWaapiChildRemoved), &WaapiSubscriptionIds.ChildRemoved},
-		{ak::wwise::ui::selectionChanged, WampEventCallback::CreateRaw(this, &FWaapiDataSource::OnWwiseSelectionChanged), &WaapiSubscriptionIds.SelectionChanged},
+#endif
 	};
 #endif
 
@@ -1065,11 +1390,18 @@ void FWaapiDataSource::SubscribeWaapiCallbacks()
 
 EWwiseConnectionStatus FWaapiDataSource::IsProjectLoaded()
 {
+	return CachedConnectionStatus;
+}
+
+void FWaapiDataSource::RefreshConnectionStatus()
+{
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("FWaapiDataSource::RefreshConnectionStatus"))
 	if(UAkSettingsPerUser* AkUserSettings = GetMutableDefault<UAkSettingsPerUser>())
 	{
-		if(!AkUserSettings->bAutoConnectToWAAPI)
+		if(!AkUserSettings->AutoConnectToWAAPI)
 		{
-			return EWwiseConnectionStatus::SettingDisabled;
+			CachedConnectionStatus = EWwiseConnectionStatus::SettingDisabled;
+			return;
 		}
 	}
 #if AK_SUPPORT_WAAPI
@@ -1079,13 +1411,17 @@ EWwiseConnectionStatus FWaapiDataSource::IsProjectLoaded()
 		{
 			FString WaapiPath;
 			TSharedPtr<FJsonObject> outJsonResult;
-			AkWaapiClient->Call(ak::wwise::core::getProjectInfo, MakeShareable(new FJsonObject()), MakeShareable(new FJsonObject()), outJsonResult, 500, false);
+			AkWaapiClient->Call(ak::wwise::core::getProjectInfo, MakeShareable(new FJsonObject()), MakeShareable(new FJsonObject()), outJsonResult, false);
+			if (outJsonResult == nullptr)
+			{
+				CachedConnectionStatus = EWwiseConnectionStatus::WwiseNotOpen;
+				return;
+			}
 			if(auto directoriesObject = outJsonResult->GetObjectField(TEXT("directories")))
 			{
 				WaapiPath = directoriesObject->GetStringField(TEXT("soundBankOutputRoot"));
 			}
-			FString UnrealPath = GetDefault<UAkSettings>()->RootOutputPath.Path;
-			auto UnrealRootOutputPath = FPaths::ConvertRelativePathToFull(WwiseUnrealHelper::GetContentDirectory(), UnrealPath);
+			FString UnrealRootOutputPath = WwiseUnrealHelper::GetSoundBankDirectory();
 			auto WaapiRootOutputPath = FPaths::ConvertRelativePathToFull(WwiseUnrealHelper::GetContentDirectory(), WaapiPath);
 
 			WaapiRootOutputPath = WaapiRootOutputPath.Replace(TEXT("\\"), TEXT("/"));
@@ -1099,21 +1435,36 @@ EWwiseConnectionStatus FWaapiDataSource::IsProjectLoaded()
 			{
 				UnrealRootOutputPath += "/";
 			}
+
 			FAkWaapiClient::ConvertProjectPath(WaapiRootOutputPath);
 			if(WaapiRootOutputPath != UnrealRootOutputPath)
 			{
-				return EWwiseConnectionStatus::WrongRootOutputPath;
+				CachedConnectionStatus = EWwiseConnectionStatus::WrongRootOutputPath;
+				return;
 			}
 		}
 
-		return EWwiseConnectionStatus::Connected;
+		CachedConnectionStatus = EWwiseConnectionStatus::Connected;
+		return;
 	}
 	if(FAkWaapiClient::Get()->bIsWrongProjectLoaded)
 	{
-		return EWwiseConnectionStatus::WrongProjectOpened;
+		CachedConnectionStatus = EWwiseConnectionStatus::WrongProjectOpened;
+		return;
 	}
 #endif
-	return EWwiseConnectionStatus::WwiseNotOpen;
+	CachedConnectionStatus = EWwiseConnectionStatus::WwiseNotOpen;
+	return;
+}
+
+void FWaapiDataSource::OnConnectionStatusTick(float DeltaSeconds)
+{
+	ConnectionStatusTimer -= DeltaSeconds;
+	if (ConnectionStatusTimer <= 0.0f)
+	{
+		RefreshConnectionStatus();
+		ConnectionStatusTimer = ConnectionStatusHeartbeatInterval;
+	}
 }
 
 void FWaapiDataSource::SelectInProjectExplorer(TArray<FWwiseTreeItemPtr>& InTreeItems)
@@ -1228,6 +1579,7 @@ void FWaapiDataSource::UnsubscribeWaapiCallbacks()
 	DoUnsubscribe(WaapiSubscriptionIds.ChildAdded);
 	DoUnsubscribe(WaapiSubscriptionIds.ChildRemoved);
 	DoUnsubscribe(WaapiSubscriptionIds.SelectionChanged);
+	DoUnsubscribe(WaapiSubscriptionIds.StructureChanged);
 }
 
 void FWaapiDataSource::RemoveClientCallbacks()

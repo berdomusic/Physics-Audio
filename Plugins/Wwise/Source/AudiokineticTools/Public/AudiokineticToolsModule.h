@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -20,6 +20,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 	AudiokineticToolsModule.h
 =============================================================================*/
 #include "AudiokineticToolsPrivatePCH.h"
+#include <atomic>
 #include "AkAcousticPortal.h"
 #include "AkAudioBankGenerationHelpers.h"
 #include "AkComponent.h"
@@ -49,6 +50,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "EditorBuildUtils.h"
 #include "Widgets/Docking/SDockTab.h"
 #include "Widgets/Input/SHyperlink.h"
+#include "Wwise/Packaging/WwisePackagingSettings.h"
 
 #define LOCTEXT_NAMESPACE "AkAudio"
 
@@ -150,6 +152,7 @@ public:
 	void RegisterWwiseMenus();
 	void UpdateUnrealCultureToWwiseCultureMap(const WwiseProjectInfo& wwiseProjectInfo);
 	void VerifyGeneratedSoundBanksPath(UAkSettings* AkSettings, UAkSettingsPerUser* AkSettingsPerUser);
+	void VerifyLibraryGroups(UWwisePackagingSettings* WwisePackagingSettings);
 	void OnAssetRegistryFilesLoaded();
 
 	virtual void StartupModule() override;
@@ -166,14 +169,24 @@ public:
 	static EEditorBuildResult BuildAkEventData(UWorld* world, FName name);
 
 	static FAudiokineticToolsModule* AudiokineticToolsModuleInstance;
+	
+	/** Flag to signal async tasks that the module is shutting down */
+	static std::atomic<bool> bIsShuttingDown;
+	
+	/** Counter for tracking active async operations */
+	static std::atomic<int32> ActiveAsyncOperations;
 
 	void RefreshAndUpdateTextureParams();
 
 private:
+	static TMap<FString, SettingsRegistrationStruct> GetCoreSettingsRegistrationMap();
 	static TMap<FString, SettingsRegistrationStruct>& GetWwisePlatformNameToSettingsRegistrationMap();
 	TSet<FString> RegisteredSettingsNames;
 	void RegisterSettings();
+	void RegisterCoreSettings();
+	void RegisterPlatformSettings();
 	void UnregisterSettings();
+	void CompleteInitialization();
 
 	/** Ak-specific viewport actions */
 	FUIAction ToggleVizRoomsPortalsAction;

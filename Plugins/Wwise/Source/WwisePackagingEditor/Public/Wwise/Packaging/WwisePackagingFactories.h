@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -28,6 +28,21 @@ class WWISEPACKAGINGEDITOR_API UWwisePackagingFactory : public UFactory
 
 public:
 	UWwisePackagingFactory(const FObjectInitializer& ObjectInitializer);
+	
+	virtual UObject* FactoryCreateNew(UClass* Class, UObject* InParent, FName Name, EObjectFlags Flags, UObject* Context,
+		FFeedbackContext* Warn) override;
+
+	virtual uint32 GetMenuCategories() const override;
+	virtual const TArray<FText>& GetMenuCategorySubMenus() const override;
+};
+
+UCLASS(HideCategories=(Object))
+class WWISEPACKAGINGEDITOR_API UWwiseAssetLibraryGroupFactory : public UFactory
+{
+	GENERATED_BODY()
+
+public:
+	UWwiseAssetLibraryGroupFactory(const FObjectInitializer& ObjectInitializer);
 	
 	virtual UObject* FactoryCreateNew(UClass* Class, UObject* InParent, FName Name, EObjectFlags Flags, UObject* Context,
 		FFeedbackContext* Warn) override;

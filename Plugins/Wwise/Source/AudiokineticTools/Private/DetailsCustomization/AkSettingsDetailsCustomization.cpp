@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkSettingsDetailsCustomization.h"
@@ -233,6 +233,13 @@ void FAkSettingsDetailsCustomization::CustomizeDetails(IDetailLayoutBuilder& Det
 			+ SHorizontalBox::Slot().AutoWidth()
 			[
 				SNew(SButton)
+				.Text(FText::FromString("Create Table"))
+				.ToolTipText(FText::FromString("If the Geometry Surface Properties Table property is empty, create and assign a new asset."))
+				.OnClicked_Raw(this, &FAkSettingsDetailsCustomization::CreateGeometrySurfacePropertiesTable)
+			]
+			+ SHorizontalBox::Slot().AutoWidth()
+			[
+				SNew(SButton)
 				.Text(FText::FromString("Verify and Update"))
 				.ToolTipText(FText::FromString("Verify each row of the Geometry Surface Properties Table below and remove rows with an invalid Physical Material."))
 				.OnClicked_Raw(this, &FAkSettingsDetailsCustomization::VerifyAndUpdateGeometrySurfacePropertiesTable)
@@ -240,6 +247,33 @@ void FAkSettingsDetailsCustomization::CustomizeDetails(IDetailLayoutBuilder& Det
 			+ SHorizontalBox::Slot().FillWidth(8)
 		]
 	];
+
+	IDetailCategoryBuilder& ReverbAssignmentCategoryBuilder = DetailLayout.EditCategory("Reverb Assignment", FText::GetEmpty(), ECategoryPriority::Uncommon);
+	ReverbAssignmentCategoryBuilder.AddCustomRow(FText::FromString("Create Reverb Assignment Table")).WholeRowContent()
+	[
+		SNew(SVerticalBox)
+		+ SVerticalBox::Slot().AutoHeight().Padding(2)
+		[
+			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().AutoWidth()
+			[
+				SNew(SButton)
+				.Text(FText::FromString("Create Table"))
+				.ToolTipText(FText::FromString("If the Reverb Assignment Table property is empty, create and assign a new asset."))
+				.OnClicked_Raw(this, &FAkSettingsDetailsCustomization::CreateReverbAssignmentTable)
+			]
+			+ SHorizontalBox::Slot().FillWidth(8)
+		]
+	];
+}
+
+FReply FAkSettingsDetailsCustomization::CreateGeometrySurfacePropertiesTable()
+{
+	UAkSettings* AkSettings = GetMutableDefault<UAkSettings>();
+	if (AkSettings != nullptr)
+		AkSettings->CreateGeometrySurfacePropertiesTable();
+
+	return FReply::Handled();
 }
 
 FReply FAkSettingsDetailsCustomization::VerifyAndUpdateGeometrySurfacePropertiesTable()
@@ -247,6 +281,15 @@ FReply FAkSettingsDetailsCustomization::VerifyAndUpdateGeometrySurfaceProperties
 	UAkSettings* AkSettings = GetMutableDefault<UAkSettings>();
 	if (AkSettings != nullptr)
 		AkSettings->VerifyAndUpdateGeometrySurfacePropertiesTable();
+
+	return FReply::Handled();
+}
+
+FReply FAkSettingsDetailsCustomization::CreateReverbAssignmentTable()
+{
+	UAkSettings* AkSettings = GetMutableDefault<UAkSettings>();
+	if (AkSettings != nullptr)
+		AkSettings->CreateReverbAssignmentTable();
 
 	return FReply::Handled();
 }

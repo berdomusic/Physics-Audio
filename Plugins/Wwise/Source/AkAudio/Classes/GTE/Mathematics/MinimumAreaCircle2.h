@@ -87,8 +87,8 @@ namespace WwiseGTE
                 mSupport[0] = 0;
 
                 // The loop restarts from the beginning of the point list each
-                // time the circle needs updating.  Linus Källberg (Computer
-                // Science at Mälardalen University in Sweden) discovered that
+                // time the circle needs updating. Linus KÃ¤llberg (Computer
+                // Science at MÃ¤lardalen University in Sweden) discovered that
                 // performance is better when the remaining points in the
                 // array are processed before restarting.  The points
                 // processed before the point that caused the update are

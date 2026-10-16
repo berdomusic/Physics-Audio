@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/AudioLink/WwiseAudioLinkFactory.h"
@@ -273,8 +273,17 @@ IAudioLinkFactory::FAudioLinkSourcePushedSharedPtr FWwiseAudioLinkFactory::Creat
 		UE_LOG(LogWwiseAudioLink, Error, TEXT("FWwiseAudioLinkFactory::CreateSourcePushedAudioLink: AkAudio not initialized."));
 		return {};
 	}
+	
+	const FWwiseAudioLinkSettingsProxy* WwiseSettings = static_cast<FWwiseAudioLinkSettingsProxy*>(InArgs.Settings.Get());
+	{
+		if (!WwiseSettings->GetStartEvent().IsValid())
+		{
+			UE_LOG(LogWwiseAudioLink, Error, TEXT("FWwiseAudioLinkFactory::CreateSourcePushedAudioLink: No (or invalid) StartEvent specified in the settings."));
+			return {};
+		}
+	}
 
-	UE_LOG(LogWwiseAudioLink, VeryVerbose, TEXT("FWwiseAudioLinkFactory: Creating AudioLink SourcePushed"));
+	UE_LOG(LogWwiseAudioLink, VeryVerbose, TEXT("FWwiseAudioLinkFactory::CreateSourcePushedAudioLink Creating AudioLink SourcePushed"));
 
 	return MakeShared<FWwiseAudioLinkSourcePushed, ESPMode::ThreadSafe>(InArgs,this);
 }

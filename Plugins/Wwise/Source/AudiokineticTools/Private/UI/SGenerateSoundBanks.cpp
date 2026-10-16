@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*------------------------------------------------------------------------------------
@@ -56,15 +56,17 @@ void SGenerateSoundBanks::Construct(const FArguments& InArgs)
 	PopulateList();
 	if (PlatformNames.Num() == 0)
 	{
-		FMessageDialog::Open(EAppMsgType::Ok, NSLOCTEXT("AkAudio", "Warning_Ak_PlatformSupported", "Unable to generate Sound Data. Please select a valid Wwise supported platform in the 'Project Settings > Project > Supported Platforms' dialog."));
+		FMessageDialog::Open(EAppMsgType::Ok, NSLOCTEXT("AkAudio", "Warning_Ak_PlatformSupported", "SoundBanks cannot be generated. Make sure to enter a valid path in 'Project Settings > Wwise > Integration Settings > Wwise Project Path'."));
 		return;
 	}
 
 	bool skipLanguages = false;
+	bool verbose = false;
 
 	if (auto* akSettingsPerUser = GetDefault<UAkSettingsPerUser>())
 	{
 		skipLanguages = akSettingsPerUser->SoundDataGenerationSkipLanguage;
+		verbose = akSettingsPerUser->VerboseSoundBankGeneration;
 	}
 
 	// Build the form
@@ -142,6 +144,25 @@ void SGenerateSoundBanks::Construct(const FArguments& InArgs)
 			[
 				SNew(STextBlock)
 				.Text(LOCTEXT("AkSkipVOFiles", "Skip generation of localized assets"))
+			]
+		]
+		+ SVerticalBox::Slot()
+		.AutoHeight()
+		.Padding(0, 8)
+		.HAlign(HAlign_Left)
+		[
+			SAssignNew(VerboseCheckbox, SCheckBox)
+			.IsChecked(verbose ? ECheckBoxState::Checked : ECheckBoxState::Unchecked)
+			.IsEnabled_Lambda([]() { return !FAkWaapiClient::IsProjectLoaded(); })
+			.Content()
+			[
+				SNew(STextBlock)
+				.Text_Lambda([]()
+				{
+					return FAkWaapiClient::IsProjectLoaded()
+						? LOCTEXT("AVerbose", "Add verbose logging to SoundBank generation. (Overridden by WAAPI connection.)")
+						: LOCTEXT("AVerbose", "Add verbose logging to SoundBank generation.");
+				})
 			]
 		]
 		+SVerticalBox::Slot()
@@ -237,6 +258,7 @@ FReply SGenerateSoundBanks::OnGenerateButtonClicked()
 	}
 
 	InitParameters.bSkipLanguages = SkipLanguagesCheckBox->IsChecked();
+	InitParameters.bVerbose = VerboseCheckbox->IsChecked();
 	const UAkSettingsPerUser* AkSettingsPerUser = GetDefault<UAkSettingsPerUser>();
 	if(AkSettingsPerUser)
 	{
@@ -246,6 +268,7 @@ FReply SGenerateSoundBanks::OnGenerateButtonClicked()
 	if (auto* akSettingsPerUser = GetMutableDefault<UAkSettingsPerUser>())
 	{
 		akSettingsPerUser->SoundDataGenerationSkipLanguage = InitParameters.bSkipLanguages;
+		akSettingsPerUser->VerboseSoundBankGeneration = InitParameters.bVerbose;
 		akSettingsPerUser->SaveConfig();
 	}
 

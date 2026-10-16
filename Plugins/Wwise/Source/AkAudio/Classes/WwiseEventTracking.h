@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -39,12 +39,18 @@ enum class EWwiseEventTrackerState
  */
 struct AKAUDIO_API FWwiseEventTracker
 {
+	virtual ~FWwiseEventTracker() {}
+	
 	static int GetScrubTimeMs() { return 100; }
 
 	/** Callback received at various points during lifetime Wwise event. 
-	 *  The FWwiseEventTracker is stored in the AkCallbackInfo as pCookie.
+	 *  The FWwiseEventTracker is stored as the user cookie.
 	 */
+#if WWISE_2025_1_OR_LATER
+	static void PostEventCallbackHandler(AkCallbackType in_eType, AkEventCallbackInfo* in_pEventInfo, void* in_pCallbackInfo, void* in_pCookie);
+#else
 	static void PostEventCallbackHandler(AkCallbackType in_eType, AkCallbackInfo* in_pCallbackInfo);
+#endif
 
 	void RemoveScheduledStop(AkPlayingID InID);
 

@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkAssetMigrationManager.h"
@@ -318,13 +318,16 @@ AkAssetMigrationManager::MigrationResult AkAssetMigrationManager::PerformMigrati
 	Info.FadeOutDuration = 0.6f;
 	Info.ExpireDuration = 4.6f;
 	FSlateNotificationManager::Get().AddNotification(Info);
-	if (Result.bSuccess)
+	if (GEngine->UseSound() && GEditor->CanPlayEditorSound())
 	{
-		GEditor->PlayEditorSound(TEXT("/Engine/EditorSounds/Notifications/CompileSuccess_Cue.CompileSuccess_Cue"));
-	}
-	else
-	{
-		GEditor->PlayEditorSound(TEXT("/Engine/EditorSounds/Notifications/CompileFailed_Cue.CompileFailed_Cue"));
+		if (Result.bSuccess)
+		{
+			GEditor->PlayEditorSound(TEXT("/Engine/EditorSounds/Notifications/CompileSuccess_Cue.CompileSuccess_Cue"));
+		}
+		else
+		{
+			GEditor->PlayEditorSound(TEXT("/Engine/EditorSounds/Notifications/CompileFailed_Cue.CompileFailed_Cue"));
+		}
 	}
 
 	return Result;

@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file 
@@ -40,7 +40,7 @@ the specific language governing permissions and limitations under the License.
 /// \name Profiling string lengths.
 //@{
 #define AK_MONITOR_STREAMNAME_MAXLENGTH    (64)
-#define AK_MONITOR_DEVICENAME_MAXLENGTH    (16)
+#define AK_MONITOR_DEVICENAME_MAXLENGTH    (64)
 //@}
  
 //-----------------------------------------------------------------------------

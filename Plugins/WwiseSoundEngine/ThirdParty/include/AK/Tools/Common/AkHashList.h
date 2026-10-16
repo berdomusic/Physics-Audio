@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AKHASHLIST_H
@@ -1001,26 +1001,7 @@ public:
 		AKASSERT( m_uiSize == 0 );
 		m_table.Term();
 	}
-/*
-	void RemoveAll()
-	{
-		for ( AkHashType i = 0; i < HashSize(); ++i )
-		{
-			T_MAPSTRUCT * pItem = m_table[ i ];
-			while ( pItem != NULL )
-			{
-				T_MAPSTRUCT * pNextItem = LIST_POLICY::Next(pItem);
-				pItem->~T_MAPSTRUCT();
-				T_ALLOD::Free( pItem );
-				pItem = pNextItem;
-			}
-			
-			m_table[ i ] = NULL;
-		}
 
-		m_uiSize = 0;
-	}
-*/
 	T_MAPSTRUCT * Exists( T_KEY in_Key ) const
 	{
 		if (HashSize() > 0)

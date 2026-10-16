@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "WwiseProjectDatabaseSource.h"
@@ -89,7 +89,7 @@ bool FWwiseProjectDatabaseDataSource::ConstructTree(bool bShouldRefresh)
 	{
 		FScopeLock AutoLock(&RootItemsLock);
 		RootItems.Empty();
-		RootItems.SetNum(EWwiseItemType::LastWwiseBrowserType + 1);
+		RootItems.SetNum(static_cast<int32>(EWwiseItemType::LastWwiseBrowserType) + 1);
 	}
 
 	NodesByPath.Empty();
@@ -101,6 +101,7 @@ bool FWwiseProjectDatabaseDataSource::ConstructTree(bool bShouldRefresh)
 			return false;
 		}
 		const WwiseEventGlobalIdsMap& Events = DataStructure.GetEvents();
+		const WwiseDialogueEventGlobalIdsMap& DialogueEvents = DataStructure.GetDialogueEvents();
 		const WwiseBusGlobalIdsMap& Busses = DataStructure.GetBusses();
 		const WwiseAuxBusGlobalIdsMap& AuxBusses = DataStructure.GetAuxBusses();
 		const WwiseAcousticTextureGlobalIdsMap& AcousticTextures = DataStructure.GetAcousticTextures();
@@ -116,15 +117,16 @@ bool FWwiseProjectDatabaseDataSource::ConstructTree(bool bShouldRefresh)
 		BuildEvents(Events);
 		BuildBusses(Busses);
 		BuildAuxBusses(AuxBusses);
-		BuildAcousticTextures(AcousticTextures);
-		BuildAudioDevices(AudioDevices);
-		BuildStateGroups(StateGroups);
-		BuildStates(States);
 		BuildSwitchGroups(SwitchGroups);
 		BuildSwitches(Switches);
+		BuildStateGroups(StateGroups);
+		BuildStates(States);
 		BuildGameParameters(GameParameters);
-		BuildTriggers(Triggers);
+		BuildDialogueEvents(DialogueEvents);
 		BuildEffectShareSets(EffectShareSets);
+		BuildTriggers(Triggers);
+		BuildAcousticTextures(AcousticTextures);
+		BuildAudioDevices(AudioDevices);
 	}
 
 	if(bShouldRefresh)
@@ -134,13 +136,13 @@ bool FWwiseProjectDatabaseDataSource::ConstructTree(bool bShouldRefresh)
 	return true;
 }
 
-FWwiseTreeItemPtr FWwiseProjectDatabaseDataSource::ConstructTreeRoot(EWwiseItemType::Type Type)
+FWwiseTreeItemPtr FWwiseProjectDatabaseDataSource::ConstructTreeRoot(EWwiseItemType Type)
 {
 	ConstructTree(false);
 
 	{
 		FScopeLock AutoLock(&RootItemsLock);
-		return RootItems[Type];
+		return RootItems[static_cast<int32>(Type)];
 	}
 }
 
@@ -179,20 +181,20 @@ int32 FWwiseProjectDatabaseDataSource::GetChildItemCount(const FWwiseTreeItemPtr
 	return InParentItem->GetChildren().Num();
 }
 
-FWwiseTreeItemPtr FWwiseProjectDatabaseDataSource::GetRootItem(EWwiseItemType::Type RootType)
+FWwiseTreeItemPtr FWwiseProjectDatabaseDataSource::GetRootItem(EWwiseItemType RootType)
 {
 	check(RootType <= EWwiseItemType::LastWwiseBrowserType)
 
-	if (RootType > RootItems.Num() - 1)
+	if (static_cast<int32>(RootType) > RootItems.Num() - 1)
 	{
 		UE_LOG(LogAudiokineticTools, Error, TEXT("Failed to get the Project Database Root Items. Index out of range."));
 		return nullptr;
 	}
 
-	return RootItems[RootType];
+	return RootItems[static_cast<int32>(RootType)];
 }
 
-FWwiseTreeItemPtr FWwiseProjectDatabaseDataSource::LoadFilteredRootItem(EWwiseItemType::Type ItemType,
+FWwiseTreeItemPtr FWwiseProjectDatabaseDataSource::LoadFilteredRootItem(EWwiseItemType ItemType,
 	TSharedPtr<StringFilter> CurrentFilter)
 {
 	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("FWwiseProjectDatabaseDataSource::LoadFilteredRootItem"))
@@ -202,18 +204,18 @@ FWwiseTreeItemPtr FWwiseProjectDatabaseDataSource::LoadFilteredRootItem(EWwiseIt
 
 	{
 		FScopeLock AutoLock(&RootItemsLock);
-		if (ItemType > RootItems.Num())
+		if (static_cast<int32>(ItemType) > RootItems.Num())
 		{
 			UE_LOG(LogAudiokineticTools, Error, TEXT("Failed to get the Project Database Root Items. Index out of range."));
 			return nullptr;
 		}
 
-		CurrentTreeRootItem = RootItems[ItemType];
+		CurrentTreeRootItem = RootItems[static_cast<int32>(ItemType)];
 		FString CurrentFilterText = CurrentFilter->GetRawFilterText().ToString();
 
 		if (!CurrentFilterText.IsEmpty() && CurrentTreeRootItem.IsValid())
 		{
-			FWwiseTreeItemPtr FilteredTreeRootItem = MakeShared<FWwiseTreeItem>(EWwiseItemType::BrowserDisplayNames[ItemType],
+			FWwiseTreeItemPtr FilteredTreeRootItem = MakeShared<FWwiseTreeItem>(WwiseItemType::BrowserDisplayNames[static_cast<int32>(ItemType)],
 				CurrentTreeRootItem->FolderPath, nullptr, EWwiseItemType::Folder, FGuid(CurrentTreeRootItem->ItemId), CurrentTreeRootItem->ShortId);
 			FilteredTreeRootItem->ChildCountInWwise = CurrentTreeRootItem->ChildCountInWwise;
 
@@ -224,7 +226,7 @@ FWwiseTreeItemPtr FWwiseProjectDatabaseDataSource::LoadFilteredRootItem(EWwiseIt
 
 			else
 			{
-				CopyTree(RootItems[ItemType], FilteredTreeRootItem);
+				CopyTree(RootItems[static_cast<int32>(ItemType)], FilteredTreeRootItem);
 			}
 
 			FilterTree(FilteredTreeRootItem, CurrentFilter);
@@ -232,9 +234,9 @@ FWwiseTreeItemPtr FWwiseProjectDatabaseDataSource::LoadFilteredRootItem(EWwiseIt
 			return FilteredTreeRootItem;
 		}
 
-		if (RootItems[ItemType])
+		if (RootItems[static_cast<int32>(ItemType)])
 		{
-			return RootItems[ItemType];
+			return RootItems[static_cast<int32>(ItemType)];
 		}
 
 		return nullptr;
@@ -278,12 +280,12 @@ void FWwiseProjectDatabaseDataSource::BuildEvents(const WwiseEventGlobalIdsMap& 
 {
 	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("FWwiseProjectDatabaseDataSource::BuildEvents"))
 
-	const auto& FolderItem = MakeShared<FWwiseTreeItem>(EWwiseItemType::EventsBrowserName, TEXT("\\") + EWwiseItemType::FolderNames[EWwiseItemType::Event], nullptr, EWwiseItemType::Folder, FGuid());
+	const auto& FolderItem = MakeShared<FWwiseTreeItem>(WwiseItemType::EventsBrowserName, TEXT("\\") + WwiseItemType::FolderNames[static_cast<int32>(EWwiseItemType::Event)], nullptr, EWwiseItemType::Folder, FGuid());
 	NodesByPath.Add(FolderItem->FolderPath, FolderItem);
 
 	{
 		FScopeLock AutoLock(&RootItemsLock);
-		RootItems[EWwiseItemType::Event] = FolderItem;
+		RootItems[static_cast<int32>(EWwiseItemType::Event)] = FolderItem;
 	}
 
 	for (const auto& Event : Events)
@@ -300,19 +302,46 @@ void FWwiseProjectDatabaseDataSource::BuildEvents(const WwiseEventGlobalIdsMap& 
 	}
 
 	FolderItem->ChildCountInWwise = FolderItem->GetChildren().Num();
+}
 
+void FWwiseProjectDatabaseDataSource::BuildDialogueEvents(const WwiseDialogueEventGlobalIdsMap& DialogueEvents)
+{
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("FWwiseProjectDatabaseDataSource::BuildDialogueEvents"))
+
+	const auto& FolderItem = MakeShared<FWwiseTreeItem>(WwiseItemType::DialogueEventsBrowserName, TEXT("\\") + WwiseItemType::FolderNames[static_cast<int32>(EWwiseItemType::DialogueEvent)], nullptr, EWwiseItemType::Folder, FGuid());
+	NodesByPath.Add(FolderItem->FolderPath, FolderItem);
+
+	{
+		FScopeLock AutoLock(&RootItemsLock);
+		RootItems[static_cast<int32>(EWwiseItemType::DialogueEvent)] = FolderItem;
+	}
+
+	for (const auto& DialogueEvent : DialogueEvents)
+	{
+		WwiseDBPair<const WwiseDatabaseLocalizableIdKey, WwiseRefDialogueEvent> EventPair(DialogueEvent);
+		const auto& WwiseItem = EventPair.GetSecond().GetDialogueEvent();
+		UE_LOG(LogAudiokineticTools, VeryVerbose, TEXT("DialogueEvent Name: %s"), *FWwiseStringConverter::ToFString(WwiseItem->Name));
+
+		WwiseMetadataBasicReference DialogueEventRef = WwiseMetadataBasicReference(WwiseItem->Id, WwiseItem->Name, WwiseItem->ObjectPath, WwiseItem->GUID);
+		if (!BuildFolderHierarchy(DialogueEventRef, EWwiseItemType::DialogueEvent, FolderItem))
+		{
+			UE_LOG(LogAudiokineticTools, Error, TEXT("Failed to place %s in the Wwise Browser"), *FWwiseStringConverter::ToFString(WwiseItem->ObjectPath));
+		}
+	}
+
+	FolderItem->ChildCountInWwise = FolderItem->GetChildren().Num();
 }
 
 void FWwiseProjectDatabaseDataSource::BuildBusses(const WwiseBusGlobalIdsMap& Busses)
 {
 	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("FWwiseProjectDatabaseDataSource::BuildBusses"))
 
-	const auto& FolderItem = MakeShared<FWwiseTreeItem>(EWwiseItemType::BussesBrowserName, TEXT("\\") + EWwiseItemType::FolderNames[EWwiseItemType::AuxBus], nullptr, EWwiseItemType::Folder, FGuid());
+	const auto& FolderItem = MakeShared<FWwiseTreeItem>(WwiseItemType::BussesBrowserName, TEXT("\\") + WwiseItemType::FolderNames[static_cast<int32>(EWwiseItemType::AuxBus)], nullptr, EWwiseItemType::Folder, FGuid());
 	NodesByPath.Add(FolderItem->FolderPath, FolderItem);
 
 	{
 		FScopeLock AutoLock(&RootItemsLock);
-		RootItems[EWwiseItemType::AuxBus] = FolderItem;
+		RootItems[static_cast<int32>(EWwiseItemType::AuxBus)] = FolderItem;
 	}
 
 	for (auto& Bus : Busses)
@@ -338,7 +367,7 @@ void FWwiseProjectDatabaseDataSource::BuildAuxBusses(const WwiseAuxBusGlobalIdsM
 
 	{
 		FScopeLock AutoLock(&RootItemsLock);
-		FolderItem = RootItems[EWwiseItemType::AuxBus];
+		FolderItem = RootItems[static_cast<int32>(EWwiseItemType::AuxBus)];
 	}
 
 	for (const auto& AuxBus : AuxBusses)
@@ -358,12 +387,12 @@ void FWwiseProjectDatabaseDataSource::BuildAcousticTextures(const WwiseAcousticT
 {
 	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("FWwiseProjectDatabaseDataSource::BuildAcousticTextures"))
 
-	const auto& FolderItem = MakeShared<FWwiseTreeItem>(EWwiseItemType::AcousticTexturesBrowserName, TEXT("\\") + EWwiseItemType::FolderNames[EWwiseItemType::AcousticTexture], nullptr, EWwiseItemType::Folder, FGuid());
+	const auto& FolderItem = MakeShared<FWwiseTreeItem>(WwiseItemType::AcousticTexturesBrowserName, TEXT("\\") + WwiseItemType::FolderNames[static_cast<int32>(EWwiseItemType::AcousticTexture)], nullptr, EWwiseItemType::Folder, FGuid());
 	NodesByPath.Add(FolderItem->FolderPath, FolderItem);
 
 	{
 		FScopeLock AutoLock(&RootItemsLock);
-		RootItems[EWwiseItemType::AcousticTexture] = FolderItem;
+		RootItems[static_cast<int32>(EWwiseItemType::AcousticTexture)] = FolderItem;
 	}
 
 	for (const auto& AcousticTexture : AcousticTextures)
@@ -383,12 +412,12 @@ void FWwiseProjectDatabaseDataSource::BuildAcousticTextures(const WwiseAcousticT
 
 void FWwiseProjectDatabaseDataSource::BuildAudioDevices(const WwiseAudioDeviceGlobalIdsMap& AudioDevices)
 {
-	const auto& FolderItem = MakeShared<FWwiseTreeItem>(EWwiseItemType::AudioDeviceShareSetBrowserName, TEXT("\\") + EWwiseItemType::FolderNames[EWwiseItemType::AudioDeviceShareSet], nullptr, EWwiseItemType::Folder, FGuid());
+	const auto& FolderItem = MakeShared<FWwiseTreeItem>(WwiseItemType::AudioDeviceShareSetBrowserName, TEXT("\\") + WwiseItemType::FolderNames[static_cast<int32>(EWwiseItemType::AudioDeviceShareSet)], nullptr, EWwiseItemType::Folder, FGuid());
 	NodesByPath.Add(FolderItem->FolderPath, FolderItem);
 
 	{
 		FScopeLock AutoLock(&RootItemsLock);
-		RootItems[EWwiseItemType::AudioDeviceShareSet] = FolderItem;
+		RootItems[static_cast<int32>(EWwiseItemType::AudioDeviceShareSet)] = FolderItem;
 	}
 
 	for (const auto& AudioDevice : AudioDevices)
@@ -410,12 +439,12 @@ void FWwiseProjectDatabaseDataSource::BuildStateGroups(const WwiseStateGroupGlob
 {
 	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("FWwiseProjectDatabaseDataSource::BuildStateGroups"))
 
-	const auto& FolderItem = MakeShared<FWwiseTreeItem>(EWwiseItemType::StatesBrowserName, TEXT("\\") + EWwiseItemType::FolderNames[EWwiseItemType::State], nullptr, EWwiseItemType::Folder, FGuid());
+	const auto& FolderItem = MakeShared<FWwiseTreeItem>(WwiseItemType::StatesBrowserName, TEXT("\\") + WwiseItemType::FolderNames[static_cast<int32>(EWwiseItemType::State)], nullptr, EWwiseItemType::Folder, FGuid());
 	NodesByPath.Add(FolderItem->FolderPath, FolderItem);
 
 	{
 		FScopeLock AutoLock(&RootItemsLock);
-		RootItems[EWwiseItemType::State] = FolderItem;
+		RootItems[static_cast<int32>(EWwiseItemType::State)] = FolderItem;
 	}
 
 	for (const auto& StateGroup : StateGroups)
@@ -441,7 +470,7 @@ void FWwiseProjectDatabaseDataSource::BuildStates(const WwiseStateGlobalIdsMap& 
 
 	{
 		FScopeLock AutoLock(&RootItemsLock);
-		StateGroupFolderItem = RootItems[EWwiseItemType::State];
+		StateGroupFolderItem = RootItems[static_cast<int32>(EWwiseItemType::State)];
 	}
 
 	for (const auto& State : States)
@@ -460,12 +489,12 @@ void FWwiseProjectDatabaseDataSource::BuildSwitchGroups(const WwiseSwitchGroupGl
 {
 	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("FWwiseProjectDatabaseDataSource::BuildEvents"))
 
-	const auto& FolderItem = MakeShared<FWwiseTreeItem>(EWwiseItemType::SwitchesBrowserName, TEXT("\\") + EWwiseItemType::FolderNames[EWwiseItemType::Switch], nullptr, EWwiseItemType::Folder, FGuid());
+	const auto& FolderItem = MakeShared<FWwiseTreeItem>(WwiseItemType::SwitchesBrowserName, TEXT("\\") + WwiseItemType::FolderNames[static_cast<int32>(EWwiseItemType::Switch)], nullptr, EWwiseItemType::Folder, FGuid());
 	NodesByPath.Add(FolderItem->FolderPath, FolderItem);
 
 	{
 		FScopeLock AutoLock(&RootItemsLock);
-		RootItems[EWwiseItemType::Switch] = FolderItem;
+		RootItems[static_cast<int32>(EWwiseItemType::Switch)] = FolderItem;
 	}
 
 	for (const auto& SwitchGroup : SwitchGroups)
@@ -491,7 +520,7 @@ void FWwiseProjectDatabaseDataSource::BuildSwitches(const WwiseSwitchGlobalIdsMa
 
 	{
 		FScopeLock AutoLock(&RootItemsLock);
-		SwitchGroupFolderItem = RootItems[EWwiseItemType::Switch];
+		SwitchGroupFolderItem = RootItems[static_cast<int32>(EWwiseItemType::Switch)];
 	}
 
 	for (const auto& Switch : Switches)
@@ -510,12 +539,12 @@ void FWwiseProjectDatabaseDataSource::BuildGameParameters(const WwiseGameParamet
 {
 	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("FWwiseProjectDatabaseDataSource::BuildGameParameters"))
 
-	const auto& FolderItem = MakeShared<FWwiseTreeItem>(EWwiseItemType::GameParametersBrowserName, TEXT("\\") + EWwiseItemType::FolderNames[EWwiseItemType::GameParameter], nullptr, EWwiseItemType::Folder, FGuid());
+	const auto& FolderItem = MakeShared<FWwiseTreeItem>(WwiseItemType::GameParametersBrowserName, TEXT("\\") + WwiseItemType::FolderNames[static_cast<int32>(EWwiseItemType::GameParameter)], nullptr, EWwiseItemType::Folder, FGuid());
 	NodesByPath.Add(FolderItem->FolderPath, FolderItem);
 
 	{
 		FScopeLock AutoLock(&RootItemsLock);
-		RootItems[EWwiseItemType::GameParameter] = FolderItem;
+		RootItems[static_cast<int32>(EWwiseItemType::GameParameter)] = FolderItem;
 	}
 
 	for (const auto& GameParameter : GameParameters)
@@ -537,12 +566,12 @@ void FWwiseProjectDatabaseDataSource::BuildTriggers(const WwiseTriggerGlobalIdsM
 {
 	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("FWwiseProjectDatabaseDataSource::BuildTriggers"))
 
-	const auto& FolderItem = MakeShared<FWwiseTreeItem>(EWwiseItemType::TriggersBrowserName, TEXT("\\") + EWwiseItemType::FolderNames[EWwiseItemType::Trigger], nullptr, EWwiseItemType::Folder, FGuid());
+	const auto& FolderItem = MakeShared<FWwiseTreeItem>(WwiseItemType::TriggersBrowserName, TEXT("\\") + WwiseItemType::FolderNames[static_cast<int32>(EWwiseItemType::Trigger)], nullptr, EWwiseItemType::Folder, FGuid());
 	NodesByPath.Add(FolderItem->FolderPath, FolderItem);
 
 	{
 		FScopeLock AutoLock(&RootItemsLock);
-		RootItems[EWwiseItemType::Trigger] = FolderItem;
+		RootItems[static_cast<int32>(EWwiseItemType::Trigger)] = FolderItem;
 	}
 
 	for (const auto& Trigger : Triggers)
@@ -564,12 +593,12 @@ void FWwiseProjectDatabaseDataSource::BuildEffectShareSets(const WwisePluginShar
 {
 	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("FWwiseProjectDatabaseDataSource::BuildEffectShareSets"))
 
-	const auto& FolderItem = MakeShared<FWwiseTreeItem>(EWwiseItemType::ShareSetsBrowserName, TEXT("\\") + EWwiseItemType::FolderNames[EWwiseItemType::EffectShareSet], nullptr, EWwiseItemType::Folder, FGuid());
+	const auto& FolderItem = MakeShared<FWwiseTreeItem>(WwiseItemType::ShareSetsBrowserName, TEXT("\\") + WwiseItemType::FolderNames[static_cast<int32>(EWwiseItemType::EffectShareSet)], nullptr, EWwiseItemType::Folder, FGuid());
 	NodesByPath.Add(FolderItem->FolderPath, FolderItem);
 
 	{
 		FScopeLock AutoLock(&RootItemsLock);
-		RootItems[EWwiseItemType::EffectShareSet] = FolderItem;
+		RootItems[static_cast<int32>(EWwiseItemType::EffectShareSet)] = FolderItem;
 	}
 
 	for (const auto& EffectShareSet : EffectShareSets)
@@ -610,14 +639,14 @@ bool FWwiseProjectDatabaseDataSource::ParseTreePath(const FString& ObjectPath, W
 	return true;
 }
 
-bool FWwiseProjectDatabaseDataSource::IsContainer(EWwiseItemType::Type ItemType) const
+bool FWwiseProjectDatabaseDataSource::IsContainer(EWwiseItemType ItemType) const
 {
 	return ItemType == EWwiseItemType::Bus || ItemType == EWwiseItemType::SwitchGroup || ItemType ==
 		EWwiseItemType::StateGroup || ItemType == EWwiseItemType::AuxBus || ItemType == EWwiseItemType::MotionBus;
 }
 
 bool FWwiseProjectDatabaseDataSource::BuildFolderHierarchy(
-	const WwiseMetadataBasicReference& WwiseItem, EWwiseItemType::Type
+	const WwiseMetadataBasicReference& WwiseItem, EWwiseItemType
 	ItemType, const FWwiseTreeItemPtr CurrentRootFolder, uint32 GroupId)
 {
 	const FString ItemPath = *WwiseItem.ObjectPath;

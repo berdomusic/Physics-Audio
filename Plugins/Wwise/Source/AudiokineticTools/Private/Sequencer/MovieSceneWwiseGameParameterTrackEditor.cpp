@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "MovieSceneWwiseGameParameterTrackEditor.h"
@@ -43,6 +43,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "Widgets/Input/SButton.h"
 
 #include "Editor.h"
+#include "Wwise/WwisePluginStyle.h"
 
 #define LOCTEXT_NAMESPACE "MovieSceneWwiseGameParameterTrackEditor"
 
@@ -98,7 +99,7 @@ TSharedRef<ISequencerSection> FMovieSceneWwiseGameParameterTrackEditor::MakeSect
 
 const FSlateBrush* FMovieSceneWwiseGameParameterTrackEditor::GetIconBrush() const
 {
-	return FAkAudioStyle::Get().GetBrush("Wwise.GameParameterIcon");
+	return FAkAudioStyle::GetBrush("Wwise.GameParameterIcon");
 }
 
 
@@ -304,9 +305,9 @@ void FMovieSceneWwiseGameParameterTrackEditor::BuildAddTrackMenu(FMenuBuilder& M
 	};
 
 	MenuBuilder.AddMenuEntry(
-		LOCTEXT("AddAkAudioGameParameterTrack", "GameParameter"),
+		LOCTEXT("AddAkAudioGameParameterTrack", "Wwise Game Parameter"),
 		LOCTEXT("AddAkAudioGameParameterMasterTrackTooltip", "Adds a master Game Parameter track."),
-		FSlateIcon(FAkAudioStyle::GetStyleSetName(), "Wwise.GameParameterIcon"),
+		FSlateIcon(FWwisePluginStyle::GetWwisePluginStyleSetName(), "Wwise.GameParameterIcon"),
 		FUIAction(FExecuteAction::CreateLambda([this, CreateAkAudioRTPCTrack = MoveTemp(CreateAkAudioRTPCTrack)]
 		{
 			TryAddWwiseGameParameterTrack(FCreateWwiseGameParameterTrack::CreateLambda(CreateAkAudioRTPCTrack));
@@ -332,9 +333,9 @@ void FMovieSceneWwiseGameParameterTrackEditor::BuildObjectBindingTrackMenu(FMenu
 	auto CreateAkAudioRTPCTrack = [=](UMovieScene* MovieScene) { return MovieScene->AddTrack<UMovieSceneWwiseGameParameterTrack>(ObjectBinding); };
 
 	MenuBuilder.AddMenuEntry(
-		LOCTEXT("AddWwiseGameParameterTrack", "WwiseGameParameter"),
+		LOCTEXT("AddWwiseGameParameterTrack", "Wwise Game Parameter"),
 		LOCTEXT("AddWwiseGameParameterTrackTooltip", "Adds a Game Parameter track."),
-		FSlateIcon(FAkAudioStyle::GetStyleSetName(), "Wwise.GameParameterIcon"),
+		FSlateIcon(FWwisePluginStyle::GetWwisePluginStyleSetName(), "Wwise.GameParameterIcon"),
 		FUIAction(FExecuteAction::CreateLambda([this, CreateAkAudioRTPCTrack = MoveTemp(CreateAkAudioRTPCTrack)]
 		{
 			TryAddWwiseGameParameterTrack(FCreateWwiseGameParameterTrack::CreateLambda(CreateAkAudioRTPCTrack));

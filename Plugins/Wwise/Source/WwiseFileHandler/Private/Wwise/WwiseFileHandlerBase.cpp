@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseFileHandlerBase.h"
@@ -26,6 +26,8 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "Misc/ScopeRWLock.h"
 
 #include <inttypes.h>
+
+#include "Wwise/WwiseGlobalCallbacks.h"
 
 
 FWwiseFileHandlerBase::FWwiseFileHandlerBase()
@@ -64,6 +66,11 @@ void FWwiseFileHandlerBase::OpenStreaming(AkAsyncFileOpenData* io_pOpenData)
 	IncrementFileStateUseAsync(io_pOpenData->fileID, EWwiseFileStateOperationOrigin::Streaming,
 		[ManagingTypeName = GetManagingTypeName(), io_pOpenData]
 		{
+			auto GlobalCallbacks = FWwiseGlobalCallbacks::Get();
+			if (GlobalCallbacks && GlobalCallbacks->IsWwiseProfilerConnected())
+			{
+				return FWwiseFileStateSharedPtr{};
+			}
 			UE_LOG(LogWwiseFileHandler, Error, TEXT("Trying to open streaming for unknown %s %" PRIu32), ManagingTypeName, io_pOpenData->fileID);
 			return FWwiseFileStateSharedPtr{};
 		},
@@ -104,6 +111,11 @@ AKRESULT FWwiseFileHandlerBase::GetOpenStreamingResult(AkAsyncFileOpenData* io_p
 		const auto* StatePtr = FileStatesById.Find(io_pOpenData->fileID);
 		if (UNLIKELY(!StatePtr || !StatePtr->IsValid()))
 		{
+			auto GlobalCallbacks = FWwiseGlobalCallbacks::Get();
+			if (GlobalCallbacks && GlobalCallbacks->IsWwiseProfilerConnected())
+			{
+				return AK_Success;
+			}
 			UE_LOG(LogWwiseFileHandler, Error, TEXT("Could not open file %" PRIu32 " for streaming: File wasn't initialized prior to OpenStreaming."), io_pOpenData->fileID);
 			return AK_FileNotFound;
 		}
@@ -286,7 +298,10 @@ void FWwiseFileHandlerBase::OnDeleteState(uint32 InShortId, FWwiseFileState& InF
 			else
 			{
 				UE_LOG(LogWwiseFileHandler, VeryVerbose, TEXT("OnDeleteState %s %" PRIu32 " [%p]: Deleting."), GetManagingTypeName(), InShortId, &InFileState);
-				DeletingState = FileStatesById[InShortId];		// Will delete at the end of the scope, out of lock's harm way
+				if (FileStatesById.Contains(InShortId))
+				{
+					DeletingState = FileStatesById[InShortId];		// Will delete at the end of the scope, out of lock's harm way	
+				}
 				const auto RemovalCount = FileStatesById.Remove(InShortId);
 
 				UE_CLOG(RemovalCount != 1, LogWwiseFileHandler, Error, TEXT("Removing a state for %s %" PRIu32 ", ended up deleting %" PRIi32 " states."),

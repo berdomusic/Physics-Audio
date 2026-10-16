@@ -12,10 +12,13 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Packaging/WwisePackagingSettings.h"
+
+#include "AssetRegistry/AssetRegistryModule.h"
+#include "Wwise/Packaging/WwisePackagingUtils.h"
 
 
 #if WITH_EDITOR
@@ -36,15 +39,14 @@ Copyright (c) 2025 Audiokinetic Inc.
 
 #if WITH_EDITOR
 
+void UWwisePackagingSettings::ProcessGameplayModulesUsingDefaultGroup()
+{
+	GameplayModuleUsingDefaultGroup.Empty();
+	GetGameplayModuleUsingDefaultGroup(GameplayModuleUsingDefaultGroup);
+}
+
 void UWwisePackagingSettings::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
-	const FName MemberPropertyName = (PropertyChangedEvent.MemberProperty != nullptr) ? PropertyChangedEvent.MemberProperty->GetFName() : NAME_None;
-
-	if (MemberPropertyName == GET_MEMBER_NAME_CHECKED(UWwisePackagingSettings, bPackageAsBulkData))
-	{
-		CreateInitialAssetLibrary();
-	}
-
 	OnSettingsChanged.Broadcast(this);
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
@@ -52,13 +54,6 @@ void UWwisePackagingSettings::PostEditChangeProperty(FPropertyChangedEvent& Prop
 void UWwisePackagingSettings::PostInitProperties()
 {
 	Super::PostInitProperties();
-
-	CreateInitialAssetLibrary();
-}
-
-void UWwisePackagingSettings::OnPostEngineInit()
-{
-	CreateInitialAssetLibrary();
 }
 
 bool UWwisePackagingSettings::EnsurePostEngineInit()
@@ -76,81 +71,84 @@ bool UWwisePackagingSettings::EnsurePostEngineInit()
 	return true;
 }
 
-void UWwisePackagingSettings::CreateInitialAssetLibrary()
+void UWwisePackagingSettings::CreateInitialAssetLibraryGroups()
 {
-	if(!bInitialAssetLibraryCreated && bPackageAsBulkData && AssetLibraries.Num() == 0)
+	bool bShouldCreateNewAssetLibraryGroup = ShouldPromptInitialAssetLibraryGroups();
+	if(bPackageAsBulkData && bShouldCreateNewAssetLibraryGroup)
 	{
 		if (!EnsurePostEngineInit()) return;
 
-		static const FString AssetName{ TEXT("WwiseMultiReferenceAssetLibrary") };
-		const FString DefaultAssetCreationPath{ GConfig->GetStringOrDefault(
-			TEXT("/Script/AkAudio.AkSettings"),
-			TEXT("DefaultAssetCreationPath"),
-			TEXT("/Game/WwiseAudio"),
-			GGameIni) };
+		auto AssetRegistryModule = &FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+		TArray<FAssetData> LibraryAssets;
+		FARFilter LibraryFilter;
+		LibraryFilter.bRecursivePaths = true;
+		LibraryFilter.ClassPaths.Add(UWwiseAssetLibrary::StaticClass()->GetClassPathName());
+		AssetRegistryModule->Get().GetAssets(LibraryFilter, LibraryAssets);
+		
+		static const FString AssetNameSuffix{ TEXT("WwiseLibraryGroup") };
 
-		const FSoftObjectPath Path = DefaultAssetCreationPath / AssetName;
-		UWwiseAssetLibrary* AssetLibrary{ nullptr };
-		if (auto* LoadedUObject{ Path.TryLoad() })
+		TMultiMap<FString, FAssetData> Libraries;
+
+		for (auto& WwiseAsset : LibraryAssets)
 		{
-			AssetLibrary = Cast<UWwiseAssetLibrary>(LoadedUObject);
-			if (LIKELY(IsValid(AssetLibrary)))
-			{
-				UE_LOG(LogWwisePackaging, Display, TEXT("UWwisePackagingSettings::CreateInitialAssetLibrary: Using existing Shared Asset Library at %s"), *Path.ToString());
-			}
-			else
-			{
-				AssetLibrary = nullptr;
-			}
+			auto Root = WwisePackagingUtils::GetGameplayModuleRoot(WwiseAsset.GetObjectPathString());
+			Libraries.Add(Root.RightChop(1), WwiseAsset);
 		}
 
-		if (!AssetLibrary)
+		TArray<FString> Roots;
+		Libraries.GetKeys(Roots);
+		auto& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
+		for (auto& Root : Roots)
 		{
-			FScopedSlowTask SlowTask(0, LOCTEXT("CreateInitialAssetLibrary", "Creating initial Wwise Asset Library..."));
-			UE_LOG(LogWwisePackaging, Display, TEXT("UWwisePackagingSettings::CreateInitialAssetLibrary: Creating Shared Asset Library at %s"), *Path.ToString());
-
-			auto& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
-			AssetLibrary = Cast<UWwiseAssetLibrary>(AssetToolsModule.CreateAsset(AssetName, DefaultAssetCreationPath, UWwiseAssetLibrary::StaticClass(), nullptr));
-			if (UNLIKELY(!AssetLibrary))
-			{
-				UE_LOG(LogWwisePackaging, Error, TEXT("UWwisePackagingSettings::CreateInitialAssetLibrary: Could not create Shared Asset Library at %s"), *Path.ToString());
-				return;
-			}
-
-			// Find and add UWwiseAssetLibraryFilterMultiReference
-			{
-				FSoftClassPath MultiReferencePath{ TEXT("/Script/WwisePackagingEditor.WwiseAssetLibraryFilterMultiReference") };
-				auto* MultiReferenceClass{ MultiReferencePath.ResolveClass() };
-				if (UNLIKELY(!MultiReferenceClass))
-				{
-					UE_LOG(LogWwisePackaging, Error, TEXT("UWwisePackagingSettings::CreateInitialAssetLibrary: Could not find %s"), *MultiReferencePath.GetAssetPath().ToString());
-					return;
-				}
-
-				auto* Filter = NewObject<UWwiseAssetLibraryFilter>(GetTransientPackage(), MultiReferenceClass);
-				
-				if (UNLIKELY(!Filter))
-				{
-					UE_LOG(LogWwisePackaging, Error, TEXT("UWwisePackagingSettings::CreateInitialAssetLibrary: Could not create Shared Filter for Asset Library at %s"), *Path.ToString());
-					return;
-				}
-				AssetLibrary->Info.Filters.Add(Filter);
-			}
+			FString GroupName = Root + AssetNameSuffix;
+			FString CreationPath = "/" + Root;
+			TArray<FAssetData> Assets;
+			Libraries.MultiFind(Root, Assets);
+			UWwiseAssetLibraryGroup* AssetLibraryGroup = Cast<UWwiseAssetLibraryGroup>(AssetToolsModule.CreateAsset(GroupName, CreationPath, UWwiseAssetLibraryGroup::StaticClass(), nullptr));
 			
-			UEditorLoadingAndSavingUtils::SavePackages({ AssetLibrary->GetPackage() }, true);
+			for (auto& WwiseAsset : Assets)
+			{
+				AssetLibraryGroup->Libraries.Add(WwiseAsset.GetAsset());
+			}
+			UEditorLoadingAndSavingUtils::SavePackages({ AssetLibraryGroup->GetPackage() }, true);
+			UE_LOG(LogWwisePackaging, Log, TEXT("UWwisePackagingSettings::CreateInitialAssetLibraryGroups: Created Library Group %s at %s"), *GroupName, *CreationPath);
 		}
-
-		AssetLibraries.Add(AssetLibrary);
-		bInitialAssetLibraryCreated = true;
+		
+		bMigratedToLibraryGroup= true;
 		SaveConfigFile();
 	}
-	else if(!bInitialAssetLibraryCreated && AssetLibraries.Num() > 0)
+	else if(bShouldCreateNewAssetLibraryGroup)
 	{
 		if (!EnsurePostEngineInit()) return;
 
-		bInitialAssetLibraryCreated = true;
+		bMigratedToLibraryGroup = true;
 		SaveConfigFile();
 	}
+}
+
+bool UWwisePackagingSettings::ShouldPromptInitialAssetLibraryGroups() const
+{
+	if (bMigratedToLibraryGroup)
+	{
+		return false;
+	}
+	auto AssetRegistryModule = &FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+	TArray<FAssetData> LibraryGroupAssets;
+	FARFilter GroupFilter;
+	GroupFilter.bRecursivePaths = true;
+	GroupFilter.ClassPaths.Add(UWwiseAssetLibraryGroup::StaticClass()->GetClassPathName());
+	AssetRegistryModule->Get().GetAssets(GroupFilter, LibraryGroupAssets);
+	if (LibraryGroupAssets.Num() != 0)
+	{
+		return false;
+	}
+
+	TArray<FAssetData> LibraryAssets;
+	FARFilter LibraryFilter;
+	LibraryFilter.bRecursivePaths = true;
+	LibraryFilter.ClassPaths.Add(UWwiseAssetLibrary::StaticClass()->GetClassPathName());
+	AssetRegistryModule->Get().GetAssets(LibraryFilter, LibraryAssets);
+	return LibraryAssets.Num() > 0;
 }
 
 bool UWwisePackagingSettings::SaveConfigFile()
@@ -168,6 +166,48 @@ bool UWwisePackagingSettings::SaveConfigFile()
 	}
 
 	return TryUpdateDefaultConfigFile();
+}
+
+void UWwisePackagingSettings::GetGameplayModuleUsingDefaultGroup(TArray<FString>& OutGameplayModuleUsedInDefaultGroup)
+{
+	if (DefaultAssetLibraryGroup.GetLongPackageFName().IsNone())
+	{
+		return;	
+	}
+	auto AssetRegistryModule = &FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+	TArray<FAssetData> LibraryGroupAssets;
+	FARFilter GroupFilter;
+	GroupFilter.bRecursivePaths = true;
+	GroupFilter.ClassPaths.Add(UWwiseAssetLibraryGroup::StaticClass()->GetClassPathName());
+	AssetRegistryModule->Get().GetAssets(GroupFilter, LibraryGroupAssets);
+
+	TSet<FString> ModulesNotUsingDefaultGroup;
+	const auto DefaultRoot = WwisePackagingUtils::GetGameplayModuleRoot(DefaultAssetLibraryGroup.GetLongPackageName());
+	OutGameplayModuleUsedInDefaultGroup.Add(DefaultRoot.RightChop(1));
+	for (auto& LibraryGroupPath : LibraryGroupAssets)
+	{
+		auto GroupRoot = WwisePackagingUtils::GetGameplayModuleRoot(LibraryGroupPath.GetObjectPathString());
+		if (DefaultRoot != GroupRoot)
+		{
+			ModulesNotUsingDefaultGroup.Add(GroupRoot);
+		}
+	}
+	
+	TArray<FAssetData> WwiseAssets;
+	FARFilter Filter;
+	Filter.bRecursivePaths = true;
+	Filter.TagsAndValues.Add("WwiseGuid");
+	AssetRegistryModule->Get().GetAssets(Filter, WwiseAssets);
+
+	for (auto& WwiseAsset : WwiseAssets)
+	{
+		auto Root = WwisePackagingUtils::GetGameplayModuleRoot(WwiseAsset.GetObjectPathString());
+		if (ModulesNotUsingDefaultGroup.Contains(Root))
+		{
+			continue;
+		}
+		OutGameplayModuleUsedInDefaultGroup.AddUnique(Root.RightChop(1));
+	}
 }
 #endif
 

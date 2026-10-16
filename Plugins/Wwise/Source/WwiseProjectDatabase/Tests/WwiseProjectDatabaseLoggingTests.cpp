@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifdef TESTING_WWISE_PROJECT_DATABASE
@@ -37,15 +37,15 @@ PROJECT_DATABASE_TEST_CASE("Wwise::WwiseProjectDatabase::Logging::UnhandledError
 PROJECT_DATABASE_TEST_CASE("Wwise::WwiseProjectDatabase::Logging::Unhandled Expected Error", "[!shouldfail]")
 {
     WwiseProjectDatabaseLoggingUtils::ResetErrors();
-    WwiseProjectDatabaseLoggingUtils::AddExpectedError("An Error");
+    WwiseProjectDatabaseLoggingUtils::AddExpectedError("Unhandled Expected Error");
     WwiseProjectDatabaseLoggingUtils::ParseErrors();
 }
 
-PROJECT_DATABASE_TEST_CASE("Wwise::WwiseProjectDatabase::Logging::Unhandled Expected Error with Multiple Occurences", "[!shouldfail]")
+PROJECT_DATABASE_TEST_CASE("Wwise::WwiseProjectDatabase::Logging::Unhandled Expected Error with Multiple Occurrences", "[!shouldfail]")
 {
     WwiseProjectDatabaseLoggingUtils::ResetErrors();
-    WwiseProjectDatabaseLoggingUtils::AddExpectedError("An Error", 2);
-    WWISE_DB_LOG(Error, "An Error");
+    WwiseProjectDatabaseLoggingUtils::AddExpectedError("Unhandled Expected Multiple Error", 2);
+    WWISE_DB_LOG(Error, "Unhandled Expected Multiple Error");
     WwiseProjectDatabaseLoggingUtils::ParseErrors();
 }
 
@@ -54,17 +54,17 @@ SCENARIO("Wwise::WwiseProjectDatabase::Logging")
     SECTION("Expected Error")
     {
         WwiseProjectDatabaseLoggingUtils::ResetErrors();
-        WwiseProjectDatabaseLoggingUtils::AddExpectedError("An Error");
-        WWISE_DB_LOG(Error, "An Error");
+        WwiseProjectDatabaseLoggingUtils::AddExpectedError("An Expected Error");
+        WWISE_DB_LOG(Error, "An Expected Error");
         WwiseProjectDatabaseLoggingUtils::ParseErrors();
     }
     
-    SECTION("Expected Error with Multiple Occurences")
+    SECTION("Expected Error with Multiple Occurrences")
     {
         WwiseProjectDatabaseLoggingUtils::ResetErrors();
-        WwiseProjectDatabaseLoggingUtils::AddExpectedError("An Error", 2);
-        WWISE_DB_LOG(Error, "An Error");
-        WWISE_DB_LOG(Error, "An Error");
+        WwiseProjectDatabaseLoggingUtils::AddExpectedError("Multiple Errors", 2);
+        WWISE_DB_LOG(Error, "Multiple Errors");
+        WWISE_DB_LOG(Error, "Multiple Errors");
         WwiseProjectDatabaseLoggingUtils::ParseErrors();
     }
 }

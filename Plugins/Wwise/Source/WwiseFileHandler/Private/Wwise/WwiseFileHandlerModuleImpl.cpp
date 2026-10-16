@@ -12,14 +12,16 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseFileHandlerModuleImpl.h"
 
+#include "Wwise/WwiseDeferredQueue.h"
 #include "Wwise/WwiseSoundBankManagerImpl.h"
 #include "Wwise/WwiseExternalSourceManagerImpl.h"
 #include "Wwise/WwiseFileCache.h"
+#include "Wwise/WwiseGlobalCallbacks.h"
 #include "Wwise/WwiseMediaManagerImpl.h"
 #include "Wwise/WwiseIOHookImpl.h"
 #include "Wwise/API/WwiseSoundEngineAPI.h"
@@ -232,4 +234,122 @@ void FWwiseFileHandlerModule::ShutdownModule()
 	}
 	Lock.WriteUnlock();
 	IWwiseFileHandlerModule::ShutdownModule();
+}
+
+void FWwiseFileHandlerModule::RegisterTermCallback()
+{
+	if (auto* GlobalCallbacks = FWwiseGlobalCallbacks::Get())
+	{
+		GlobalCallbacks->TermSync([this](AK::IAkGlobalPluginContext*) mutable
+		{
+			OnTerm();
+			return EWwiseDeferredAsyncResult::Done;
+		});
+	}
+}
+
+void FWwiseFileHandlerModule::OnTerm()
+{
+	if (!IsAvailable())
+	{
+		return;
+	}
+
+	Lock.ReadLock();
+	if (BankExecutionQueue.IsValid())
+	{
+		BankExecutionQueue->AsyncWait(TEXT("FWwiseHandlerModule::OnTerm DoTerm"), [this]() mutable
+		{
+			DoTerm();
+		});
+		
+		// DoTerm() called CloseFile() on all media, which queued async TryUnsetPrefetchMedia tasks on BankExecutionQueue.
+		// We must wait for all those tasks to complete before SoundEngine shutdown.
+		UE_LOG(LogWwiseFileHandler, Verbose, TEXT("OnTerm: Waiting for BankExecutionQueue to drain all CloseFile tasks..."));
+		
+		BankExecutionQueue->AsyncWait(TEXT("FWwiseHandlerModule::OnTerm Drain the BankExecutionQueue"), []()
+		{
+			UE_LOG(LogWwiseFileHandler, Verbose, TEXT("OnTerm: All CloseFile tasks completed."));
+		});
+	}
+	else
+	{
+		DoTerm();
+	}
+	Lock.ReadUnlock();
+}
+
+void FWwiseFileHandlerModule::DoTerm()
+{
+	if (MediaManager.IsValid())
+	{
+		UE_LOG(LogWwiseFileHandler, Verbose, TEXT("Term Media Manager."));
+		MediaManager->DoTerm();
+	}
+}
+
+void FWwiseFileHandlerModule::OnPostTerm()
+{
+	if (!IsAvailable())
+	{
+		return;
+	}
+
+	Lock.ReadLock();
+	if (BankExecutionQueue.IsValid())
+	{
+		BankExecutionQueue->AsyncWait(TEXT("FWwiseHandlerModule::OnPostTerm"), [this]() mutable
+		{
+			DoPostTerm();
+		});
+	}
+	else
+	{
+		DoTerm();
+	}
+	Lock.ReadUnlock();
+}
+
+void FWwiseFileHandlerModule::RequestProcessBanks()
+{
+#if WWISE_2025_1_OR_LATER && !AK_ENABLE_BANK_MGR_THREAD
+	bRequireProcessBanks = true;
+	if (LIKELY(BankExecutionQueue))
+	{
+		BankExecutionQueue->Async(TEXT("FWwiseFileHandlerModule::RequestProcessBanks"), [this]() mutable
+		{
+			if (!bRequireProcessBanks.Exchange(false))
+			{
+				return;
+			}
+
+			if (auto* SoundEngine = IWwiseSoundEngineAPI::Get())
+			{
+				if (SoundEngine->IsInitialized())
+				{
+					SoundEngine->ProcessBanks();
+				}
+			}
+		});
+	}
+#endif
+}
+
+void FWwiseFileHandlerModule::DoPostTerm()
+{
+	if (SoundBankManager.IsValid())
+	{
+		UE_LOG(LogWwiseFileHandler, Verbose, TEXT("PostTerm SoundBank Manager."));
+		SoundBankManager->DoPostTerm();
+	}
+	if (ExternalSourceManager.IsValid())
+	{
+		UE_LOG(LogWwiseFileHandler, Verbose, TEXT("PostTerm External Source Manager."));
+		ExternalSourceManager->DoPostTerm();
+	}
+	if (MediaManager.IsValid())
+	{
+		UE_LOG(LogWwiseFileHandler, Verbose, TEXT("PostTerm Media Manager."));
+		MediaManager->DoPostTerm();
+	}
 }

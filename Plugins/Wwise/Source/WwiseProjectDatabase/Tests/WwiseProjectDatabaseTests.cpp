@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 
@@ -76,7 +76,8 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 	SECTION("Json Operations")
 	{
 		WwiseProjectDatabaseLoggingUtils::ResetErrors();
-		WwiseProjectDatabaseLoggingUtils::AddExpectedError("Could not retrieve field", 2);
+		WwiseProjectDatabaseLoggingUtils::AddExpectedError("Could not retrieve field BadType");
+		WwiseProjectDatabaseLoggingUtils::AddExpectedError("Could not retrieve field NoField");
 		WwiseDBString JsonFile = R"({
 			"String": "TestString",
 			"Bool": "false",
@@ -107,29 +108,29 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataTestLoadable Ref;
 			//Getting a Bool
 			auto Bool = MetadataLoader.GetBool(&Ref, "Bool"_wwise_db);
-			CHECK(!Bool);
+			WWISE_CHECK(!Bool);
 			//Getting an int
 			auto Int = MetadataLoader.GetWwiseShortId(&Ref, "Int"_wwise_db);
-			CHECK(Int == 42);
+			WWISE_CHECK(Int == 42);
 			//Getting a Float
 			auto Float = MetadataLoader.GetFloat(&Ref, "Float"_wwise_db);
-			CHECK(NearlyEqual(905.9827f, Float));
+			WWISE_CHECK(NearlyEqual(905.9827f, Float));
 			//Getting a String
 			auto String = MetadataLoader.GetString(&Ref, "String"_wwise_db);
-			CHECK(String == "TestString"_wwise_db);
+			WWISE_CHECK(String == "TestString"_wwise_db);
 			//Getting a Guid
 			auto Guid = MetadataLoader.GetGuid(&Ref, "GUIDTest"_wwise_db);
-			CHECK(Guid == WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db));
+			WWISE_CHECK(Guid == WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db));
 			//Getting an Array.
 			auto Array = MetadataLoader.GetArray<WwiseMetadataTestStringLoadable>(&Ref, "Array"_wwise_db);
-			CHECK(Array.Size() == 2);
+			WWISE_CHECK(Array.Size() == 2);
 			for(unsigned int i = 0; i < Array.Size(); i++)
 			{
-				CHECK(Array[i].String == WwiseDBString(("Recursive" + std::to_string(i + 1)).c_str()));
+				WWISE_CHECK(Array[i].String == WwiseDBString(("Recursive" + std::to_string(i + 1)).c_str()));
 			}
 			//Getting a custom Object
 			auto Object = MetadataLoader.GetLoaderObject<WwiseMetadataTestStringLoadable>(&Ref, "Object"_wwise_db);
-			CHECK(Object.String == "Recursive3"_wwise_db);
+			WWISE_CHECK(Object.String == "Recursive3"_wwise_db);
 
 			//Getting an existing field with the wrong type
 			WwiseProjectDatabaseLoggingUtils::AddExpectedError("Invalid GUID");
@@ -138,7 +139,7 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			//Getting a field that does not exist
 			MetadataLoader.GetBool(&Ref, "NoField"_wwise_db);
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -167,7 +168,7 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			//Getting a Guid
 			auto Guid = MetadataLoader.GetGuid(&Ref, "GUIDTest"_wwise_db, WwiseRequiredMetadata::Optional);
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -194,7 +195,7 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 		)"_wwise_db;
 		WwiseProjectDatabaseLoggingUtils::AddExpectedError("Error while decoding json");
 		WwiseDBJsonObject RootJsonObject;
-		CHECK(!WwiseDBJsonObject::CreateJsonObject(JsonFile, RootJsonObject));
+		WWISE_CHECK(!WwiseDBJsonObject::CreateJsonObject(JsonFile, RootJsonObject));
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -308,12 +309,12 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataLoader MetadataLoader(RootJsonObject);
 			WwiseMetadataRootFile Ref(MetadataLoader);
 			auto PlatformArray = Ref.ProjectInfo->Platforms;
-			CHECK(PlatformArray.Size() == 10);
+			WWISE_CHECK(PlatformArray.Size() == 10);
 
 			auto LanguageArray = Ref.ProjectInfo->Languages;
-			CHECK(LanguageArray.Size() == 2);
+			WWISE_CHECK(LanguageArray.Size() == 2);
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -367,14 +368,14 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			bFileParsed = true;
 			WwiseMetadataLoader MetadataLoader(RootJsonObject);
 			WwiseMetadataRootFile Ref(MetadataLoader);
-			CHECK(Ref.PlatformInfo);
+			WWISE_CHECK(Ref.PlatformInfo);
 			if (Ref.PlatformInfo)
 			{
 				auto PlatformName = Ref.PlatformInfo->Platform.Name;
-				CHECK(PlatformName ==  "Windows"_wwise_db);
+				WWISE_CHECK(PlatformName ==  "Windows"_wwise_db);
 			}
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -442,9 +443,9 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			bFileParsed = true;
 			WwiseMetadataLoader MetadataLoader(RootJsonObject);
 			WwiseMetadataRootFile Ref(MetadataLoader);
-			CHECK(Ref.SoundBanksInfo->Platform ==  "Windows"_wwise_db);
+			WWISE_CHECK(Ref.SoundBanksInfo->Platform ==  "Windows"_wwise_db);
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -473,7 +474,7 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
       {
        "Id": "1008723532",
        "Name": "Rhythmic_Talk Define custom",
-       "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Tremolo\\[Effect Slot [0]: (Tremolo)]\\Rhythmic_Talk Define custom",
+       "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\Tremolo\\[Effect Slot [0]: (Tremolo)]\\Rhythmic_Talk Define custom",
        "GUID": "{9AA194DD-6AC1-41FC-B2F2-49B8FFF0424B}",
        "LibName": "Wwise Tremolo",
        "LibId": "8585219"
@@ -528,13 +529,13 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
      {
       "Id": "805203703",
       "Name": "Master Secondary Bus",
-      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Secondary Bus",
+      "ObjectPath": "\\Busses\\Default Work Unit\\Master Secondary Bus",
       "GUID": "{D2E0BC7E-7B3F-4FFE-A670-FAE02761B631}"
      },
      {
       "Id": "3803692087",
       "Name": "Master Audio Bus",
-      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus",
+      "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus",
       "GUID": "{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}",
       "PluginRefs": {
        "ShareSets": [
@@ -549,7 +550,7 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
      {
       "Id": "187046019",
       "Name": "LargeRoom",
-      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\LargeRoom",
+      "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\LargeRoom",
       "GUID": "{9BF4EB38-0C67-4347-8DB8-926791DD6ED3}",
       "PluginRefs": {
        "ShareSets": [
@@ -562,14 +563,14 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
      {
       "Id": "243379636",
       "Name": "Reflect",
-      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Reflect",
+      "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\Reflect",
       "GUID": "{708C66AF-E74A-4237-9D06-364F73EE9484}",
       "MaxAttenuation": "5000"
      },
      {
       "Id": "348963605",
       "Name": "Reverb",
-      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Reverb",
+      "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\Reverb",
       "GUID": "{6F049A6E-9C36-4EC1-8DE9-C51380CD6E46}",
       "PluginRefs": {
        "Custom": [
@@ -582,7 +583,7 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
      {
       "Id": "1591283508",
       "Name": "DefaultReverb",
-      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\DefaultReverb",
+      "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\DefaultReverb",
       "GUID": "{DD509A41-F55B-4D8E-9D8B-F06ABD7AB4BD}",
       "PluginRefs": {
        "Custom": [
@@ -595,7 +596,7 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
      {
       "Id": "2933838247",
       "Name": "SmallRoom",
-      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\SmallRoom",
+      "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\SmallRoom",
       "GUID": "{2E59DD93-305A-4768-B48F-D3193F7C6F1C}",
       "PluginRefs": {
        "ShareSets": [
@@ -608,7 +609,7 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 	 {
       "Id": "4056223263",
       "Name": "Tremolo",
-      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Tremolo",
+      "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\Tremolo",
       "GUID": "{1BAB1064-9738-431C-9A25-293E0BC0888D}",
       "PluginRefs": {
        "Custom": [
@@ -759,17 +760,17 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataLoader MetadataLoader(RootJsonObject);
 			WwiseMetadataRootFile Ref(MetadataLoader);
 			//Making sure everything was loaded
-			CHECK(Ref.SoundBanksInfo->Platform == "Windows"_wwise_db);
-			CHECK(Ref.SoundBanksInfo->SoundBanks.Size() == 1);
-			CHECK(Ref.SoundBanksInfo->SoundBanks[0].Triggers.Size() == 0);
-			CHECK(Ref.SoundBanksInfo->SoundBanks[0].AcousticTextures.Size() == 1);
-			CHECK(Ref.SoundBanksInfo->SoundBanks[0].Busses.Size() == 2);
-			CHECK(Ref.SoundBanksInfo->SoundBanks[0].AuxBusses.Size() == 6);
-			CHECK(Ref.SoundBanksInfo->SoundBanks[0].GameParameters.Size() == 3);
-			CHECK(Ref.SoundBanksInfo->SoundBanks[0].SwitchGroups.Size() == 2);
-			CHECK(Ref.SoundBanksInfo->SoundBanks[0].StateGroups.Size() == 1);
+			WWISE_CHECK(Ref.SoundBanksInfo->Platform == "Windows"_wwise_db);
+			WWISE_CHECK(Ref.SoundBanksInfo->SoundBanks.Size() == 1);
+			WWISE_CHECK(Ref.SoundBanksInfo->SoundBanks[0].Triggers.Size() == 0);
+			WWISE_CHECK(Ref.SoundBanksInfo->SoundBanks[0].AcousticTextures.Size() == 1);
+			WWISE_CHECK(Ref.SoundBanksInfo->SoundBanks[0].Busses.Size() == 2);
+			WWISE_CHECK(Ref.SoundBanksInfo->SoundBanks[0].AuxBusses.Size() == 6);
+			WWISE_CHECK(Ref.SoundBanksInfo->SoundBanks[0].GameParameters.Size() == 3);
+			WWISE_CHECK(Ref.SoundBanksInfo->SoundBanks[0].SwitchGroups.Size() == 2);
+			WWISE_CHECK(Ref.SoundBanksInfo->SoundBanks[0].StateGroups.Size() == 1);
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -793,16 +794,16 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataBasicReference Ref(MetadataLoader);
 
 			//Making sure the read Basic Reference have the expected values
-			CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789, "ObjectName"_wwise_db, "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db), 13)));
+			WWISE_CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789, "ObjectName"_wwise_db, "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db), 13)));
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
 	SECTION("MetadataBasicReference Missing Mandatory Field")
 	{
 		WwiseProjectDatabaseLoggingUtils::ResetErrors();
-		WwiseProjectDatabaseLoggingUtils::AddExpectedError("Could not retrieve field", 1);
+		WwiseProjectDatabaseLoggingUtils::AddExpectedError("Could not retrieve field GUID", 1);
 		WwiseDBString JsonFile = R"({
 				        "Id": "123456789",
 				        "Name": "ObjectName",
@@ -818,7 +819,7 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataLoader MetadataLoader(RootJsonObject);
 			WwiseMetadataBasicReference Ref(MetadataLoader);
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -841,9 +842,9 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataBasicReference Ref(MetadataLoader);
 
 			// Making sure the read Basic Reference has the expected values, with the default 0 for missing "Color"
-			CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789, "ObjectName"_wwise_db, "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db), 0)));
+			WWISE_CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789, "ObjectName"_wwise_db, "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db), 0)));
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -893,16 +894,16 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataAcousticTexture Ref(MetadataLoader);
 
 			//Making sure values read are as expected
-			CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789, "ObjectName"_wwise_db, "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db))));
-			CHECK(NearlyEqual(0, Ref.AbsorptionLow));
-			CHECK(NearlyEqual(1, Ref.AbsorptionMidLow));
-			CHECK(NearlyEqual(2, Ref.AbsorptionMidHigh));
-			CHECK(NearlyEqual(3, Ref.AbsorptionHigh));
+			WWISE_CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789, "ObjectName"_wwise_db, "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db))));
+			WWISE_CHECK(NearlyEqual(0, Ref.AbsorptionLow));
+			WWISE_CHECK(NearlyEqual(1, Ref.AbsorptionMidLow));
+			WWISE_CHECK(NearlyEqual(2, Ref.AbsorptionMidHigh));
+			WWISE_CHECK(NearlyEqual(3, Ref.AbsorptionHigh));
 #if WWISE_2023_1_OR_LATER
-			CHECK(NearlyEqual(4, Ref.Scattering));
+			WWISE_CHECK(NearlyEqual(4, Ref.Scattering));
 #endif
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -925,11 +926,11 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataBus Ref(MetadataLoader);
 
 			//Making sure values read are as expected
-			CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789, "ObjectName"_wwise_db, "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db))));
-			CHECK(!Ref.PluginRefs);
-			CHECK(Ref.AuxBusRefs.Size() == 0);
+			WWISE_CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789, "ObjectName"_wwise_db, "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db))));
+			WWISE_CHECK(!Ref.PluginRefs);
+			WWISE_CHECK(Ref.AuxBusRefs.Size() == 0);
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -960,12 +961,12 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataBus Ref(MetadataLoader);
 
 			//Making sure values read are as expected
-			CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789, "ObjectName"_wwise_db, "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db))));
-			CHECK(Ref.PluginRefs->ShareSets.Size() == 1);
-			CHECK(Ref.AuxBusRefs.Size() == 0);
-			CHECK(Ref.PluginRefs->ShareSets[0].Id == 987654321);
+			WWISE_CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789, "ObjectName"_wwise_db, "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db))));
+			WWISE_CHECK(Ref.PluginRefs->ShareSets.Size() == 1);
+			WWISE_CHECK(Ref.AuxBusRefs.Size() == 0);
+			WWISE_CHECK(Ref.PluginRefs->ShareSets[0].Id == 987654321);
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -997,12 +998,12 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataBus Ref(MetadataLoader);
 
 			//Making sure values read are as expected
-			CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789, "ObjectName"_wwise_db, "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db), 5)));
-			CHECK(!Ref.PluginRefs);
-			CHECK(Ref.AuxBusRefs.Size() == 1);
-			CHECK(MetadataBasicReferenceCheck(&Ref.AuxBusRefs[0], WwiseMetadataBasicReference(135798642, "AuxBus"_wwise_db, "\\Path\\To\\AuxBus"_wwise_db, WwiseDBGuid("{DCBAABCD-5678-8765-2468-0123456789AB}"_wwise_db))));
+			WWISE_CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789, "ObjectName"_wwise_db, "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db), 5)));
+			WWISE_CHECK(!Ref.PluginRefs);
+			WWISE_CHECK(Ref.AuxBusRefs.Size() == 1);
+			WWISE_CHECK(MetadataBasicReferenceCheck(&Ref.AuxBusRefs[0], WwiseMetadataBasicReference(135798642, "AuxBus"_wwise_db, "\\Path\\To\\AuxBus"_wwise_db, WwiseDBGuid("{DCBAABCD-5678-8765-2468-0123456789AB}"_wwise_db))));
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -1041,13 +1042,13 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataBus Ref(MetadataLoader);
 
 			//Making sure values read are as expected
-			CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789,  "ObjectName"_wwise_db,  "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db), 8)));
-			CHECK(Ref.AuxBusRefs.Size() == 1);
-			CHECK(MetadataBasicReferenceCheck(&Ref.AuxBusRefs[0], WwiseMetadataBasicReference(135798642,  "AuxBus"_wwise_db,  "\\Path\\To\\AuxBus"_wwise_db, WwiseDBGuid("{DCBAABCD-5678-8765-2468-0123456789AB}"_wwise_db))));
-			CHECK(Ref.PluginRefs->ShareSets.Size() == 1);
-			CHECK(Ref.PluginRefs->ShareSets[0].Id == 987654321);
+			WWISE_CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789,  "ObjectName"_wwise_db,  "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db), 8)));
+			WWISE_CHECK(Ref.AuxBusRefs.Size() == 1);
+			WWISE_CHECK(MetadataBasicReferenceCheck(&Ref.AuxBusRefs[0], WwiseMetadataBasicReference(135798642,  "AuxBus"_wwise_db,  "\\Path\\To\\AuxBus"_wwise_db, WwiseDBGuid("{DCBAABCD-5678-8765-2468-0123456789AB}"_wwise_db))));
+			WWISE_CHECK(Ref.PluginRefs->ShareSets.Size() == 1);
+			WWISE_CHECK(Ref.PluginRefs->ShareSets[0].Id == 987654321);
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -1073,22 +1074,75 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataMedia Ref(MetadataLoader);
 
 			//Making sure values read are as expected
-			CHECK(Ref.Id == 123456789);
-			CHECK(Ref.Language ==  "SFX"_wwise_db);
-			CHECK(!Ref.bStreaming);
-			CHECK(Ref.Location == WwiseMetadataMediaLocation::Loose);
-			CHECK(Ref.ShortName ==  "MediaName.wav"_wwise_db);
-			CHECK(Ref.Path ==  "\\A\\Path\\To\\Object"_wwise_db);
-			CHECK(Ref.CachePath ==  "SFX/Media.wem"_wwise_db);
+			WWISE_CHECK(Ref.Id == 123456789);
+			WWISE_CHECK(Ref.Language ==  "SFX"_wwise_db);
+			WWISE_CHECK(!Ref.bStreaming);
+			WWISE_CHECK(Ref.Location == WwiseMetadataMediaLocation::Loose);
+			WWISE_CHECK(Ref.ShortName ==  "MediaName.wav"_wwise_db);
+			WWISE_CHECK(Ref.Path ==  "\\A\\Path\\To\\Object"_wwise_db);
+			WWISE_CHECK(Ref.CachePath ==  "SFX/Media.wem"_wwise_db);
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
-	SECTION("MetadataMedia Loose without Path")
+
+	SECTION("MetadataMediaWithPrefetch")
 	{
 		WwiseProjectDatabaseLoggingUtils::ResetErrors();
-		WwiseProjectDatabaseLoggingUtils::AddExpectedError("Could not retrieve field", 1);
+#if WWISE_2025_1_OR_LATER
+		WwiseDBString JsonFile = R"({
+				        "Id": "123456789",
+						"Language": "SFX",
+						"Streaming": "false",
+						"Location": "Loose",
+				        "ShortName": "MediaName.wav",
+				        "Path": "\\A\\Path\\To\\Object",
+				        "CachePath": "SFX/Media.wem",
+						"PrefetchSize": "3945",
+						"ContainsPrefetch": "true"
+						})"_wwise_db;
+#else
+		WwiseDBString JsonFile = R"({
+				        "Id": "123456789",
+						"Language": "SFX",
+						"Streaming": "false",
+						"Location": "Loose",
+				        "ShortName": "MediaName.wav",
+				        "Path": "\\A\\Path\\To\\Object",
+				        "CachePath": "SFX/Media.wem",
+						"PrefetchSize": "3945"
+						})"_wwise_db;
+#endif
+		WwiseDBJsonObject RootJsonObject;
+		bool bFileParsed = false;
+		if (WwiseDBJsonObject::CreateJsonObject(JsonFile, RootJsonObject))
+		{
+			bFileParsed = true;
+			WwiseMetadataLoader MetadataLoader(RootJsonObject);
+			WwiseMetadataMedia Ref(MetadataLoader);
+
+			//Making sure values read are as expected
+			WWISE_CHECK(Ref.Id == 123456789);
+			WWISE_CHECK(Ref.Language ==  "SFX"_wwise_db);
+			WWISE_CHECK(!Ref.bStreaming);
+			WWISE_CHECK(Ref.Location == WwiseMetadataMediaLocation::Loose);
+			WWISE_CHECK(Ref.ShortName ==  "MediaName.wav"_wwise_db);
+			WWISE_CHECK(Ref.Path ==  "\\A\\Path\\To\\Object"_wwise_db);
+			WWISE_CHECK(Ref.CachePath ==  "SFX/Media.wem"_wwise_db);
+			WWISE_CHECK(Ref.PrefetchSize ==  3945);
+#if WWISE_2025_1_OR_LATER
+			WWISE_CHECK(Ref.bContainsPrefetch);
+#endif
+		}
+		WWISE_CHECK(bFileParsed);
+		WwiseProjectDatabaseLoggingUtils::ParseErrors();
+	}
+
+	SECTION("MetadataMedia Path & Location")
+	{
+		WwiseProjectDatabaseLoggingUtils::ResetErrors();
+		WwiseProjectDatabaseLoggingUtils::AddExpectedError("Could not retrieve field", 3);
 		WwiseDBString JsonFile = R"({
 				        "Id": "123456789",
 						"Language": "SFX",
@@ -1109,15 +1163,9 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataLoader MetadataLoader(RootJsonObject);
 			WwiseMetadataMedia Ref(MetadataLoader);
 		}
-		CHECK(bFileParsed);
-		WwiseProjectDatabaseLoggingUtils::ParseErrors();
-	}
+		WWISE_CHECK(bFileParsed);
 
-	SECTION("MetadataMedia in Memory and Streaming without Path")
-	{
-		WwiseProjectDatabaseLoggingUtils::ResetErrors();
-		WwiseProjectDatabaseLoggingUtils::AddExpectedError("Could not retrieve field", 1);
-		WwiseDBString JsonFile = R"({
+		JsonFile = R"({
 				        "Id": "123456789",
 						"Language": "SFX",
 						"Streaming": "true",
@@ -1127,8 +1175,8 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 				        "CachePath": "SFX/Media.wem"
 						})"_wwise_db;
 
-		WwiseDBJsonObject RootJsonObject;
-		bool bFileParsed = false;
+		bFileParsed = false;
+		
 		if (WwiseDBJsonObject::CreateJsonObject(JsonFile, RootJsonObject))
 		{
 			//Making sure values read are as expected
@@ -1136,15 +1184,9 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataLoader MetadataLoader(RootJsonObject);
 			WwiseMetadataMedia Ref(MetadataLoader);
 		}
-		CHECK(bFileParsed);
-		WwiseProjectDatabaseLoggingUtils::ParseErrors();
-	}
+		WWISE_CHECK(bFileParsed);
 
-	SECTION("MetadataMedia in Memory, Streaming and with a Path")
-	{
-		WwiseProjectDatabaseLoggingUtils::ResetErrors();
-		WwiseProjectDatabaseLoggingUtils::AddExpectedError("Could not retrieve field", 1);
-		WwiseDBString JsonFile = R"({
+		JsonFile = R"({
 				        "Id": "123456789",
 						"Language": "SFX",
 						"Streaming": "false",
@@ -1153,9 +1195,8 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 				        "Path": "\\A\\Path\\To\\Object",
 				        "CachePath": "SFX/Media.wem"
 						})"_wwise_db;
-
-		WwiseDBJsonObject RootJsonObject;
-		bool bFileParsed = false;
+		
+		bFileParsed = false;
 		if (WwiseDBJsonObject::CreateJsonObject(JsonFile, RootJsonObject))
 		{
 			//Making sure values read are as expected
@@ -1163,7 +1204,7 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataLoader MetadataLoader(RootJsonObject);
 			WwiseMetadataMedia Ref(MetadataLoader);
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -1188,10 +1229,10 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			WwiseMetadataLoader MetadataLoader(RootJsonObject);
 			WwiseMetadataGroupValueReference Ref(MetadataLoader);
 
-			CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789, "ObjectName"_wwise_db, "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db), 5)));
-			CHECK(Ref.GroupId == 135798642);
+			WWISE_CHECK(MetadataBasicReferenceCheck(&Ref, WwiseMetadataBasicReference(123456789, "ObjectName"_wwise_db, "\\A\\Path\\To\\Object"_wwise_db, WwiseDBGuid("{ABCDDCBA-1234-4321-1357-BA9876543210}"_wwise_db), 5)));
+			WWISE_CHECK(Ref.GroupId == 135798642);
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 
@@ -1269,10 +1310,10 @@ SCENARIO("Wwise::WwiseProjectDatabase::JSONReader")
 			bFileParsed = true;
 			WwiseMetadataLoader MetadataLoader(RootJsonObject);
 			WwiseMetadataSoundBank Ref(MetadataLoader);
-			CHECK(Ref.SwitchGroups.Size() == 1);
-			CHECK(Ref.SwitchGroups[0].Switches.Size() == 2);
+			WWISE_CHECK(Ref.SwitchGroups.Size() == 1);
+			WWISE_CHECK(Ref.SwitchGroups[0].Switches.Size() == 2);
 		}
-		CHECK(bFileParsed);
+		WWISE_CHECK(bFileParsed);
 		WwiseProjectDatabaseLoggingUtils::ParseErrors();
 	}
 }

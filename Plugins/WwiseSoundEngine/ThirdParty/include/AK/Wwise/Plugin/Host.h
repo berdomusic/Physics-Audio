@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /**
@@ -104,7 +104,6 @@ namespace AK::Wwise::Plugin
 			 * with Audiokinetic. You may use this ID as a key to identify a given 
 			 * project when implementing a custom licensing scheme.
 			 * 
-			 * \param[in] in_this Current instance of this interface.
 			 * \return An instance of LicenseID filled with the project license ID, or 
 			 * zeroed-out if the project has no license.
 			 */

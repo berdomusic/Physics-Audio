@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*=============================================================================
@@ -88,8 +88,8 @@ void UDrawPortalComponent::DrawPortalOutline(const FSceneView* View, FPrimitiveD
 		if (world != nullptr)
 		{
 			EWorldType::Type worldType = world->WorldType;
-			if ((!(worldType == EWorldType::Game || worldType == EWorldType::PIE) && PortalComponent->InitialState == AkAcousticPortalState::Closed) ||
-				((worldType == EWorldType::Game || worldType == EWorldType::PIE) && PortalComponent->GetCurrentState() == AkAcousticPortalState::Closed))
+			if ((!(worldType == EWorldType::Game || worldType == EWorldType::PIE) && PortalComponent->InitialState == EAkAcousticPortalState::Closed) ||
+				((worldType == EWorldType::Game || worldType == EWorldType::PIE) && PortalComponent->GetCurrentState() == EAkAcousticPortalState::Closed))
 			{
 				PDI->DrawLine(DrawBounds.FRU(), DrawBounds.BRD(), FrontDrawColor, SDPG_MAX, Thickness);
 				PDI->DrawLine(DrawBounds.FLD(), DrawBounds.BLU(), BackDrawColor, SDPG_MAX, Thickness);

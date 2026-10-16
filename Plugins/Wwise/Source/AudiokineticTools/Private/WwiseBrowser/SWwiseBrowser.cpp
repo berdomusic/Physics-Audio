@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*------------------------------------------------------------------------------------
@@ -51,6 +51,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "FSoundPlayingColumn.h"
 #include "IAudiokineticTools.h"
 #include "AssetManagement/AkAssetDatabase.h"
+#include "Wwise/WwisePluginStyle.h"
 #include "Wwise/WwiseProjectDatabase.h"
 #include "WwiseBrowser/WwiseAssetDragDropOp.h"
 #include "WwiseBrowser/WwiseBrowserHelpers.h"
@@ -64,6 +65,8 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "DataSource/WwiseBrowserDataSource.h"
 #include "Wwise/WwiseReconcile.h"
 #include "Widgets/SWwiseReconcile.h"
+
+#include <Wwise/Stats/AudiokineticTools.h>
 
 
 #define LOCTEXT_NAMESPACE "AkAudio"
@@ -82,17 +85,17 @@ namespace FilterMenuTitles
 		switch (Filter)
 		{
 		case NewInWwise:
-			return LOCTEXT("NewInWwise", "New In Wwise");
+			return LOCTEXT("NewInWwise", "New in Wwise");
 		case DeletedInWwise:
-			return LOCTEXT("DeletedInWwise", "Deleted In Wwise");
+			return LOCTEXT("DeletedInWwise", "Deleted in Wwise");
 		case RenamedInWwise:
-			return LOCTEXT("RenamedInWwise", "Renamed In Wwise");
+			return LOCTEXT("RenamedInWwise", "Renamed in Wwise");
 		case NotInWwise:
-			return LOCTEXT("NotInWwiseOrSoundBank", "Not In Wwise or SoundBank");
+			return LOCTEXT("NotInWwiseOrSoundBank", "Not in Wwise or SoundBank");
 		case MovedInWwise:
-			return LOCTEXT("MovedInWwise", "Moved In Wwise");
+			return LOCTEXT("MovedInWwise", "Moved in Wwise");
 		case UpToDate:
-			return LOCTEXT("SoundBankUpToDate", "SoundBank Up To Date");
+			return LOCTEXT("SoundBankUpToDate", "SoundBank Up to Date");
 		}
 		return FText();
 	}
@@ -126,7 +129,7 @@ namespace FilterMenuTitles
 		case NotInSoundBankOrUnreal:
 			return LOCTEXT("NotInSoundBankOrUnreal", "Not in SoundBank or Unreal");
 		case UAssetOrphaned:
-			return LOCTEXT("UAssetOrphaned", "UAsset Orphaned");
+			return LOCTEXT("UAssetOrphaned", "Only in Unreal");
 		case MultipleUAssets:
 			return LOCTEXT("UAssetMultiple", "Multiple UAssets");
 		case RenamedInSoundBank:
@@ -148,11 +151,11 @@ namespace FilterMenuTitles
 		case NotInSoundBankOrUnreal:
 			return LOCTEXT("NotInSoundBankOrUnreal_Tooltip", "Filter the UAssets not in SoundBanks or Unreal.");
 		case UAssetOrphaned:
-			return LOCTEXT("UAssetOrphaned_Tooltip", "Filter UAssets with no counterpart in Wwise.");
+			return LOCTEXT("UAssetOrphaned_Tooltip", "Filter UAssets found only in Unreal.");
 		case MultipleUAssets:
 			return LOCTEXT("UAssetMultiple_Tooltip", "Filter Wwise items with multiple UAssets.");
 		case RenamedInSoundBank:
-			return LOCTEXT("UAssetOrphaned_Tooltip", "Filter UAssets with different names in the SoundBank.");
+			return LOCTEXT("RenamedInSoundBank_Tooltip", "Filter UAssets with different names in the SoundBank.");
 		case UAssetNeedsUpdate:
 			return LOCTEXT("UAssetNeedsUpdate_Tooltip", "Filter UAssets with different Guid or ShortId in the SoundBank.");
 		case UAssetUpToDate:
@@ -168,15 +171,17 @@ namespace FilterMenuTitles
 		case AcousticTexture:
 			return LOCTEXT("AcousticTexture", "Acoustic Texture");
 		case AudioDeviceShareSet:
-			return LOCTEXT("AudioDevice", "Audio Device");
+			return LOCTEXT("AudioDevice", "Device");
+		case DialogueEvents:
+			return LOCTEXT("DialogueEvents", "Dialogue Events");
 		case Effects:
 			return LOCTEXT("Effects", "Effects");
 		case Events:
 			return LOCTEXT("Events", "Events");
 		case GameParameters:
-			return LOCTEXT("GameParameters", "GameParameters");
+			return LOCTEXT("GameParameters", "Game Parameters");
 		case MasterMixerHierarchy:
-			return LOCTEXT("MasterMixerHierarchy", "Master Mixer Hierarchy (Bus)");
+			return LOCTEXT("MasterMixerHierarchy", "Busses");
 		case State:
 			return LOCTEXT("States", "States");
 		case Switch:
@@ -195,6 +200,8 @@ namespace FilterMenuTitles
 			return LOCTEXT("AcousticTexture_Tooltip", "Filter Wwise Acoustic Texture Types.");
 		case AudioDeviceShareSet:
 			return LOCTEXT("AudioDevice_Tooltip", "Filter Wwise Audio Device Types.");
+		case DialogueEvents:
+			return LOCTEXT("DialogueEvents_Tooltip", "Filter Wwise Dialogue Event Types.");
 		case Effects:
 			return LOCTEXT("Effects_Tooltip", "Filter Wwise Effect Types.");
 		case Events:
@@ -248,6 +255,18 @@ void SWwiseBrowser::CreateWwiseBrowserCommands()
 		Commands.RequestStopAllWwiseItem,
 		FExecuteAction::CreateSP(this, &SWwiseBrowser::HandleStopAllWwiseItemCommandExecute));
 
+	// Action to expand all the selected items
+	ActionList.MapAction(
+		Commands.RequestExpandAllSelected,
+		FExecuteAction::CreateSP(this, &SWwiseBrowser::HandleExpandAllSelectedCommandExecute),
+		FCanExecuteAction::CreateSP(this, &SWwiseBrowser::HandleExpandSelectedCommandCanExecute));
+
+	// Action to collapse all the selected items
+	ActionList.MapAction(
+		Commands.RequestCollapseAllSelected,
+		FExecuteAction::CreateSP(this, &SWwiseBrowser::HandleCollapseAllSelectedCommandExecute),
+		FCanExecuteAction::CreateSP(this, &SWwiseBrowser::HandleCollapseSelectedCommandCanExecute));
+
 	// Action to explore an item (workunit) in the containing folder.
 	ActionList.MapAction(
 		Commands.RequestExploreWwiseItem,
@@ -289,7 +308,7 @@ TSharedPtr<SWidget> SWwiseBrowser::MakeWwiseBrowserContextMenu()
 	// Build up the menu
 	FMenuBuilder MenuBuilder(true, CommandList);
 	{
-		MenuBuilder.BeginSection("WwiseBrowserTransport", LOCTEXT("MenuHeader", "WwiseBrowser"));
+		MenuBuilder.BeginSection("WwiseBrowserTransport", LOCTEXT("MenuHeader", "Playback"));
 		{
 			MenuBuilder.AddMenuEntry(Commands.RequestPlayWwiseItem);
 			MenuBuilder.AddMenuEntry(Commands.RequestStopAllWwiseItem);
@@ -297,6 +316,9 @@ TSharedPtr<SWidget> SWwiseBrowser::MakeWwiseBrowserContextMenu()
 		MenuBuilder.EndSection();
 		MenuBuilder.BeginSection("WwiseBrowserFindOptions", LOCTEXT("ExploreMenuHeader", "Explore"));
 		{
+			MenuBuilder.AddMenuEntry(Commands.RequestExpandAllSelected);
+			MenuBuilder.AddMenuEntry(Commands.RequestCollapseAllSelected);
+			MenuBuilder.AddSeparator();
 			MenuBuilder.AddMenuEntry(Commands.RequestFindInProjectExplorerWwiseItem);
 			MenuBuilder.AddMenuEntry(Commands.RequestFindInContentBrowser);
 			MenuBuilder.AddMenuEntry(Commands.RequestExploreWwiseItem);
@@ -389,6 +411,75 @@ void SWwiseBrowser::HandleStopWwiseItemCommandExecute()
 	}
 }
 
+void SWwiseBrowser::HandleExpandAllSelectedCommandExecute()
+{
+	TArray<FWwiseTreeItemPtr> SelectedItems = TreeViewPtr->GetSelectedItems();
+	for (auto TreeItem : SelectedItems)
+	{
+		SetItemAndChildrenExpansion(TreeItem, true);
+	}
+}
+
+bool SWwiseBrowser::HandleExpandSelectedCommandCanExecute()
+{
+	TArray<FWwiseTreeItemPtr> SelectedItems = TreeViewPtr->GetSelectedItems();
+	for (auto TreeItem : SelectedItems)
+	{
+		// If at least one item can expand, we keep the option.
+		if (CanExpandOrCollapseItemRecursive(TreeItem, true))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool SWwiseBrowser::HandleCollapseSelectedCommandCanExecute()
+{
+	TArray<FWwiseTreeItemPtr> SelectedItems = TreeViewPtr->GetSelectedItems();
+	for (auto TreeItem : SelectedItems)
+	{
+		// If at least one item can collapse, we keep the option.
+		if (CanExpandOrCollapseItemRecursive(TreeItem, false))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool SWwiseBrowser::CanExpandOrCollapseItemRecursive(FWwiseTreeItemPtr TreeItem, bool bShouldExpand) const
+{
+	if (TreeItem->GetChildren().Num() > 0)
+	{
+		if (IsItemExpanded(TreeItem) != bShouldExpand)
+		{
+			return true;
+		}
+		else
+		{
+			for (auto Child : TreeItem->GetChildren())
+			{
+				if (CanExpandOrCollapseItemRecursive(Child, bShouldExpand))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	return false;
+}
+
+void SWwiseBrowser::HandleCollapseAllSelectedCommandExecute()
+{
+	TArray<FWwiseTreeItemPtr> SelectedItems = TreeViewPtr->GetSelectedItems();
+	for (auto TreeItem : SelectedItems)
+	{
+		SetItemAndChildrenExpansion(TreeItem, false);
+	}
+}
+
 void SWwiseBrowser::HandleStopAllWwiseItemCommandExecute()
 {
 	Transport->StopAndDestroyAll();
@@ -403,7 +494,12 @@ void SWwiseBrowser::HandleExploreWwiseItemCommandExecute()
 
 bool SWwiseBrowser::HandleExploreWwiseItemCanExecute()
 {
-	return TreeViewPtr->GetSelectedItems().Num() == 1 && IsWaapiAvailable() == EWwiseConnectionStatus::Connected;
+	if (TreeViewPtr->GetSelectedItems().Num() == 1 && IsWaapiAvailable() == EWwiseConnectionStatus::Connected)
+	{
+		FWwiseTreeItemPtr SelectedItem = TreeViewPtr->GetSelectedItems()[0];
+		return DataSource->GetItemWorkUnitPath(SelectedItem).Len() > 0;
+	}
+	return false;
 }
 
 void SWwiseBrowser::HandleFindInProjectExplorerWwiseItemCommandExecute()
@@ -415,7 +511,20 @@ void SWwiseBrowser::HandleFindInProjectExplorerWwiseItemCommandExecute()
 
 bool SWwiseBrowser::HandleFindInProjectExplorerWwiseItemCanExecute()
 {
-	return TreeViewPtr->GetSelectedItems().Num() >= 1 && IsWaapiAvailable() == EWwiseConnectionStatus::Connected;
+	if (TreeViewPtr->GetSelectedItems().Num() < 1 || IsWaapiAvailable() != EWwiseConnectionStatus::Connected)
+	{
+		return false;
+	}
+
+	for (const auto& item : TreeViewPtr->GetSelectedItems())
+	{
+		if (DataSource->GetItemWorkUnitPath(item).Len() < 1 || item->IsUAssetOrphaned())
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 bool SWwiseBrowser::HandleFindInContentBrowserCanExecute()
@@ -425,6 +534,7 @@ bool SWwiseBrowser::HandleFindInContentBrowserCanExecute()
 	for (const auto& Asset : SelectedItems)
 	{
 		if (Asset->IsOfType({ EWwiseItemType::Event,
+			EWwiseItemType::DialogueEvent,
 			EWwiseItemType::Bus,
 			EWwiseItemType::AuxBus,
 			EWwiseItemType::AcousticTexture,
@@ -473,6 +583,7 @@ SWwiseBrowser::~SWwiseBrowser()
 
 void SWwiseBrowser::Construct(const FArguments& InArgs)
 {
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::Construct"))
 
 	FGenericCommands::Register();
 	FWwiseBrowserViewCommands::Register();
@@ -527,27 +638,64 @@ void SWwiseBrowser::Construct(const FArguments& InArgs)
 		[
 			SNew(SComboButton)
 			.ComboButtonStyle(FAkAppStyle::Get(), "SimpleComboButton")
-		.ToolTipText(LOCTEXT("Browser_AddFilterToolTip", "Add filters to the Wwise Browser."))
-		.OnGetMenuContent(this, &SWwiseBrowser::MakeAddFilterMenu)
-		.ButtonContent()
-		[
-			SNew(SHorizontalBox)
-			+ SHorizontalBox::Slot()
+			.ToolTipText(LOCTEXT("Browser_AddFilterToolTip", "Add filters to the Wwise Browser."))
+			.OnGetMenuContent(this, &SWwiseBrowser::MakeAddFilterMenu)
+			.ButtonContent()
+			[
+				SNew(SHorizontalBox)
+				+ SHorizontalBox::Slot()
+				.AutoWidth()
+				[
+					FilterImage.ToSharedRef()
+				]
+			]
+		]
+		+ SHorizontalBox::Slot()
+		.HAlign(HAlign_Left)
 		.AutoWidth()
 		[
-			FilterImage.ToSharedRef()
+			SNew(SBox)
+			.VAlign(VAlign_Center)
+			.MaxAspectRatio(1.0f)
+			.MinAspectRatio(1.0f)
+			[
+				SNew(SButton)
+				.ToolTipText(LOCTEXT("ExpandAll_ToolTip", "Expand All"))
+				.ButtonStyle(FAkAudioStyle::Get(), "AudiokineticTools.HoverHintOnly")
+				.OnClicked(this, &SWwiseBrowser::ExpandAll)
+				[
+					SNew(SImage)
+					.Image(FWwisePluginStyle::Get()->GetBrush(FWwisePluginStyle::ExpandAll))
+				]
+			]
 		]
+		+ SHorizontalBox::Slot()
+		.AutoWidth()
+		.HAlign(HAlign_Left)
+		[
+			SNew(SBox)
+			.VAlign(VAlign_Center)
+			.MaxAspectRatio(1.0f)
+			.MinAspectRatio(1.0f)
+			[
+				SNew(SButton)
+				.ToolTipText(LOCTEXT("CollapseAll_ToolTip", "Collapse All"))
+				.ButtonStyle(FAkAudioStyle::Get(), "AudiokineticTools.HoverHintOnly")
+				.OnClicked(this, &SWwiseBrowser::CollapseAll)
+				[
+					SNew(SImage)
+					.Image(FWwisePluginStyle::Get()->GetBrush(FWwisePluginStyle::CollapseAll))
+				]
+			]
 		]
-		]
-
-					+ SHorizontalBox::Slot()
+		+ SHorizontalBox::Slot()
 		.FillWidth(1.0f)
 		[
 			SNew(SSearchBox)
 			.HintText(LOCTEXT("WwiseBrowserSearchTooltip", "Search..."))
-		.OnTextChanged(this, &SWwiseBrowser::OnSearchBoxChanged)
-		.SelectAllTextWhenFocused(false)
-		.DelayChangeNotificationsWhileTyping(true)
+			.OnTextChanged(this, &SWwiseBrowser::OnSearchBoxChanged)
+			.SelectAllTextWhenFocused(false)
+			.DelayChangeNotificationsWhileTyping(true)
 		]
 
 		+ SHorizontalBox::Slot()
@@ -557,7 +705,7 @@ void SWwiseBrowser::Construct(const FArguments& InArgs)
 			.Padding(FMargin(5.0f,0.0f,20.0f,0.0f))
 			[
 				SNew(SButton)
-				.ToolTipText(LOCTEXT("WwiseBrowserRefresh", "Refresh the Wwise Browser"))
+				.ToolTipText(LOCTEXT("WwiseBrowserRefresh", "Refresh the Wwise Browser (F5)"))
 				.ButtonStyle(FAkAudioStyle::Get(), "AudiokineticTools.HoverHintOnly")
 				.OnClicked(this, &SWwiseBrowser::OnRefreshClicked)
 				.VAlign(VAlign_Center)
@@ -575,6 +723,7 @@ void SWwiseBrowser::Construct(const FArguments& InArgs)
 			SNew(SButton)
 			.Text(LOCTEXT("AkBrowserGenerate", "Generate SoundBanks..."))
 				.VAlign(VAlign_Center)
+			.ToolTipText(LOCTEXT("AkBrowserGenerate_Tooltip", "Generate all : Ctrl+alt+F7\nGenerate for the current platform : Ctrl+Shift+F7"))
 			.OnClicked(this, &SWwiseBrowser::OnGenerateSoundBanksClicked)
 		]
 
@@ -583,7 +732,7 @@ void SWwiseBrowser::Construct(const FArguments& InArgs)
 		.AutoWidth()
 		[
 			SNew(SButton)
-			.ToolTipText(LOCTEXT("Reconcile_Tooltip", "Reconcile Selected."))
+			.ToolTipText(LOCTEXT("Reconcile_Tooltip", "Reconcile Selected : Shift+R"))
 			.ButtonStyle(FAkAudioStyle::Get(), "AudiokineticTools.HoverHintOnly")
 			.OnClicked(this, &SWwiseBrowser::OnReconcileClicked)
 			[
@@ -656,7 +805,7 @@ void SWwiseBrowser::Construct(const FArguments& InArgs)
 					.AutoWidth()
 					[
 						SNew(SButton)
-						.ToolTipText(LOCTEXT("ProjectSettings_Tooltip", "Open Wwise Project Settings"))
+						.ToolTipText(FText::Format(LOCTEXT("ProjectSettings_Tooltip", "Open Wwise Project Settings\n\nIntegration Version : {0}\nSoundEngine Version : {1}"), FText::FromString(TEXT(WWISE_INTEGRATION_VERSION)), FText::FromString(TEXT(AK_WWISE_SOUNDENGINE_VERSION))))
 						.ButtonStyle(FAkAudioStyle::Get(), "AudiokineticTools.HoverHintOnly")
 						.OnClicked(this, &SWwiseBrowser::OnSettingsClicked)
 						[
@@ -732,7 +881,7 @@ TSharedRef<SWidget> SWwiseBrowser::MakeAddFilterMenu()
 
 		MenuBuilder.AddMenuEntry(
 			LOCTEXT("SoundBankNotUpToDate", "SoundBank Not Up to Date"),
-			LOCTEXT("SoundBankNotUpToDate_Tooltip", "Activate all filters of this section that is not \"SoundBank Up to Date\""),
+			LOCTEXT("SoundBankNotUpToDate_Tooltip", "Activate all filters of this section except \"SoundBank Up to Date\""),
 			FSlateIcon(),
 			FUIAction(FExecuteAction::CreateSP(this, &SWwiseBrowser::SoundBankNotUpToDateExecute)),
 			NAME_None,
@@ -760,7 +909,7 @@ TSharedRef<SWidget> SWwiseBrowser::MakeAddFilterMenu()
 
 		MenuBuilder.AddMenuEntry(
 			LOCTEXT("UAssetNotUpToDate", "UAsset Not Up to Date"),
-			LOCTEXT("UAssetNotUpToDate_Tooltip", "Activate all filters of this section that is not \"UAsset Up to Date\""),
+			LOCTEXT("UAssetNotUpToDate_Tooltip", "Activate all filters of this section except \"UAsset Up to Date\""),
 			FSlateIcon(),
 			FUIAction(FExecuteAction::CreateSP(this, &SWwiseBrowser::UAssetNotUpToDateExecute)),
 			NAME_None,
@@ -942,6 +1091,8 @@ void SWwiseBrowser::UAssetNotUpToDateExecute()
 
 void SWwiseBrowser::ForceRefresh()
 {
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::ForceRefresh"))
+
 	if (!IsRefreshing())
 	{
 		bIsRefreshing = true;
@@ -958,6 +1109,8 @@ void SWwiseBrowser::ForceRefresh()
 
 void SWwiseBrowser::InitialParse()
 {
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::InitialParse"))
+
 	DataSource->ConstructTree();
 }
 
@@ -998,6 +1151,11 @@ bool SWwiseBrowser::IsRefreshing() const
 
 EVisibility SWwiseBrowser::IsItemPlaying(FGuid ItemId) const
 {
+	if (!IsTransportValid())
+	{
+		return EVisibility::Hidden;
+	}
+
 	return Transport->IsPlaying(ItemId) ? EVisibility::Visible : EVisibility::Hidden;
 }
 
@@ -1021,7 +1179,7 @@ FText SWwiseBrowser::GetConnectionStatusText() const
 	case Connected:
 		return FText::Format(LOCTEXT("WwiseConnected", "Connected to Wwise Project: {0}"), GetProjectName());
 	case SettingDisabled:
-		return LOCTEXT("WwiseSettingDisabled", "Not Connected to Wwise. Only objects on disk shown. Enable \"Auto Connect to Waapi\" in the Wwise User Settings to see the Wwise project in the Browser.");
+		return LOCTEXT("WwiseSettingDisabled", "Not Connected to Wwise. Only objects on disk shown. Enable \"Auto-Connect to WAAPI\" in the Wwise User Settings to see the Wwise project in the Browser.");
 	case WrongProjectOpened:
 		return LOCTEXT("WwiseWrongProject", "Not Connected to Wwise. Only objects on disk shown. The wrong Wwise project is opened.");
 	case WrongRootOutputPath:
@@ -1117,16 +1275,27 @@ void SWwiseBrowser::OnTreeItemDoubleClicked(FWwiseTreeItemPtr TreeItem)
 	}
 }
 
+void SWwiseBrowser::GenerateAllSoundbanks()
+{
+	AkGenerateSoundBanksTask::ExecuteForAllPlatforms();
+}
+
+void SWwiseBrowser::GenerateCurrentSoundbanks()
+{
+	AkGenerateSoundBanksTask::ExecuteForEditorPlatform();
+}
+
 void SWwiseBrowser::ConstructTree()
 {
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::ConstructTree"))
 
 	UE_LOG(LogAudiokineticTools, Verbose, TEXT("SWwiseBrowser::ConstructTree: Rebuilding Wwise Browser Tree"));
 
-	RootItems.Empty(EWwiseItemType::LastWwiseBrowserType - EWwiseItemType::Event + 1);
+	RootItems.Empty(static_cast<int32>(EWwiseItemType::LastWwiseBrowserType) - static_cast<int32>(EWwiseItemType::Event) + 1);
 
-	for (int i = EWwiseItemType::Event; i <= EWwiseItemType::LastWwiseBrowserType + 1; ++i)
+	for (int i = static_cast<int>(EWwiseItemType::First); i <= static_cast<int>(EWwiseItemType::LastWwiseBrowserType) + 1; ++i)
 	{
-		FWwiseTreeItemPtr NewRoot = DataSource->GetTreeRootForType(static_cast<EWwiseItemType::Type>(i));
+		FWwiseTreeItemPtr NewRoot = DataSource->GetTreeRootForType(static_cast<EWwiseItemType>(i));
 
 		RootItems.Add(NewRoot);
 	}
@@ -1138,6 +1307,8 @@ void SWwiseBrowser::ConstructTree()
 
 void SWwiseBrowser::ExpandFirstLevel()
 {
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::ExpandFirstLevel"))
+
 	// Expand root items and first-level work units.
 	for(int32 i = 0; i < RootItems.Num(); i++)
 	{
@@ -1156,6 +1327,8 @@ void SWwiseBrowser::ExpandParents(FWwiseTreeItemPtr Item)
 
 TSharedRef<ITableRow> SWwiseBrowser::GenerateRow( FWwiseTreeItemPtr TreeItem, const TSharedRef<STableViewBase>& OwnerTable )
 {
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::GenerateRow"))
+
 	check(TreeItem.IsValid());
 
 	TSharedRef<SWwiseBrowserTreeRow> NewRow = SNew(SWwiseBrowserTreeRow, TreeViewPtr.ToSharedRef(), SharedThis(this)).
@@ -1168,6 +1341,8 @@ TSharedRef<ITableRow> SWwiseBrowser::GenerateRow( FWwiseTreeItemPtr TreeItem, co
 
 void SWwiseBrowser::GetChildrenForTree(FWwiseTreeItemPtr TreeItem, TArray< FWwiseTreeItemPtr >& OutChildren)
 {
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::GetChildrenForTree"))
+
 	if (TreeItem)
 	{
 		if(TreeItem->IsFolder())
@@ -1175,6 +1350,7 @@ void SWwiseBrowser::GetChildrenForTree(FWwiseTreeItemPtr TreeItem, TArray< FWwis
 			if (!LastExpandedPaths.Contains(TreeItem->FolderPath))
 			{
 				DataSource->ClearEmptyChildren(TreeItem);
+				DataSource->ClearInvisibleChildren(TreeItem);
 			}
 			else
 			{
@@ -1239,6 +1415,8 @@ FReply SWwiseBrowser::DoDragDetected(const FPointerEvent& MouseEvent, const TArr
 
 void SWwiseBrowser::ImportWwiseAssets(const TArray<FWwiseTreeItemPtr>& SelectedItems, const FString& PackagePath)
 {
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::ImportWwiseAssets"))
+
 	UE_LOG(LogAudiokineticTools, Verbose, TEXT("SWwiseBrowser::ImportWwiseAssets: Creating %d assets in %s."), SelectedItems.Num(), *PackagePath);
 	TArray<WwiseBrowserHelpers::WwiseBrowserAssetPayload> AssetsToImport;
 	TSet<FGuid> SeenGuids;
@@ -1259,6 +1437,10 @@ FReply SWwiseBrowser::OnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& In
 
 	if (KeyPressed == EKeys::SpaceBar)
 	{
+		if (InKeyEvent.IsRepeat())
+		{
+			return FReply::Unhandled();
+		}
 		// Play the wwise item.
 		if (HandlePlayOrStopWwiseItemCanExecute())
 		{
@@ -1268,9 +1450,15 @@ FReply SWwiseBrowser::OnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& In
 	}
 
 	else if (KeyPressed == EKeys::F5)
-	{	// Populates the Wwise Browser.
-		HandleRefreshWwiseBrowserCommandExecute();
-		return FReply::Handled();
+	{
+		if (bCanRefresh)
+		{
+			// Populates the Wwise Browser.
+			HandleRefreshWwiseBrowserCommandExecute();
+			bCanRefresh = false;
+			return FReply::Handled();
+		}
+		return FReply::Unhandled();
 	}
 
 	else if ((KeyPressed == EKeys::One) && InKeyEvent.IsControlDown() && InKeyEvent.IsShiftDown())
@@ -1283,7 +1471,55 @@ FReply SWwiseBrowser::OnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& In
 		}
 	}
 
+	else if (KeyPressed == EKeys::F7)
+	{
+		if (InKeyEvent.IsControlDown())
+		{
+			if (InKeyEvent.IsAltDown())
+			{
+				// Generate ALL the banks for ALL platforms
+				GenerateAllSoundbanks();
+				return FReply::Handled();
+			}
+			else if (InKeyEvent.IsShiftDown())
+			{
+				// Generate ALL the banks for ONLY THE CURRENT platforms
+				GenerateCurrentSoundbanks();
+				return FReply::Handled();
+			}
+		}
+	}
+
+	else if (KeyPressed == EKeys::R && InKeyEvent.IsShiftDown())
+	{
+		OnReconcileClicked();
+	}
+
 	return FReply::Unhandled();
+}
+
+FReply SWwiseBrowser::OnKeyUp(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
+{
+	const FKey KeyUp = InKeyEvent.GetKey();
+
+	if (KeyUp == EKeys::F5)
+	{
+		bCanRefresh = true;
+		return FReply::Handled();
+	}
+
+	return FReply::Unhandled();
+}
+
+bool SWwiseBrowser::IsTransportValid() const
+{
+	if (IsWaapiAvailable() != EWwiseConnectionStatus::Connected)
+	{
+		// If the connection is not established, we clear the transport to remove all playing items.
+		Transport->StopAndDestroyAll();
+		return false;
+	}
+	return true;
 }
 
 void SWwiseBrowser::PopulateSearchStrings(const FString& FolderName, OUT TArray< FString >& OutSearchStrings) const
@@ -1381,8 +1617,13 @@ void SWwiseBrowser::TreeExpansionChanged( FWwiseTreeItemPtr TreeItem, bool bIsEx
 
 void SWwiseBrowser::ExpandItem(FWwiseTreeItemPtr TreeItem, bool bShouldExpand)
 {
-	TreeViewPtr->SetItemExpansion(TreeItem, bShouldExpand);
-	TreeItem->IsExpanded = bShouldExpand;
+	DataSource->ClearEmptyChildren(TreeItem);
+	DataSource->ClearInvisibleChildren(TreeItem);
+	if (!TreeItem->GetChildren().IsEmpty())
+	{
+		TreeViewPtr->SetItemExpansion(TreeItem, bShouldExpand);
+		TreeItem->IsExpanded = bShouldExpand;
+	}
 }
 
 void SWwiseBrowser::ExpandItem(FWwiseTreeItemPtr WaapiTreeItem)
@@ -1394,7 +1635,7 @@ void SWwiseBrowser::ExpandItem(FWwiseTreeItemPtr WaapiTreeItem)
 	}
 }
 
-bool SWwiseBrowser::IsItemExpanded(FWwiseTreeItemPtr TreeItem)
+bool SWwiseBrowser::IsItemExpanded(FWwiseTreeItemPtr TreeItem) const
 {
 	return TreeViewPtr->IsItemExpanded(TreeItem);
 }
@@ -1436,6 +1677,8 @@ void SWwiseBrowser::ExpandItems(const TArray<FWwiseTreeItemPtr>& Items)
 
 void SWwiseBrowser::UpdateWaapiSelection(const TArray<TSharedPtr<FWwiseTreeItem>>& WaapiTreeItems)
 {
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::UpdateWaapiSelection"))
+
 	TArray<TSharedPtr<FWwiseTreeItem>> TreeItems;
 	GetTreeItemsFromWaapi(WaapiTreeItems, TreeItems);
 	TreeViewPtr->RequestTreeRefresh();
@@ -1525,6 +1768,8 @@ void SWwiseBrowser::SetupColumns(SHeaderRow& HeaderRow)
 
 void SWwiseBrowser::OnTextFilterUpdated()
 {
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::OnTextFilterUpdated"))
+
 	if (GetFilterText().IsEmpty())
 	{
 		bIsFilterApplied = false;
@@ -1535,6 +1780,8 @@ void SWwiseBrowser::OnTextFilterUpdated()
 
 void SWwiseBrowser::OnFilterUpdated()
 {
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::OnFilterUpdated"))
+
 	if (RootItems.Num() == 0)
 	{
 		return;
@@ -1546,6 +1793,8 @@ void SWwiseBrowser::OnFilterUpdated()
 
 void SWwiseBrowser::ApplyFilter()
 {
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::ApplyFilter"))
+
 	AllowTreeViewDelegates = false;
 
 	if (!bIsFilterApplied)
@@ -1556,9 +1805,9 @@ void SWwiseBrowser::ApplyFilter()
 	DataSource->ApplyFilter(SoundBankStatusFilter, UAssetStatusFilter, WwiseTypeFilter);
 
 	RootItems.Empty();
-	for (int i = EWwiseItemType::Event; i <= EWwiseItemType::LastWwiseBrowserType + 1; ++i)
+	for (int i = static_cast<int>(EWwiseItemType::First); i <= static_cast<int>(EWwiseItemType::LastWwiseBrowserType) + 1; ++i)
 	{
-		FWwiseTreeItemPtr NewRoot = DataSource->GetTreeRootForType(static_cast<EWwiseItemType::Type>(i));
+		FWwiseTreeItemPtr NewRoot = DataSource->GetTreeRootForType(static_cast<EWwiseItemType>(i));
 
 		RootItems.Add(NewRoot);
 	}
@@ -1590,6 +1839,8 @@ TAttribute<FText> SWwiseBrowser::GetFilterHighlightText() const
 
 void SWwiseBrowser::CreateReconcileTab() const
 {
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::CreateReconcileTab"))
+
 	auto SelectedItems = TreeViewPtr->GetSelectedItems();
 
 	bool bShouldReconcileAllItems = false;
@@ -1602,7 +1853,7 @@ void SWwiseBrowser::CreateReconcileTab() const
 	TArray<FWwiseReconcileItem> ReconcileItems;
 	if (auto WwiseReconcile = IWwiseReconcile::Get())
 	{
-		WwiseReconcile->ConvertWwiseItemTypeToReconcileItem(SelectedItems, ReconcileItems);
+		WwiseReconcile->ConvertWwiseItemTypeToReconcileItem(SelectedItems, ReconcileItems, EWwiseReconcileOperationFlags::All, true);
 		if (ReconcileItems.Num() == 0)
 		{
 			if(bShouldReconcileAllItems)
@@ -1631,6 +1882,37 @@ void SWwiseBrowser::CreateReconcileTab() const
 	else
 	{
 		UE_LOG(LogAudiokineticTools, Error, TEXT("Failed to get Wwise Reconcile Module."));
+	}
+}
+
+FReply SWwiseBrowser::CollapseAll() const
+{
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::CollapseAll"))
+
+	for (const auto& item : RootItems)
+	{
+		SetItemAndChildrenExpansion(item, false);
+	}
+	return FReply::Handled();
+}
+
+FReply SWwiseBrowser::ExpandAll() const
+{
+	SCOPED_AUDIOKINETICTOOLS_EVENT_3(TEXT("SWwiseBrowser::ExpandAll"))
+
+	for (const auto& item : RootItems)
+	{
+		SetItemAndChildrenExpansion(item, true);
+	}
+	return FReply::Handled();
+}
+
+void SWwiseBrowser::SetItemAndChildrenExpansion(FWwiseTreeItemPtr Item, bool bExpanded) const
+{
+	TreeViewPtr->SetItemExpansion(Item, bExpanded);
+	for (const auto& child : Item->GetChildren())
+	{
+		SetItemAndChildrenExpansion(child, bExpanded);
 	}
 }
 

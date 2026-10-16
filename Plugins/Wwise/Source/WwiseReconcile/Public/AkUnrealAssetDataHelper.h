@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -20,14 +20,15 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "WwiseUEFeatures.h"
 #include "WwiseItemType.h"
 #include "AssetRegistry/AssetData.h"
+#include "Wwise/WwiseTreeItem.h"
 
 class WwiseAnyRef;
 
 namespace AkUnrealAssetDataHelper
 {
-	WWISERECONCILE_API bool IsSameType(const FAssetData& AssetData, EWwiseItemType::Type ItemType);
+	WWISERECONCILE_API bool IsSameType(const FAssetData& AssetData, EWwiseItemType ItemType);
 
-	WWISERECONCILE_API FName GetUClassName(EWwiseItemType::Type ItemType);
+	WWISERECONCILE_API FName GetUClassName(EWwiseItemType ItemType);
 
 	// Gets the AssetClass prior to UE 5.1, otherwise the AssetClassPath
 	WWISERECONCILE_API FName GetAssetClassName(const FAssetData& AssetData);
@@ -42,6 +43,8 @@ namespace AkUnrealAssetDataHelper
 	WWISERECONCILE_API FString GetAssetDefaultPackagePath(const FAssetData& AssetData);
 
 	WWISERECONCILE_API FString GetAssetDefaultPackagePath(const WwiseAnyRef* WwiseRef);
+
+	WWISERECONCILE_API FString GetAssetDefaultPackagePath(const TSharedPtr<FWwiseTreeItem> WwiseTreeItem);
 
 	WWISERECONCILE_API FName GetAssetDefaultName(const FAssetData& AssetData);
 

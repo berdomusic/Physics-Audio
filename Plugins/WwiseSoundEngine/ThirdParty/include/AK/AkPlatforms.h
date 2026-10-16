@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file 
@@ -138,6 +138,10 @@ the specific language governing permissions and limitations under the License.
 #endif
 #endif // AK_SELECTANY
 
+#if (defined(__cplusplus) && __cplusplus >= 201402L) || (defined(_MSVC_LANG) && _MSVC_LANG >= 201402L)
+#define AK_CPP14
+#endif
+
 #if (defined(__cplusplus) && __cplusplus >= 201703L) || (defined(_MSVC_LANG) && _MSVC_LANG >= 201703L)
 #define AK_CPP17
 #endif
@@ -146,7 +150,11 @@ the specific language governing permissions and limitations under the License.
 #define AK_CPP20
 #endif
 
+#if defined(AK_CPP17)
 #define AK_NODISCARD    [[nodiscard]]
+#else
+#define AK_NODISCARD
+#endif
 
 #if defined(AK_CPU_X86_64) || defined(AK_CPU_ARM_64)
 #define AK_POINTER_64
@@ -175,3 +183,17 @@ the specific language governing permissions and limitations under the License.
 #define AK_DISABLE_OPTIMIZATIONS    __pragma(optimize("", off))
 #define AK_ENABLE_OPTIMIZATIONS     __pragma(optimize("", on))
 #endif
+
+/// Stack allocation helpers
+#if defined(__clang__) || defined(__GNUC__)
+#define AkAlloca( _size_ )          __builtin_alloca( _size_ )
+#define AkAllocaSIMD( _size_ )      __builtin_alloca_with_align( _size_, 128 )
+#elif defined(_MSC_VER)
+#define AkAlloca( _size_ )          _alloca( _size_ )
+#define AkAllocaSIMD( _size_ )      _alloca( _size_ )
+#else
+#error "Undefined compiler"
+#endif
+
+#define AkAllocaTypedArray(_type_, _count_) ( (_type_*)AkAlloca(sizeof(_type_) * _count_) )
+

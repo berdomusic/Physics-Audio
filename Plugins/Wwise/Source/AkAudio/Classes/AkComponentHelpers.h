@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*=============================================================================
@@ -22,6 +22,8 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "Components/SceneComponent.h"
 #include "PhysicsEngine/BodySetup.h"
 #include "AkInclude.h"
+
+class UAkAcousticTexture;
 
 namespace AkComponentHelpers
 {
@@ -40,6 +42,9 @@ namespace AkComponentHelpers
 
 	/* Return the cube of the unreal-units-to-meters ratio being used by this component */
 	AKAUDIO_API float UnrealUnitsPerCubicMeter(const UActorComponent* component);
+
+	/* Return the acoustic texture ID or invalid ID depending on the inputed acoustic texture object */
+	AKAUDIO_API AkUInt32 GetAcousticTextureID(const TWeakObjectPtr<UAkAcousticTexture> InAcousticTexture);
 
 	/* Convenience function for components based on AActor::FindComponentByClass. 
 	   Return the first child component of type COMPONENT_TYPE, or nullptr if there are none. */

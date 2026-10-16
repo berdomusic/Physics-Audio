@@ -6,7 +6,7 @@
   subject to the terms and conditions outlined in the Source Code
   Addendum and the End User License Agreement for Wwise(R).
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
  ***********************************************************************/
 
 #pragma once
@@ -90,7 +90,7 @@ namespace Internal
 	template<typename KeyType>
 	inline AkInt32 GetFirstSlotForKey(const AkHashTableBase<KeyType>* pHashTable, KeyType uKey)
 	{
-		if (pHashTable->uNumReservedEntries == 0)
+		if AK_EXPECT_FALSE(pHashTable->uNumReservedEntries == 0)
 			return -1;
 		AkUInt32 uNumEntries = pHashTable->uNumReservedEntries;
 		AkInt32 iBestSlot = uKey & (uNumEntries - 1);

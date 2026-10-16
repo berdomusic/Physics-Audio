@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkWinSoundEngine.h
@@ -54,7 +54,7 @@ struct AkPlatformInitSettings
 
 	bool                bEnableAvxSupport;      ///< Enables run-time detection of AVX and AVX2 SIMD support in the engine and plug-ins.
 
-	AkUInt32            uMaxSystemAudioObjects; ///< Dictates how many Microsoft Spatial Sound dynamic objects will be reserved by the System sink. On Windows, other running processes will be prevented from reserving these objects. Set to 0 to disable the use of System Audio Objects. Default is 128.
+	AkUInt32            uMaxSystemAudioObjects; ///< The maximum number of %Microsoft Spatial Sound dynamic objects the System sink can reserve. On Windows, other running processes cannot reserve these objects. Set to 0 to disable the use of System Audio Objects. On Windows, the default value is 128.
 };
 
 struct IMMDevice;

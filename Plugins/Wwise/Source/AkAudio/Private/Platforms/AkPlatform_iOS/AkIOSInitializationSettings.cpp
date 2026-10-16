@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Platforms/AkPlatform_iOS/AkIOSInitializationSettings.h"
@@ -47,6 +47,12 @@ UAkIOSInitializationSettings::UAkIOSInitializationSettings(const FObjectInitiali
 
 void UAkIOSInitializationSettings::FillInitializationStructure(FAkInitializationStructure& InitializationStructure) const
 {
+#if defined(WWISE_IOS_PLATFORM_FOLDER)
+	InitializationStructure.SetPluginDllPath(WWISE_IOS_PLATFORM_FOLDER);
+#else
+	InitializationStructure.SetPluginDllPath("iOS_Xcode1500");
+#endif
+	
 	CommonSettings.FillInitializationStructure(InitializationStructure);
 	AudioSession.FillInitializationStructure(InitializationStructure);
 	CommunicationSettings.FillInitializationStructure(InitializationStructure);

@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkSimd.h
@@ -806,7 +806,7 @@ static AkForceInline AKSIMD_V4F32 AKSIMD_HORIZONTALADD_V4F32( AKSIMD_V4F32 vVec 
 /// Cross-platform SIMD multiplication of 2 complex data elements with interleaved real and imaginary parts
 static AkForceInline AKSIMD_V4F32 AKSIMD_COMPLEXMUL_V4F32( const AKSIMD_V4F32 vCIn1, const AKSIMD_V4F32 vCIn2 )
 {
-	static const AKSIMD_V4F32 vSign = { 1.f, -1.f, 1.f, -1.f }; 
+	const AKSIMD_V4F32 vSign = { 1.f, -1.f, 1.f, -1.f }; 
 
 	AKSIMD_V4F32 vTmp1 = AKSIMD_SHUFFLE_V4F32( vCIn1, vCIn1, AKSIMD_SHUFFLE(2,2,0,0)); 
 	vTmp1 = AKSIMD_MUL_V4F32( vTmp1, vCIn2 );

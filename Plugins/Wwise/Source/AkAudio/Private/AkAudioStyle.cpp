@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkAudioStyle.h"
@@ -21,6 +21,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "AkAudioDevice.h"
 #include "AkAudioEvent.h"
 #include "AkAuxBus.h"
+#include "AkDialogueEvent.h"
 #include "AkEffectShareSet.h"
 #include "AkRtpc.h"
 #include "AkStateValue.h"
@@ -170,7 +171,7 @@ const ISlateStyle& FAkAudioStyle::Get()
 
 
 #if WITH_EDITOR
-void FAkAudioStyle::DisplayEditorMessage(const FText& messageText, EWwiseItemType::Type wwiseItemType /* = EWwiseItemType::Type::None*/, float duration /* = 1.5f */)
+void FAkAudioStyle::DisplayEditorMessage(const FText& messageText, EWwiseItemType wwiseItemType /* = EWwiseItemType::None*/, float duration /* = 1.5f */)
 {
 	if (!FApp::CanEverRender())
 	{
@@ -205,7 +206,7 @@ const FSlateBrush* FAkAudioStyle::GetWwiseIcon()
 	return Style->GetBrush(FWwisePluginStyle::WwiseIconName);
 }
 
-const FSlateBrush* FAkAudioStyle::GetBrush(EWwiseItemType::Type ItemType)
+const FSlateBrush* FAkAudioStyle::GetBrush(EWwiseItemType ItemType)
 {
 	auto Style = FWwisePluginStyle::Get();
 	if (!Style.IsValid())
@@ -219,11 +220,12 @@ const FSlateBrush* FAkAudioStyle::GetBrush(EWwiseItemType::Type ItemType)
 	case EWwiseItemType::AcousticTexture: return Style->GetBrush(FWwisePluginStyle::AcousticTextureIconName);
 	case EWwiseItemType::AuxBus: return Style->GetBrush(FWwisePluginStyle::AuxBusIconName);
 	case EWwiseItemType::Bus: return Style->GetBrush(FWwisePluginStyle::BusIconName);
+	case EWwiseItemType::DialogueEvent: return Style->GetBrush(FWwisePluginStyle::DialogueEventIconName);
 	case EWwiseItemType::Folder: return Style->GetBrush(FWwisePluginStyle::FolderIconName);
 	case EWwiseItemType::Project: return Style->GetBrush(FWwisePluginStyle::ProjectIconName);
 	case EWwiseItemType::PhysicalFolder: return Style->GetBrush(FWwisePluginStyle::PhysicalFolderIconName);
 	case EWwiseItemType::StandaloneWorkUnit:
-	case EWwiseItemType::NestedWorkUnit: return Style->GetBrush(FWwisePluginStyle::WorkUnitIconName);
+	case EWwiseItemType::NestedWorkUnit: return Style->GetBrush(FWwisePluginStyle::FolderIconName);
 	case EWwiseItemType::ActorMixer: return Style->GetBrush(FWwisePluginStyle::ActorMixerIconName);
 	case EWwiseItemType::Sound: return Style->GetBrush(FWwisePluginStyle::SoundIconName);
 	case EWwiseItemType::SwitchContainer: return Style->GetBrush(FWwisePluginStyle::SwitchContainerIconName);
@@ -246,11 +248,14 @@ const FSlateBrush* FAkAudioStyle::GetBrush(EWwiseItemType::Type ItemType)
 
 const FSlateBrush* FAkAudioStyle::GetBrush(WwiseRefType WwiseRefType)
 {
-	EWwiseItemType::Type ItemType = EWwiseItemType::Type::None;
+	EWwiseItemType ItemType = EWwiseItemType::None;
 	switch (WwiseRefType)
 	{
 	case WwiseRefType::Event:
 		ItemType = EWwiseItemType::Event;
+		break;
+	case WwiseRefType::DialogueEvent:
+		ItemType = EWwiseItemType::DialogueEvent;
 		break;
 	case WwiseRefType::SwitchContainer:
 		ItemType = EWwiseItemType::SwitchContainer;
@@ -294,10 +299,14 @@ const FSlateBrush* FAkAudioStyle::GetBrush(WwiseRefType WwiseRefType)
 
 const FSlateBrush* FAkAudioStyle::GetBrush(UClass* Class)
 {
-	EWwiseItemType::Type ItemType = EWwiseItemType::Type::None;
+	EWwiseItemType ItemType = EWwiseItemType::None;
 	if (Class == UAkAudioEvent::StaticClass())
 	{
 		ItemType = EWwiseItemType::Event;
+	}
+	if (Class == UAkDialogueEvent::StaticClass())
+	{
+		ItemType = EWwiseItemType::DialogueEvent;
 	}
 	if (Class == UAkAcousticTexture::StaticClass())
 	{
@@ -333,10 +342,14 @@ const FSlateBrush* FAkAudioStyle::GetBrush(UClass* Class)
 	}
 	return GetBrush(ItemType);
 }
-#endif
 
 const FSlateBrush* FAkAudioStyle::GetBrush(FName PropertyName, const ANSICHAR* Specifier)
 {
+	auto Style = FWwisePluginStyle::Get();
+	if (Style != nullptr)
+	{
+		return Style->GetBrush(PropertyName, Specifier);
+	}
 	return Get().GetBrush(PropertyName, Specifier);
 }
 
@@ -344,6 +357,7 @@ const FSlateFontInfo FAkAudioStyle::GetFontStyle(FName PropertyName, const ANSIC
 {
 	return Get().GetFontStyle(PropertyName, Specifier);
 }
+#endif
 
 UMaterial* FAkAudioStyle::GetAkForegroundTextMaterial()
 {
@@ -363,7 +377,7 @@ FLinearColor FAkAudioStyle::GetWwiseObjectColor(int colorIndex)
 	{
 		if (colorIndex == -1)
 			colorIndex = WwiseUnrealColorPalette.Num() - 1;
-		if (colorIndex < WwiseUnrealColorPalette.Num())
+		if (WwiseUnrealColorPalette.IsValidIndex(colorIndex))
 		{
 			return WwiseUnrealColorPalette[colorIndex];
 		}

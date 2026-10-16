@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwisePackagingEditorModuleImpl.h"
@@ -26,6 +26,9 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "AssetToolsModule.h"
 #include "IAssetTools.h"
 #include "PropertyEditorModule.h"
+#include "Wwise/Packaging/WwiseAssetLibraryGroup.h"
+#include "Wwise/Packaging/WwisePackagingSettings.h"
+#include "Wwise/Packaging/WwisePackagingSettingsDetails.h"
 #include "Wwise/Packaging/WwiseSharedAssetLibraryFilter.h"
 
 IMPLEMENT_MODULE(FWwisePackagingEditorModule, WwisePackagingEditor)
@@ -55,6 +58,7 @@ void FWwisePackagingEditorModule::ShutdownModule()
 void FWwisePackagingEditorModule::FillTypeActions()
 {
 	TypeActions_WwiseAssetLibrary.Emplace( MakeShared<FAssetTypeActions_WwiseAssetLibrary>() );
+	TypeActions_WwiseAssetLibrary.Emplace( MakeShared<FAssetTypeActions_WwiseAssetLibraryGroup>() );
 	TypeActions_WwiseAssetLibrary.Emplace( MakeShared<FAssetTypeActions_WwiseSharedAssetLibraryFilter>() );
 }
 
@@ -89,13 +93,13 @@ void FWwisePackagingEditorModule::RegisterDetailsCustomizations()
 		CreateAssetLibraryDetailLayoutDelegate());
 	PropertyModule.RegisterCustomClassLayout(UWwiseSharedAssetLibraryFilter::StaticClass()->GetFName(),
 		CreateAssetLibraryDetailLayoutDelegate());
+	PropertyModule.RegisterCustomClassLayout(UWwisePackagingSettings::StaticClass()->GetFName(), FOnGetDetailCustomizationInstance::CreateStatic(&FWwisePackagingSettingsDetails::MakeInstance));
 }
 
 FOnGetDetailCustomizationInstance FWwisePackagingEditorModule::CreateAssetLibraryDetailLayoutDelegate()
 {
 	return FOnGetDetailCustomizationInstance::CreateStatic(&FWwiseAssetLibraryDetailsCustomization::MakeInstance);
 }
-
 
 FWwiseAssetLibraryPreCooker* FWwisePackagingEditorModule::InstantiatePreCooker(FWwiseProjectDatabase& ProjectDatabase)
 {

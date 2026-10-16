@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -55,6 +55,7 @@ enum EWwiseTypeFilter
 {
 	AcousticTexture,
 	AudioDeviceShareSet,
+	DialogueEvents,
 	Effects,
 	Events,
 	GameParameters,
@@ -85,7 +86,7 @@ struct FWwiseTypeFilter
 	bool IsKeptInBrowser(FWwiseTreeItemPtr& Item) const;
 	bool AreFiltersOff() const;
 private:
-	EWwiseItemType::Type GetExpectedType(EWwiseTypeFilter Filter) const;
+	EWwiseItemType GetExpectedType(EWwiseTypeFilter Filter) const;
 };
 
 class FWwiseBrowserDataSource
@@ -112,7 +113,7 @@ public:
 
 	bool IsKeptInBrowser(FWwiseTreeItemPtr Item);
 
-	FWwiseTreeItemPtr GetTreeRootForType(EWwiseItemType::Type ItemType, const FString& FilterText={});
+	FWwiseTreeItemPtr GetTreeRootForType(EWwiseItemType ItemType, const FString& FilterText={});
 
 	FText GetProjectName();
 
@@ -122,6 +123,9 @@ public:
 
 	// Clean placeholder children
 	void ClearEmptyChildren(FWwiseTreeItemPtr TreeItem);
+
+	// Remove all childrens that should not be visible
+	void ClearInvisibleChildren(FWwiseTreeItemPtr TreeItem);
 
 	EWwiseConnectionStatus GetWaapiConnectionStatus() const;
 

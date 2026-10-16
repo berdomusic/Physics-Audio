@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseTreeItem.h"
@@ -78,7 +78,7 @@ bool FWwiseTreeItem::IsRenamedInSoundBank() const
 		return false;
 	}
 	FString NameToCompare = DisplayName;
-	if(IsOfType({ EWwiseItemType::Switch , EWwiseItemType::State }))
+	if(IsInGroup())
 	{
 		NameToCompare = GetSwitchAssetName();
 	}
@@ -88,6 +88,11 @@ bool FWwiseTreeItem::IsRenamedInSoundBank() const
 bool FWwiseTreeItem::IsUAssetMissing() const
 {
 	return WwiseBankRefExists() && !UEAssetExists();
+}
+
+bool FWwiseTreeItem::IsInWAAPIAndUnreal() const
+{
+	return WaapiRefExists() && !WwiseBankRefExists() && UEAssetExists();
 }
 
 bool FWwiseTreeItem::IsUAssetOrphaned() const
@@ -163,6 +168,26 @@ bool FWwiseTreeItem::IsFolder() const
 					});
 }
 
+bool FWwiseTreeItem::IsInGroup() const
+{
+	return IsOfType({ EWwiseItemType::Switch, EWwiseItemType::State });
+}
+
+bool FWwiseTreeItem::IsUnusedEffect() const
+{
+	return IsOfType({ EWwiseItemType::EffectShareSet }) && IsNewInWwise();
+}
+
+bool FWwiseTreeItem::IsUnusedTrigger() const
+{
+	return IsOfType({ EWwiseItemType::Trigger }) && IsNewInWwise();
+}
+
+bool FWwiseTreeItem::IsUnusedItem() const
+{
+	return IsUnusedEffect() || IsUnusedTrigger();
+}
+
 bool FWwiseTreeItem::IsAuxBus() const
 {
 	return IsOfType({
@@ -211,7 +236,7 @@ FString FWwiseTreeItem::GetSwitchAssetName() const
 
 const FString FWwiseTreeItem::GetDefaultAssetName() const
 {
-	if (IsOfType({ EWwiseItemType::Switch , EWwiseItemType::State }))
+	if (IsInGroup())
 	{
 		return GetSwitchAssetName();
 	}
@@ -285,6 +310,8 @@ bool FWwiseTreeItem::IsBrowserType() const
 			EWwiseItemType::Bus,
 			EWwiseItemType::AuxBus,
 			EWwiseItemType::AcousticTexture,
+			EWwiseItemType::AudioDeviceShareSet,
+			EWwiseItemType::DialogueEvent,
 			EWwiseItemType::State,
 			EWwiseItemType::Switch,
 			EWwiseItemType::GameParameter,
@@ -293,7 +320,7 @@ bool FWwiseTreeItem::IsBrowserType() const
 		});
 }
 
-bool FWwiseTreeItem::IsOfType(const TArray<EWwiseItemType::Type>& Types) const
+bool FWwiseTreeItem::IsOfType(const TArray<EWwiseItemType>& Types) const
 {
 	for (const auto& Type : Types)
 	{
@@ -306,7 +333,7 @@ bool FWwiseTreeItem::IsOfType(const TArray<EWwiseItemType::Type>& Types) const
 	return false;
 }
 
-bool FWwiseTreeItem::IsNotOfType(const TArray<EWwiseItemType::Type>& Types) const
+bool FWwiseTreeItem::IsNotOfType(const TArray<EWwiseItemType>& Types) const
 {
 	return !IsOfType(Types);
 }

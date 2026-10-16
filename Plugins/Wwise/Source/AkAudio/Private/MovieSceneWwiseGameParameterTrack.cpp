@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "MovieSceneWwiseGameParameterTrack.h"
@@ -39,19 +39,19 @@ UMovieSceneSection* UMovieSceneWwiseGameParameterTrack::CreateNewSection()
 FText UMovieSceneWwiseGameParameterTrack::GetDisplayName() const
 {
 	auto AllSections = GetAllSections();
-	FString DisplayName("WwiseGameParameter");
+	FString AkDisplayName("WwiseGameParameter");
 	if (AllSections.Num() > 0)
 	{
 		UMovieSceneWwiseGameParameterSection* RTPCSection = CastChecked<UMovieSceneWwiseGameParameterSection>(AllSections[0]);
-		DisplayName += TEXT(" - ") + (RTPCSection->GetGameParameter() ? RTPCSection->GetGameParameter()->GetName() : TEXT("Unassigned"));
+		AkDisplayName += TEXT(" - ") + (RTPCSection->GetGameParameter() ? RTPCSection->GetGameParameter()->GetName() : TEXT("Unassigned"));
 	}
 
 	if (AllSections.Num() > 1)
 	{
-		DisplayName += TEXT(" and more.");
+		AkDisplayName += TEXT(" and more.");
 	}
 
-	return FText::FromString(DisplayName);
+	return FText::FromString(AkDisplayName);
 }
 #endif
 

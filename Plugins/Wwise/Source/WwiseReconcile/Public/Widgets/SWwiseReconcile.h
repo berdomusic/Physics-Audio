@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -20,6 +20,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "Wwise/WwiseReconcile.h"
 #include "IWwiseReconcileColumn.h"
 #include "Widgets/SWindow.h"
+#include "Widgets/Input/SCheckBox.h"
 
 class SWwiseReconcileListView;
 
@@ -62,11 +63,16 @@ public:
 		return Columns;
 	}
 private:
+	void OnForceDeleteCheckboxChanged(ECheckBoxState newState);
+	void OnReconcileItemDoubleClicked(TSharedPtr<FWwiseReconcileItem> item);
+
 	FReply ReconcileAssets();
 
 	FReply CloseWindow();
 
 	void SetupColumns(SHeaderRow& HeaderRow);
+
+	bool CanReconcileItems() const;
 
 	/** Generate a row in the tree view */
 	TSharedRef<ITableRow> GenerateRow(TSharedPtr<FWwiseReconcileItem> Item, const TSharedRef<STableViewBase>& OwnerTable);
@@ -83,4 +89,14 @@ private:
 	TMap<FName, TSharedPtr<IWwiseReconcileColumn>> Columns;
 
 	TWeakPtr<SWindow> Window;
+
+	TSharedPtr<SCheckBox> ForceDeleteAssetsCheckbox;
+
+	EVisibility GetDestructiveActionWarningVisibility() const;
+	EVisibility GetManualActionWarningVisibility() const;
+
+	bool CanInteractWithForceDelete() const { return !CanReconcileItems(); }
+
+	/** True if all elements in the list are assets being referenced by another asset somewhere */
+	bool bOnlyReferencedAssets = true;
 };

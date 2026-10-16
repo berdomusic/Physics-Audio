@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -24,18 +24,21 @@ class WWISEFILEHANDLER_API FWwiseMediaManagerImpl : public IWwiseMediaManager, p
 {
 public:
 	FWwiseMediaManagerImpl();
-	~FWwiseMediaManagerImpl() override;
+	virtual ~FWwiseMediaManagerImpl() override;
 
-	const TCHAR* GetManagingTypeName() const override { return TEXT("Media"); }
+	virtual const TCHAR* GetManagingTypeName() const override { return TEXT("Media"); }
 
-	void LoadMedia(const FWwiseMediaCookedData& InMediaCookedData, FLoadMediaCallback&& InCallback) override;
-	void UnloadMedia(const FWwiseMediaCookedData& InMediaCookedData, FUnloadMediaCallback&& InCallback) override;
-	void SetGranularity(AkUInt32 InStreamingGranularity) override;
+	virtual void LoadMedia(const FWwiseMediaCookedData& InMediaCookedData, FLoadMediaCallback&& InCallback) override;
+	virtual void UnloadMedia(const FWwiseMediaCookedData& InMediaCookedData, FUnloadMediaCallback&& InCallback) override;
+	virtual void SetGranularity(AkUInt32 InStreamingGranularity) override;
 	
 	virtual void SetMedia(AkSourceSettings& InSource, FLoadMediaCallback&& InCallback) override;
 	virtual void UnsetMedia(AkSourceSettings& InSource, FLoadMediaCallback&& InCallback) override;
 
-	IWwiseStreamingManagerHooks& GetStreamingHooks() final { return *this; }
+	virtual void DoTerm() override;
+	virtual void DoPostTerm() override;
+
+	virtual IWwiseStreamingManagerHooks& GetStreamingHooks() override final { return *this; }
 
 protected:
 	uint32 StreamingGranularity;
@@ -49,9 +52,12 @@ protected:
 	TArray<AkSourceSettings> UnsetMediaOps;
 	TArray<FLoadMediaCallback> UnsetMediaCallbacks;
 
+	bool bProcessTerm{ false };
+
 	virtual FWwiseFileStateSharedPtr CreateOp(const FWwiseMediaCookedData& InMediaCookedData);
 	
 	static FWwiseExecutionQueue* GetBankExecutionQueue();
+	virtual void AddUnsetMediaOp(AkSourceSettings& InSource, FLoadMediaCallback&& InCallback);
 	virtual void DoSetMedia();
 	virtual void DoUnsetMedia();
 };

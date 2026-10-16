@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseReconcileImpl.h"
@@ -22,6 +22,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "AkAudioEvent.h"
 #include "AkAudioType.h"
 #include "AkAuxBus.h"
+#include "AkDialogueEvent.h"
 #include "AkEffectShareSet.h"
 #include "AkInitBank.h"
 #include "AkRtpc.h"
@@ -43,6 +44,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 void FWwiseReconcileImpl::GetAllWwiseRefs()
 {
 	GuidToWwiseRef.Empty();
+	ShortIdToWwiseRef.Empty();
 	auto ProjectDatabase = FWwiseProjectDatabase::Get();
 	if (UNLIKELY(!ProjectDatabase))
 	{
@@ -110,6 +112,8 @@ UClass* FWwiseReconcileImpl::GetUClassFromWwiseRefType(WwiseRefType RefType)
 	{
 	case WwiseRefType::Event:
 		return UAkAudioEvent::StaticClass();
+	case WwiseRefType::DialogueEvent:
+		return UAkDialogueEvent::StaticClass();
 	case WwiseRefType::AuxBus:
 		return UAkAuxBus::StaticClass();
 	case WwiseRefType::AcousticTexture:
@@ -215,6 +219,11 @@ void FWwiseReconcileImpl::GetAllAssets(TArray<FWwiseReconcileItem>& ReconcileIte
 void FWwiseReconcileImpl::GetAssetChanges(TArray<FWwiseReconcileItem>& ReconcileItems,
 	EWwiseReconcileOperationFlags OperationFlags)
 {
+	if (OperationFlags == EWwiseReconcileOperationFlags::None)
+	{
+		return;
+	}
+
 	AssetsToCreate.Empty();
 	AssetsToDelete.Empty();
 	AssetsToRename.Empty();
@@ -378,9 +387,9 @@ TArray<FAssetData> FWwiseReconcileImpl::UpdateExistingAssets(FScopedSlowTask& Sl
 }
 
 void FWwiseReconcileImpl::ConvertWwiseItemTypeToReconcileItem(const TArray<TSharedPtr<FWwiseTreeItem>>& InWwiseItems,
-	TArray<FWwiseReconcileItem>& OutReconcileItems, EWwiseReconcileOperationFlags OperationFlags, bool bFirstLevel)
+	TArray<FWwiseReconcileItem>& OutReconcileItems, EWwiseReconcileOperationFlags OperationFlags, bool bProcessRefsAndChanges)
 {
-	if(bFirstLevel)
+	if(bProcessRefsAndChanges || GuidToWwiseRef.IsEmpty())
 	{
 		GetAllWwiseRefs();
 	}
@@ -399,6 +408,11 @@ void FWwiseReconcileImpl::ConvertWwiseItemTypeToReconcileItem(const TArray<TShar
 		{
 			for(auto Asset : WwiseTreeItem->Assets)
 			{
+				//Do not reconcile AudioNode
+				if (Asset.AssetClassPath.GetAssetName() == "AkAudioNode")
+				{
+					continue;
+				}
 				FWwiseReconcileItem ReconcileItem;
 				ReconcileItem.ItemId = WwiseTreeItem->ItemId;
 				ReconcileItem.Asset = Asset;
@@ -420,7 +434,7 @@ void FWwiseReconcileImpl::ConvertWwiseItemTypeToReconcileItem(const TArray<TShar
 			OutReconcileItems.AddUnique(ReconcileItem);
 		}
 	}
-	if (bFirstLevel)
+	if (bProcessRefsAndChanges)
 	{
 		GetAssetChanges(OutReconcileItems, OperationFlags);
 	}
@@ -500,7 +514,7 @@ int FWwiseReconcileImpl::GetNumberOfAssets()
 	return AssetsToDelete.Num() + AssetsToCreate.Num() + AssetsToRename.Num() + AssetsToUpdate.Num() + AssetsToMove.Num();
 }
 
-int32 FWwiseReconcileImpl::DeleteAssets(FScopedSlowTask& SlowTask)
+int32 FWwiseReconcileImpl::DeleteAssets(FScopedSlowTask& SlowTask, bool bForceDelete)
 {
 	check(IsInGameThread());
 
@@ -530,9 +544,22 @@ int32 FWwiseReconcileImpl::DeleteAssets(FScopedSlowTask& SlowTask)
 		{
 			return 0;
 		}
-		if (!bReferenced && !bReferencedByUndo)
+
+		if (bForceDelete || (!bReferenced && !bReferencedByUndo))
 		{
-			ObjectsToDelete.Add(AssetData.GetAsset());		
+			if (!bForceDelete)
+			{
+				// Check if there is any reference on DISK
+				IAssetRegistry& AssetRegistry = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry")).Get();
+				TArray<FName> referencers;
+				AssetRegistry.GetReferencers(FName(AssetData.PackageName), referencers);
+
+				if (!referencers.IsEmpty())
+				{
+					continue;
+				}
+			}
+			ObjectsToDelete.Add(AssetData.GetAsset());
 		}
 		else
 		{

@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Niagara/NiagaraDataInterfaceWwiseEvent.h"
@@ -60,7 +60,7 @@ namespace NiagaraWwiseParticleHelpers
 		SCOPED_WWISENIAGARA_EVENT_2(TEXT("NiagaraWwiseParticleHelpers::SpawnAkComponentAtLocation"));
 		UAkComponent* AkComponent;
 
-		if (!AkEvent || !GEngine || !GEngine->UseSound())
+		if (!AkEvent || !GEngine || !FAkAudioDevice::IsInitialized())
 		{
 			return nullptr;
 		}
@@ -650,11 +650,11 @@ void UNiagaraDataInterfaceWwiseEvent::SetPausedState(FUnrealVectorVMContext& Con
 			}
 			if (IsPaused)
 			{
-				SoundEngine->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Pause, *PlayingID);
+				SoundEngine->ExecuteActionOnPlayingID(AkActionOnEventType_Pause, *PlayingID);
 			}
 			else
 			{
-				SoundEngine->ExecuteActionOnPlayingID(AK::SoundEngine::AkActionOnEventType_Resume, *PlayingID);
+				SoundEngine->ExecuteActionOnPlayingID(AkActionOnEventType_Resume, *PlayingID);
 			}
 		}
 	}
@@ -803,7 +803,7 @@ void UNiagaraDataInterfaceWwiseEvent::PostPersistentEvent(FUnrealVectorVMContext
 						uint32 PlayingId = Event->PostOnComponent(AkComponent, nullptr, nullptr, nullptr, (AkCallbackType)0, nullptr, true, AudioContext);
 						if (PlayingId == AK_INVALID_PLAYING_ID )
 						{
-							AkComponent->ConditionalBeginDestroy();
+							AkComponent->DestroyComponent();
 							return;
 						}
 

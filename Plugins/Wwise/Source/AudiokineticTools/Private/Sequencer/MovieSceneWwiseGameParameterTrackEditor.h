@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -36,7 +36,7 @@ public:
 	*
 	* @param InSequencer	The sequencer instance to be used by this tool
 	*/
-	FMovieSceneWwiseGameParameterTrackEditor(TSharedRef<ISequencer> InSequencer);
+	AUDIOKINETICTOOLS_API FMovieSceneWwiseGameParameterTrackEditor(TSharedRef<ISequencer> InSequencer);
 
 	/**
 	* Creates an instance of this class.  Called by a sequencer
@@ -50,13 +50,13 @@ public:
 
 	// ISequencerTrackEditor interface
 
-	virtual void BuildObjectBindingTrackMenu(FMenuBuilder& MenuBuilder, const TArray<FGuid>& ObjectBindings, const UClass* ObjectClass) override;
-	virtual void BuildAddTrackMenu(FMenuBuilder& MenuBuilder) override;
-	virtual bool SupportsSequence(UMovieSceneSequence* InSequence) const override;
+	AUDIOKINETICTOOLS_API virtual void BuildObjectBindingTrackMenu(FMenuBuilder& MenuBuilder, const TArray<FGuid>& ObjectBindings, const UClass* ObjectClass) override;
+	AUDIOKINETICTOOLS_API virtual void BuildAddTrackMenu(FMenuBuilder& MenuBuilder) override;
+	AUDIOKINETICTOOLS_API virtual bool SupportsSequence(UMovieSceneSequence* InSequence) const override;
 
-	virtual TSharedRef<ISequencerSection> MakeSectionInterface(UMovieSceneSection& SectionObject, UMovieSceneTrack& Track, FGuid ObjectBinding) override;
+	AUDIOKINETICTOOLS_API virtual TSharedRef<ISequencerSection> MakeSectionInterface(UMovieSceneSection& SectionObject, UMovieSceneTrack& Track, FGuid ObjectBinding) override;
 
-	virtual const FSlateBrush* GetIconBrush() const override;
+	AUDIOKINETICTOOLS_API virtual const FSlateBrush* GetIconBrush() const override;
 
 private:
 

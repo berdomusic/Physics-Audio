@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*------------------------------------------------------------------------------------
@@ -34,12 +34,15 @@ public:
 	static const FString BACK_SLASH;
 	static const FString BANK_DATA;
 	static const FString BANK_INFO;
+	static const FString CHANGES;
 	static const FString CHILD;
 	static const FString CHILDREN;
 	static const FString CHILDREN_COUNT;
 	static const FString CLASSID;
 	static const FString COMMAND;
+	static const FString CREATE;
 	static const FString DATA;
+	static const FString DELETE_ITEM;
 	static const FString DELETE_ITEMS;
 	static const FString DESCENDANTS;
 	static const FString DISPLAY_NAME;
@@ -54,6 +57,7 @@ public:
 	static const FString ID;
 	static const FString INCLUSIONS;
 	static const FString INFO_FILE;
+	static const FString IS_AVAILABLE;
 	static const FString IS_CONNECTED;
 	static const FString LANGUAGE;
 	static const FString LANGUAGES;
@@ -62,17 +66,21 @@ public:
 	static const FString MESSSAGE;
 	static const FString MIN;
 	static const FString NAME;
+	static const FString NAME_CHANGE;
 	static const FString NAMECONTAINS;
 	static const FString NEW;
 	static const FString NEW_NAME;
+	static const FString NEW_PARENT;
 	static const FString NOTES;
 	static const FString OBJECT;
 	static const FString OBJECTS;
 	static const FString OF_TYPE;
 	static const FString OLD_NAME;
+	static const FString OLD_PARENT;
 	static const FString ON_NAME_CONFLICT;
 	static const FString OPERATION;
 	static const FString PARENT;
+	static const FString PARENT_CHANGE;
 	static const FString PATH;
 	static const FString PHYSICAL_FOLDER;
 	static const FString PLATFORM;

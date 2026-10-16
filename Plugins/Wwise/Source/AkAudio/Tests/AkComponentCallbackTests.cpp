@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *****************************************************************************/
 
 #include "Wwise/WwiseUnitTests.h"
@@ -48,6 +48,41 @@ WWISE_TEST_CASE(AkComponentCallback_Stress, "Audio::Wwise::AkAudio::AkComponentC
 			TestCookie* Cookie = new TestCookie();
 			Cookie->AlreadyCancelled = false;
 			CookiesToDelete.Add(Cookie);
+
+#if WWISE_2025_1_OR_LATER
+			IAkUserEventCallbackPackage* CallbackPackage = CallbackManager->CreateCallbackPackage(
+				[](AkCallbackType in_eType, AkEventCallbackInfo* in_pEventInfo, void* in_pCallbackInfo, void* in_pCookie)
+				{
+					TestCookie* LocalCookie = static_cast<TestCookie*>(in_pCookie);
+					// If already cancelled, we should not be executing this callback -> test failure
+					LocalCookie->bTestPassed = !LocalCookie->AlreadyCancelled;
+				}, Cookie, AK_EndOfEvent, DUMMY_GAMEOBJ, false, AK_INVALID_UNIQUE_ID);
+
+			AkEventCallbackInfo EventInfo =
+			{
+				DUMMY_GAMEOBJ,
+				1,
+				1
+			};
+
+			// Create tasks to try to execute callbacks and cancel them at the same time
+			UE::Tasks::FTask TaskA = UE::Tasks::Launch(UE_SOURCE_LOCATION,
+				[CallbackManager, Cookie]
+				{
+					CallbackManager->CancelEventCallback(Cookie);
+					Cookie->AlreadyCancelled = true;
+				}, Joiner);
+
+			UE::Tasks::FTask TaskB = UE::Tasks::Launch(UE_SOURCE_LOCATION,
+				[CallbackManager, EventInfo, CallbackPackage]
+				{
+					CallbackManager->AkComponentCallback(
+						AkCallbackType::AK_EndOfEvent,
+						const_cast<AkEventCallbackInfo*>(&EventInfo),
+						nullptr,
+						CallbackPackage);
+				}, Joiner);
+#else
 			IAkUserEventCallbackPackage* CallbackPackage = CallbackManager->CreateCallbackPackage(
 				[](AkCallbackType in_eType, AkCallbackInfo* in_pCallbackInfo)
 				{
@@ -79,8 +114,9 @@ WWISE_TEST_CASE(AkComponentCallback_Stress, "Audio::Wwise::AkAudio::AkComponentC
 				[CallbackManager, CallbackInfo]
 				{
 					CallbackManager->AkComponentCallback(AkCallbackType::AK_EndOfEvent,
-					                                     const_cast<AkEventCallbackInfo*>(&CallbackInfo));
+					const_cast<AkEventCallbackInfo*>(&CallbackInfo));
 				}, Joiner);
+#endif
 
 			Tasks.Add(TaskA);
 			Tasks.Add(TaskB);
@@ -102,7 +138,7 @@ WWISE_TEST_CASE(AkComponentCallback_Stress, "Audio::Wwise::AkAudio::AkComponentC
 			delete Cookie;
 		}
 
-		CHECK(bTestsPassed)
+		WWISE_CHECK(bTestsPassed)
 	}
 }
 

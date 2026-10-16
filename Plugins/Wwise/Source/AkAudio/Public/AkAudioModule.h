@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -21,6 +21,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "WwiseUEFeatures.h"
 #include "Modules/ModuleManager.h"
 #include "Containers/Ticker.h"
+#include <atomic>
 
 /**
  * The public interface to this module.  In most cases, this interface is only public to sibling modules
@@ -59,11 +60,18 @@ public:
 	static FSimpleMulticastDelegate OnModuleInitialized;
 	static FSimpleMulticastDelegate OnWwiseAssetDataReloaded;
 	bool bModuleInitialized;
+	
+	/** Flag to signal async tasks that the module is shutting down */
+	static std::atomic<bool> bIsShuttingDown;
+	
+	/** Counter for tracking active async database operations */
+	static std::atomic<int32> ActiveDatabaseOperations;
 
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
 
+	void OnPreExit();
 	FAkAudioDevice* GetAkAudioDevice() const;
 	void ReloadWwiseAssetData() const;
 	static void UpdateWwiseResourceCookerSettings();
@@ -78,5 +86,21 @@ public:
 
 	/** Handle for OnTick. */
 	FTickerDelegateHandle TickDelegateHandle;
+
+	/** Handle for OnPreExit. */
+	FDelegateHandle OnPreExitHandle;
+
+	FDelegateHandle OnApplicationDeactivatedHandle;
+
+#if WITH_EDITOR
+	/** Handle for OnPIEExit */
+	FDelegateHandle PIEEndedHandle;
+	void OnPIEExit(const bool bWasSimulating);
+#endif
+
+	void OnApplicationDeactivated(const bool IsActive);
+	
+private:
+	void InitializeAkAudioDevice();
 };
 

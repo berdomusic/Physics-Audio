@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -30,8 +30,8 @@ class UMaterialInterface;
 
 DECLARE_DELEGATE(FOnRefreshDetails);
 
-UENUM()
-enum class AkMeshType : uint8
+UENUM(meta=(ScriptName="EAkMeshType"))
+enum class EAkMeshType : uint8
 {
 	StaticMesh,
 	CollisionMesh UMETA(DisplayName = "Simple Collision")
@@ -105,7 +105,7 @@ public:
 	virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Geometry")
-	AkMeshType MeshType = AkMeshType::CollisionMesh;
+	EAkMeshType MeshType = EAkMeshType::CollisionMesh;
 
 	/** The Static Mesh's LOD to use */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Geometry", meta = (ClampMin = "0.0"))

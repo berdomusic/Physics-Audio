@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "WwiseStatusColumn.h"
@@ -44,6 +44,14 @@ FText FWwiseStatusColumn::GetDisplayedName(FWwiseTreeItemPtr TreeItem)
 	{
 		return LOCTEXT("WwiseStatusColumnRenamed", "Renamed in Wwise");
 	}
+	else if (TreeItem->IsUnusedEffect())
+	{
+		return LOCTEXT("WwiseStatusColumnUnusedEffect", "Unused Effect");
+	}
+	else if (TreeItem->IsUnusedTrigger())
+	{
+		return LOCTEXT("WwiseStatusColumnUnusedEffect", "Unused Trigger");
+	}
 	else if(TreeItem->IsNewInWwise())
 	{
 		return LOCTEXT("WwiseStatusColumnNewInWwise", "New In Wwise");
@@ -67,6 +75,7 @@ FName FWwiseStatusColumn::GetColumnId()
 const TSharedRef<SWidget> FWwiseStatusColumn::ConstructRowWidget(FWwiseTreeItemPtr TreeItem,
 	const STableRow<FWwiseTreeItemPtr>& Row)
 {
+	bool bRequiresAttention = TreeItem->IsUnusedItem();
 
 	return SNew(SHorizontalBox)
 	+ SHorizontalBox::Slot()
@@ -85,7 +94,7 @@ const TSharedRef<SWidget> FWwiseStatusColumn::ConstructRowWidget(FWwiseTreeItemP
 		[
 			SNew(STextBlock)
 			.Text(GetDisplayedName(TreeItem))
-			.ColorAndOpacity((WwiseBrowserWeak.Pin()->IsWaapiAvailable() != EWwiseConnectionStatus::Connected) ? FLinearColor::Gray : WwiseBrowserHelpers::GetTextColor(TreeItem->IsSoundBankUpToDate()))
+			.ColorAndOpacity((WwiseBrowserWeak.Pin()->IsWaapiAvailable() != EWwiseConnectionStatus::Connected) ? FLinearColor::Gray : WwiseBrowserHelpers::GetTextColor(TreeItem->IsSoundBankUpToDate(), bRequiresAttention))
 		]
 	];
 }

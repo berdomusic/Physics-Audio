@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/CookedData/WwiseInitBankCookedData.h"
@@ -57,7 +57,7 @@ void FWwiseInitBankCookedData::SerializeBulkData(FArchive& Ar, const FWwisePacka
 }
 
 #if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-void FWwiseInitBankCookedData::PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const
+void FWwiseInitBankCookedData::GetPlatformCookDependencies(FWwiseCookEventContext& Context, FCbWriter& Writer) const
 {
 	Writer << "InitBank";
 	Writer.BeginObject();
@@ -68,7 +68,7 @@ void FWwiseInitBankCookedData::PreSave(FObjectPreSaveContext& SaveContext, FCbWr
 	Writer.BeginArray();
 	for (auto& SoundBank : SoundBanks)
 	{
-		SoundBank.PreSave(SaveContext, Writer);
+		SoundBank.GetPlatformCookDependencies(Context, Writer);
 	}
 	Writer.EndArray();
 
@@ -76,7 +76,7 @@ void FWwiseInitBankCookedData::PreSave(FObjectPreSaveContext& SaveContext, FCbWr
 	Writer.BeginArray();
 	for (auto& MediaItem : Media)
 	{
-		MediaItem.PreSave(SaveContext, Writer);
+		MediaItem.GetPlatformCookDependencies(Context, Writer);
 	}
 	Writer.EndArray();
 	Writer.EndObject();

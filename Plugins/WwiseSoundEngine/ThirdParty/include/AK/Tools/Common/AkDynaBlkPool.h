@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AKBLOCKPOOL_H
@@ -98,6 +98,10 @@ class AkDynaBlkPool: public TAlloc
 	typedef AkListBareLight< PoolChunk > tChunkList;
 
 public:
+	~AkDynaBlkPool()
+	{
+		AKASSERT(m_chunkList.IsEmpty());
+	}
 
 	T* New()
 	{
@@ -174,10 +178,12 @@ private:
 		if (pChunk == NULL)
 		{
 			pChunk = (PoolChunk *) TAlloc::Alloc( sizeof( PoolChunk ) );
-			AkPlacementNew(pChunk) PoolChunk();
-			STATS_NEWCHUNK();
-			if (pChunk != NULL)
+			if (pChunk)
+			{
+				AkPlacementNew(pChunk) PoolChunk();
+				STATS_NEWCHUNK();
 				m_chunkList.AddFirst(pChunk);
+			}
 		}
 
 		if (pChunk != NULL)

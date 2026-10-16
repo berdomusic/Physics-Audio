@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AKPOOLALLOCATOR_H
@@ -35,7 +35,9 @@ the specific language governing permissions and limitations under the License.
 /// Going through the free list can be slow when the object count is high.
 #define AK_OBJECT_POOL_EXTRA_SAFETY
 
+/// \cond DOXYGEN_SKIP
 namespace UnitTest { struct ObjectPoolHelper; }
+/// \endcond
 
 namespace AK
 {

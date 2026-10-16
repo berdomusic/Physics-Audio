@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*=============================================================================
@@ -111,7 +111,7 @@ void UAkPortalComponentVisualizer::DrawVisualization(const UActorComponent* Comp
 		PDI->DrawLine(T.TransformPosition(Back), T.TransformPosition(Front), OutlineColor, SDPG_Foreground, Thickness);
 
 		// draw a diagonal on left and right faces if the portal is closed
-		if (PortalComponent->InitialState == AkAcousticPortalState::Closed)
+		if (PortalComponent->InitialState == EAkAcousticPortalState::Closed)
 		{
 			PDI->DrawLine(DrawBounds.FRU(), DrawBounds.BRD(), FrontDrawColor, SDPG_Foreground, Thickness);
 			PDI->DrawLine(DrawBounds.FLD(), DrawBounds.BLU(), BackDrawColor, SDPG_Foreground, Thickness);

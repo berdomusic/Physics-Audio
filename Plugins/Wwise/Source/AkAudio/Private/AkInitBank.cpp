@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkInitBank.h"
@@ -20,6 +20,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "AkAudioModule.h"
 #include "AkSettings.h"
 #include "Platforms/AkPlatformInfo.h"
+#include "Wwise/WwiseGlobalCallbacks.h"
 #include "Wwise/WwiseResourceLoader.h"
 #include "Wwise/Stats/AkAudio.h"
 
@@ -58,14 +59,17 @@ void UAkInitBank::BeginCacheForCookedPlatformData(const ITargetPlatform* TargetP
 
 void UAkInitBank::Serialize(FArchive& Ar)
 {
-	bAutoLoad = false;
-	Super::Serialize(Ar);
-
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkInitBank::Serialize"));
+	if (Ar.IsSaving())
+	{
+		bAutoLoad = false;	
+	}
 	if (HasAnyFlags(RF_ClassDefaultObject))
 	{
 		return;
 	}
-
+	
+	Super::Serialize(Ar);
  #if !UE_SERVER
  #if WITH_EDITORONLY_DATA
  	if (Ar.IsCooking() && Ar.IsSaving() && !Ar.CookingTarget()->IsServerOnly())
@@ -87,6 +91,7 @@ void UAkInitBank::Serialize(FArchive& Ar)
 
 void UAkInitBank::UnloadInitBank(bool bAsync)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkInitBank::UnloadInitBank"));
 	auto PreviouslyLoadedInitBank = LoadedInitBank.exchange(nullptr);
 	if (PreviouslyLoadedInitBank)
 	{
@@ -112,19 +117,27 @@ void UAkInitBank::UnloadInitBank(bool bAsync)
 #if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
 UE_COOK_DEPENDENCY_FUNCTION(HashWwiseInitBankDependenciesForCook, UAkAudioType::HashDependenciesForCook);
 
-void UAkInitBank::PreSave(FObjectPreSaveContext SaveContext)
+#if UE_5_6_OR_LATER
+void UAkInitBank::OnCookEvent(UE::Cook::ECookEvent CookEvent, UE::Cook::FCookEventContext& Context)
 {
 	ON_SCOPE_EXIT
 	{
-		Super::PreSave(SaveContext);
+		Super::OnCookEvent(CookEvent, Context);
 	};
-
-	if (!SaveContext.IsCooking())
+#else
+void UAkInitBank::PreSave(FObjectPreSaveContext Context)
+{
+	ON_SCOPE_EXIT
+	{
+		Super::PreSave(Context);
+	};
+#endif
+	if (!Context.IsCooking())
 	{
 		return;
 	}
 
-	auto* ResourceCooker = IWwiseResourceCooker::GetForPlatform(SaveContext.GetTargetPlatform());
+	auto* ResourceCooker = IWwiseResourceCooker::GetForPlatform(Context.GetTargetPlatform());
 	if (UNLIKELY(!ResourceCooker))
 	{
 		return;
@@ -136,10 +149,10 @@ void UAkInitBank::PreSave(FObjectPreSaveContext SaveContext)
 
 	FCbWriter Writer;
 	Writer.BeginObject();
-	CookedDataToArchive.PreSave(SaveContext, Writer);
+	CookedDataToArchive.GetPlatformCookDependencies(Context, Writer);
 	Writer.EndObject();
 	
-	SaveContext.AddCookBuildDependency(
+	WwiseCookEventContext::AddLoadBuildDependency(Context,
 		UE::Cook::FCookDependency::Function(
 			UE_COOK_DEPENDENCY_FUNCTION_CALL(HashWwiseInitBankDependenciesForCook), Writer.Save()));
 }
@@ -159,8 +172,8 @@ void UAkInitBank::PrepareCookedData()
 	}
 	if (!ResourceCooker->PrepareCookedData(InitBankCookedData, this, FWwiseObjectInfo::DefaultInitBank))
 	{
-		const auto* AudioDevice = FAkAudioDevice::Get();
-		if( AudioDevice && AudioDevice->IsWwiseProfilerConnected())
+		const auto* GlobalCallbacks = FWwiseGlobalCallbacks::Get();
+		if( GlobalCallbacks && GlobalCallbacks->IsWwiseProfilerConnected())
 		{
 			UE_LOG(LogAkAudio, Verbose, TEXT("Could not fetch CookedData for Init Bank, but Wwise profiler is connected. Previous errors can be ignored."));
 		}
@@ -189,7 +202,7 @@ void UAkInitBank::UnloadData(bool bAsync)
 
 void UAkInitBank::LoadInitBank()
 {
-	SCOPED_AKAUDIO_EVENT_2(TEXT("LoadInitBank"));
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkInitBank::LoadInitBank"));
 	FWwiseResourceLoaderPtr ResourceLoader = FWwiseResourceLoader::Get();
 	if (UNLIKELY(!ResourceLoader))
 	{

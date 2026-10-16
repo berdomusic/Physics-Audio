@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*=============================================================================
@@ -29,8 +29,6 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "AkGameplayTypes.h"
 #include "AkSettings.h"
 #include "AkSpotReflector.h"
-#include "AkSwitchValue.h"
-#include "AkTrigger.h"
 #include "Components/BillboardComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/Texture2D.h"
@@ -59,6 +57,7 @@ namespace UAkComponentUtils
 
 	void GetListenerPosition(const UAkComponent* Component, FVector& Location, FVector& Front, FVector& Up)
 	{
+		SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponentUtils::GetListenerPosition"));
 		APlayerController* pPlayerController = GetAPlayerController(Component);
 		if (pPlayerController != nullptr)
 		{
@@ -106,6 +105,7 @@ namespace UAkComponentUtils
 
 	void GetLocationFrontUp(const UAkComponent* Component, FVector& Location, FVector& Front, FVector& Up)
 	{
+		SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponentUtils::GetLocationFrontUp"));
 		if (Component->IsDefaultListener)
 		{
 			GetListenerPosition(Component, Location, Front, Up);
@@ -183,6 +183,7 @@ bool AkReverbFadeControl::Prioritize(const AkReverbFadeControl& A, const AkRever
 
 void UAkComponent::CleanListeners()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponentUtils::CleanListeners"));
 	FScopeLock Lock(&ListenerCriticalSection);
 	auto ListenerArray = Listeners.Array();
 	for(int i = 0; i < ListenerArray.Num();)
@@ -210,6 +211,7 @@ void UAkComponent::CleanListeners()
 UAkComponent::UAkComponent(const class FObjectInitializer& ObjectInitializer) :
 Super(ObjectInitializer)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent Ctor"));
 	// Property initialization
 
 	DrawFirstOrderReflections = false;
@@ -302,7 +304,7 @@ AkRoomID UAkComponent::GetSpatialAudioRoomID() const
 
 void UAkComponent::UpdateObstructionAndOcclusion()
 {
-	SCOPED_AKAUDIO_EVENT_2(TEXT("UAkComponent::UpdateObstructionAndOcclusion"));
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::UpdateObstructionAndOcclusion"));
 	auto World = GetWorld();
 	auto AudioDevice = FAkAudioDevice::Get();
 
@@ -324,34 +326,6 @@ void UAkComponent::UpdateObstructionAndOcclusion()
 	}
 }
 
-void UAkComponent::PostTrigger(const UAkTrigger* TriggerValue)
-{
-	if (FAkAudioDevice::Get())
-	{
-		auto* SoundEngine = IWwiseSoundEngineAPI::Get();
-		if (UNLIKELY(!SoundEngine)) return;
-
-		if (TriggerValue)
-		{
-			SoundEngine->PostTrigger(TriggerValue->TriggerCookedData.TriggerId, GetAkGameObjectID());
-		}
-	}
-}
-
-void UAkComponent::SetSwitch(const UAkSwitchValue* SwitchValue)
-{
-	if (FAkAudioDevice::Get())
-	{
-		auto* SoundEngine = IWwiseSoundEngineAPI::Get();
-		if (UNLIKELY(!SoundEngine)) return;
-
-		if (SwitchValue)
-		{
-			SoundEngine->SetSwitch(SwitchValue->GroupValueCookedData.GroupId, SwitchValue->GroupValueCookedData.Id, GetAkGameObjectID());
-		}
-	}
-}
-
 void UAkComponent::SetStopWhenOwnerDestroyed(bool bStopWhenOwnerDestroyed)
 {
 	StopWhenOwnerDestroyed = bStopWhenOwnerDestroyed;
@@ -359,6 +333,7 @@ void UAkComponent::SetStopWhenOwnerDestroyed(bool bStopWhenOwnerDestroyed)
 
 void UAkComponent::SetListeners(const TArray<UAkComponent*>& NewListeners)
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkComponent::SetListeners"));
 	auto AudioDevice = FAkAudioDevice::Get();
 	if (AudioDevice)
 	{
@@ -388,6 +363,7 @@ void UAkComponent::SetListeners(const TArray<UAkComponent*>& NewListeners)
 
 void UAkComponent::SetEarlyReflectionsAuxBus(const FString& AuxBusName)
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkComponent::SetEarlyReflectionsAuxBus"));
 	FAkAudioDevice * AudioDevice = FAkAudioDevice::Get();
 	if (AudioDevice)
 	{
@@ -397,6 +373,7 @@ void UAkComponent::SetEarlyReflectionsAuxBus(const FString& AuxBusName)
 
 void UAkComponent::SetEarlyReflectionsVolume(float SendVolume)
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkComponent::SetEarlyReflectionsVolume"));
 	FAkAudioDevice * AudioDevice = FAkAudioDevice::Get();
 	if (AudioDevice)
 	{
@@ -411,6 +388,7 @@ float UAkComponent::GetAttenuationRadius() const
 
 void UAkComponent::SetOutputBusVolume(float BusVolume)
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkComponent::SetOutputBusVolume"));
 	FAkAudioDevice * AudioDevice = FAkAudioDevice::Get();
 	if (AudioDevice)
 	{
@@ -425,12 +403,13 @@ void UAkComponent::SetOutputBusVolume(float BusVolume)
 
 void UAkComponent::OnRegister()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::SetOutputBusVolume"));
 	UWorld* CurrentWorld = GetWorld();
 	if(!bIsRegisteredWithWwise && CurrentWorld->WorldType != EWorldType::Inactive && CurrentWorld->WorldType != EWorldType::None)
 		RegisterGameObject(); // Done before parent so that OnUpdateTransform follows registration and updates position correctly.
 
 	FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
-	if (AudioDevice)
+	if (AudioDevice && CurrentWorld)
 	{
 		ObstructionService.Init(GetAkGameObjectID(), CurrentWorld, OcclusionRefreshInterval, AudioDevice->UsingSpatialAudioRooms(CurrentWorld));
 	}
@@ -462,7 +441,8 @@ void UAkComponent::OnRegister()
 #if WITH_EDITORONLY_DATA
 void UAkComponent::UpdateSpriteTexture()
 {
-	if (SpriteComponent)
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::UpdateSpriteTexture"));
+	if (!IsRunningCommandlet() && SpriteComponent)
 	{
 		SpriteComponent->SetSprite(LoadObject<UTexture2D>(NULL, TEXT("/Wwise/S_AkComponent.S_AkComponent")));
 	}
@@ -471,6 +451,7 @@ void UAkComponent::UpdateSpriteTexture()
 
 void UAkComponent::OnUnregister()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::OnUnregister"));
 	// Route OnUnregister event.
 	Super::OnUnregister();
 
@@ -487,12 +468,18 @@ void UAkComponent::OnUnregister()
 
 void UAkComponent::OnComponentDestroyed( bool bDestroyingHierarchy )
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::OnComponentDestroyed"));
+	if (StopWhenOwnerDestroyed)
+	{
+		Stop();
+	}
 	UnregisterGameObject();
 	Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
 void UAkComponent::ShutdownAfterError( void )
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::ShutdownAfterError"));
 	UnregisterGameObject();
 
 	Super::ShutdownAfterError();
@@ -518,6 +505,7 @@ bool UAkComponent::NeedToUpdateAuxSends(const TArray<AkAuxSendValue>& NewValues)
 
 void UAkComponent::ApplyAkReverbVolumeList(float DeltaTime)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::ApplyAkReverbVolumeList"));
 	for (int32 Idx = 0; Idx < ReverbFadeControls.Num(); )
 	{
 		if (!ReverbFadeControls[Idx].Update(DeltaTime))
@@ -556,6 +544,7 @@ void UAkComponent::ApplyAkReverbVolumeList(float DeltaTime)
 
 void UAkComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::TickComponent"));
 	auto* SoundEngine = IWwiseSoundEngineAPI::Get();
 	if (UNLIKELY(!SoundEngine)) return;
 
@@ -623,6 +612,7 @@ void UAkComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FAct
 
 void UAkComponent::BeginPlay()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::BeginPlay"));
 	Super::BeginPlay();
 	UpdateGameObjectPosition();
 
@@ -637,10 +627,18 @@ void UAkComponent::BeginPlay()
 
 	if (EnableSpotReflectors)
 		AAkSpotReflector::UpdateSpotReflectors(this);
+
+	FAkAudioDevice* AudioDevice = FAkAudioDevice::Get();
+	UWorld* CurrentWorld = GetWorld();
+	if (AudioDevice && CurrentWorld)
+	{
+		ObstructionService.Init(GetAkGameObjectID(), CurrentWorld, OcclusionRefreshInterval, AudioDevice->UsingSpatialAudioRooms(CurrentWorld));
+	}
 }
 
 void UAkComponent::OnUpdateTransform(EUpdateTransformFlags UpdateTransformFlags, ETeleportType Teleport)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::OnUpdateTransform"));
 	Super::OnUpdateTransform(UpdateTransformFlags, Teleport);
 
 	// If we're a listener, our position will be updated from Tick instead of here.
@@ -669,6 +667,10 @@ void UAkComponent::GetAkGameObjectName(FString& Name) const
 	Name += GetName();
 
 	UWorld* CurrentWorld = GetWorld();
+	if (!IsValid(CurrentWorld))
+	{
+		return;
+	}
 	switch (CurrentWorld->WorldType)
 	{
 	case  EWorldType::Editor:
@@ -692,6 +694,7 @@ void UAkComponent::PostUnregisterGameObject() {}
 
 void UAkComponent::RegisterGameObject()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::RegisterGameObject"));
 	FAkAudioDevice* AkAudioDevice = FAkAudioDevice::Get();
 	if ( AkAudioDevice )
 	{
@@ -715,6 +718,7 @@ void UAkComponent::RegisterGameObject()
 
 void UAkComponent::UnregisterGameObject()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::UnregisterGameObject"));
 	FAkAudioDevice* AkAudioDevice = FAkAudioDevice::Get();
 	if (AkAudioDevice)
 	{
@@ -734,6 +738,7 @@ void UAkComponent::UnregisterGameObject()
 
 void UAkComponent::UpdateAkLateReverbComponentList( FVector Loc )
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::UpdateAkLateReverbComponentList"));
 	FAkAudioDevice* AkAudioDevice = FAkAudioDevice::Get();
 	if (!AkAudioDevice)
 		return;
@@ -743,7 +748,12 @@ void UAkComponent::UpdateAkLateReverbComponentList( FVector Loc )
 	// Add the new volumes to the current list
 	for (const auto& LateReverbComponent : FoundComponents)
 	{
-		const auto AuxBusId = LateReverbComponent->GetAuxBusId();
+		if (UNLIKELY(LateReverbComponent->AuxBus == nullptr))
+		{
+			UE_LOG(LogAkAudio, Warning, TEXT("Late Reverb component %s is not assigned with a Late Reverb Aux Bus"), *LateReverbComponent->GetLateReverbName());
+			continue;
+		}
+
 		const int32 FoundIdx = ReverbFadeControls.IndexOfByPredicate([&LateReverbComponent](const AkReverbFadeControl& Candidate)
 		{
 			return Candidate.FadeControlUniqueId == (void*)LateReverbComponent;
@@ -796,6 +806,7 @@ bool UAkComponent::HasMoved()
 
 void UAkComponent::UpdateGameObjectPosition()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::UpdateGameObjectPosition"));
 	FAkAudioDevice* AkAudioDevice = FAkAudioDevice::Get();
 	if (IsActive() && AkAudioDevice)
 	{
@@ -822,6 +833,7 @@ void UAkComponent::UpdateGameObjectPosition()
 
 void UAkComponent::UpdateSpatialAudioRoom(FVector Location)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkComponent::UpdateSpatialAudioRoom"));
 	if (!bIsRegisteredWithWwise)
 	{
 		return;
@@ -1022,6 +1034,7 @@ void UAkComponent::DebugDrawDiffraction() const
 
 void UAkComponent::SetGameObjectRadius(float in_outerRadius, float in_innerRadius)
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkComponent::SetGameObjectRadius"));
 	outerRadius = in_outerRadius;
 	innerRadius = in_innerRadius;
 	FAkAudioDevice* AkAudioDevice = FAkAudioDevice::Get();
@@ -1033,6 +1046,7 @@ void UAkComponent::SetGameObjectRadius(float in_outerRadius, float in_innerRadiu
 
 void UAkComponent::SetEnableSpotReflectors(bool in_enable)
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkComponent::SetEnableSpotReflectors"));
 	if (EnableSpotReflectors != in_enable)
 	{
 		EnableSpotReflectors = in_enable;

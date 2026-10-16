@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -52,14 +52,17 @@ namespace AK
 			SpatialAudio_End,
 			SpatialAudio_EndRender,
 			SpatialAudio_EmitterToListener,
-			SpatialAudio_EmitterToListenerPathFiltering,
-			SpatialAudio_EmitterToListenerDiffraction,
-			SpatialAudio_EmitterToListenerReflection,
+			SpatialAudio_ClusterFollower,
+			SpatialAudio_ClusterPortalFollower,
+			SpatialAudio_ReflectionGathering,
+			SpatialAudio_ReflectionValidation,
 			SpatialAudio_ListenerRayCasting,
+			SpatialAudio_Clustering,
 			SpatialAudio_ListenerToPortal,
 			SpatialAudio_EmitterToPortal,
 			SpatialAudio_PortalToPortal,
 			SpatialAudio_PortalRayCasting,
+			SpatialAudio_IndirectPathsAndSends,
 			CAkEdgePathSearch_Search,
 			CAkStochasticReflectionEngine_ComputeRays,
 			CAkStochasticReflectionEngine_TraceDiffractionRay,
@@ -79,6 +82,9 @@ namespace AK
 			IODevice_BatchRead,
 			IODevice_BatchWrite,
 			CAkLEngine_DispatchBusGraphAsync,
+			AkSoundGeometry_GetOverlapRooms,
+			AkSoundGeometry_ComputeSignedDistance,
+			SpatialAudio_RoomPreProcess,
 
 			Num // Keep last!
 		};
@@ -110,14 +116,17 @@ namespace AK
 			"AK::SpatialAudio::End",
 			"AK::SpatialAudio::EndRender",
 			"AK::SpatialAudio::EmitterToListener",
-			"AK::SpatialAudio::EmitterToListenerPathFiltering",
-			"AK::SpatialAudio::EmitterToListenerDiffraction",
-			"AK::SpatialAudio::EmitterToListenerReflection",
+			"AK::SpatialAudio::ClusterFollower",
+			"AK::SpatialAudio::ClusterPortalFollower",
+			"AK::SpatialAudio::ReflectionGathering",
+			"AK::SpatialAudio::ReflectionValidation",
 			"AK::SpatialAudio::ListenerRayCasting",
+			"AK::SpatialAudio::Clustering",
 			"AK::SpatialAudio::ListenerToPortal",
 			"AK::SpatialAudio::EmitterToPortal",
 			"AK::SpatialAudio::PortalToPortal",
 			"AK::SpatialAudio::PortalRayCasting",
+			"AK::SpatialAudio::IndirectPathsAndSends",
 			"CAkEdgePathSearch::Search",
 			"CAkStochasticReflectionEngine::ComputeRays",
 			"CAkStochasticReflectionEngine::TraceDiffractionRay",
@@ -137,6 +146,9 @@ namespace AK
 			"AK IODevice BatchRead",
 			"AK IODevice BatchWrite",
 			"CAkLEngine::DispatchBusGraphAsync",
+			"AkSoundGeometry::GetOverlapRooms",
+			"AkSoundGeometry::ComputeSignedDistance",
+			"AK::SpatialAudio::RoomPreProcess",
 
 		};
 

@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -85,6 +85,14 @@ inline uint32 WwiseHashCombineFast(uint32 A, uint32 B)
 #define WWISE_TEST_CASE(ClassName, PrettyName, Flags) TEST_CASE_NAMED(FWwiseTest ## ClassName, PrettyName, Flags)
 #else
 #define WWISE_TEST_CASE(ClassName, PrettyName, Flags) TEST_CASE_NAMED(FWwiseTest ## ClassName, LLT_STR_EXPAND(FWwiseTest ## ClassName), PrettyName, Flags)
+#endif
+
+#if WWISE_AUTOMATION_TESTS
+#define WWISE_CHECK(...) if (!(__VA_ARGS__)) { FAutomationTestFramework::Get().GetCurrentTest()->AddError(TEXT(#__VA_ARGS__)); }
+#define WWISE_CHECK_FALSE(...) if (!!(__VA_ARGS__)) { FAutomationTestFramework::Get().GetCurrentTest()->AddError(TEXT("Condition " #__VA_ARGS__ " expected to return false but returned true")); }
+#else
+#define WWISE_CHECK(...)
+#define WWISE_CHECK_FALSE(...)
 #endif
 
 #define WWISE_TEST_ASYNC_NAME TEXT("WwiseUnitTests Async")

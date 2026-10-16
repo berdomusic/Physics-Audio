@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -130,7 +130,7 @@ namespace AK
 
 			inline AkVariantBase(const char* in_val)
 			{
-				m_data = new std::string(in_val);
+				m_data = new std::string(in_val ? in_val : "");
 				m_eType = AkVariantType_string;
 			}
 
@@ -177,7 +177,7 @@ namespace AK
 			inline AkVariantBase& operator=(const char* in_val)
 			{
 				Clear();
-				m_data = new std::string(in_val);
+				m_data = new std::string(in_val ? in_val : "");
 				m_eType = AkVariantType_string;
 				return *this;
 			}
@@ -454,6 +454,17 @@ namespace AK
 				return (m_eType >= AkVariantType_int8 && m_eType <= AkVariantType_int64)
 					|| (m_eType >= AkVariantType_uint8 && m_eType <= AkVariantType_uint64)
 					|| (m_eType >= AkVariantType_real32 && m_eType <= AkVariantType_real64);
+			}
+
+			inline bool IsInteger() const
+			{
+				return (m_eType >= AkVariantType_int8 && m_eType <= AkVariantType_int64)
+					|| (m_eType >= AkVariantType_uint8 && m_eType <= AkVariantType_uint64);
+			}
+
+			inline bool IsReal() const
+			{
+				return (m_eType >= AkVariantType_real32 && m_eType <= AkVariantType_real64);
 			}
 
 			inline bool IsEmpty() const

@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseGlobalCallbacks.h"
@@ -123,6 +123,25 @@ bool FWwiseGlobalCallbacks::Initialize()
 	UE_CLOG(Result != AK_Success, LogWwiseProcessing, Error, TEXT("Cannot Register `WakeupFromSuspend` Callback: %d (%s)"), Result, WwiseUnrealHelper::GetResultString(Result));
 	bResult = bResult && (Result == AK_Success);
 
+#if WWISE_2024_1_OR_LATER
+	auto* GlobalCallbacks = FWwiseGlobalCallbacks::Get();
+	GlobalCallbacks->ProfilerConnectSync([this](AK::IAkGlobalPluginContext* InContext) mutable
+	{
+		SCOPED_WWISEPROCESSING_EVENT_4(TEXT("FAkAudioDevice::EnsureInitialized ProfileConnect"));
+		bWwiseProfilerConnected = true;
+		UE_LOG(LogWwiseProcessing, Verbose, TEXT("Wwise Profiler connected."))
+		return EWwiseDeferredAsyncResult::KeepRunning;
+	});
+	
+	GlobalCallbacks->ProfilerDisconnectSync([this](AK::IAkGlobalPluginContext* InContext) mutable
+	{
+		SCOPED_WWISEPROCESSING_EVENT_4(TEXT("FAkAudioDevice::EnsureInitialized ProfilerDisconnect"));
+		bWwiseProfilerConnected = false;
+		UE_LOG(LogWwiseProcessing, Verbose, TEXT("Wwise Profiler disconnected."))
+		return EWwiseDeferredAsyncResult::KeepRunning;
+	});
+#endif
+	
 #if WWISE_2024_1_OR_LATER
 	Result = SoundEngine->RegisterGlobalCallback(&FWwiseGlobalCallbacks::OnProfilerConnectCallbackStatic, AkGlobalCallbackLocation_ProfilerConnect, (void*)this);
 	UE_CLOG(Result != AK_Success, LogWwiseProcessing, Error, TEXT("Cannot Register `ProfilerConnect` Callback: %d (%s)"), Result, WwiseUnrealHelper::GetResultString(Result));

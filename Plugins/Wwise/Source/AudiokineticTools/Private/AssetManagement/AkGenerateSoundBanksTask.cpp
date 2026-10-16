@@ -12,12 +12,13 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkGenerateSoundBanksTask.h"
 #include "AkWaapiClient.h"
 #include "Async/Async.h"
+#include "AkSettingsPerUser.h"
 
 AkGenerateSoundBanksTask::AkGenerateSoundBanksTask(const AkSoundBankGenerationManager::FInitParameters& InitParameters)
 {
@@ -40,6 +41,23 @@ void AkGenerateSoundBanksTask::ExecuteForEditorPlatform()
 	}
 
 	CreateAndExecuteTask(InitParameters);
+}
+
+void AkGenerateSoundBanksTask::ExecuteForAllPlatforms()
+{
+	AkSoundBankGenerationManager::FInitParameters InitParameters;
+	const UAkSettingsPerUser* AkSettingsPerUser = GetDefault<UAkSettingsPerUser>();
+	if (AkSettingsPerUser)
+	{
+		InitParameters.bUserOverride = !AkSettingsPerUser->RootOutputPathOverride.Path.IsEmpty();
+	}
+
+	if (FAkWaapiClient::IsProjectLoaded())
+	{
+		InitParameters.GenerationMode = AkSoundBankGenerationManager::ESoundBankGenerationMode::WAAPI;
+	}
+
+	AkGenerateSoundBanksTask::CreateAndExecuteTask(InitParameters);
 }
 
 void AkGenerateSoundBanksTask::CreateAndExecuteTask(const AkSoundBankGenerationManager::FInitParameters& InitParameters)

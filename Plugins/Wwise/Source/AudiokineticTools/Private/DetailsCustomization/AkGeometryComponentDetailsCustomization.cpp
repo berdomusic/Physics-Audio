@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkGeometryComponentDetailsCustomization.h"
@@ -139,7 +139,7 @@ void FAkGeometryComponentDetailsCustomization::CustomizeDetails(IDetailLayoutBui
 	FOnRefreshDetails refreshDetails = FOnRefreshDetails::CreateSP(this, &FAkGeometryComponentDetailsCustomization::RefreshDetails);
 	ComponentBeingCustomized->SetOnRefreshDetails(refreshDetails);
 
-	if (ComponentBeingCustomized->MeshType == AkMeshType::StaticMesh)
+	if (ComponentBeingCustomized->MeshType == EAkMeshType::StaticMesh)
 	{
 		InDetailBuilder.HideProperty("CollisionMeshSurfaceOverride");
 		if (ObjectsBeingCustomized.Num() == 1)
@@ -214,7 +214,7 @@ void FAkGeometryComponentDetailsCustomization::CustomizeDetails(IDetailLayoutBui
 			}
 		}
 	}
-	else if (ComponentBeingCustomized->MeshType == AkMeshType::CollisionMesh)
+	else if (ComponentBeingCustomized->MeshType == EAkMeshType::CollisionMesh)
 	{
 		InDetailBuilder.HideProperty("LOD");
 		InDetailBuilder.HideProperty("WeldingThreshold");

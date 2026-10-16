@@ -12,16 +12,20 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
+
+#include <atomic>
 
 #include "CoreMinimal.h"
 
 #include "IWwiseBrowserDataSource.h"
 #include "WwiseItemType.h"
 #include "../WwiseBrowserForwards.h"
+#include "WwiseDefines.h"
+#include "Wwise/WwiseTreeItem.h"
 
 class FJsonValue;
 class FJsonObject;
@@ -58,6 +62,22 @@ struct TransformStringField
 	const TArray<int32> valueNumberArgs;
 };
 
+enum EWaapiOperation
+{
+	WaapiOperationCreate,
+	WaapiOperationParentChange,
+	WaapiOperationNameChange,
+	WaapiOperationDelete
+};
+
+struct WaapiNotificationStruct
+{
+	const TSharedPtr<FJsonObject>* Object;
+	FGuid Guid;
+	const TSharedPtr<FJsonObject>* OperationInfo;
+	bool operator<(const WaapiNotificationStruct& Rhs) const;
+};
+
 class FWaapiDataSource : IWwiseBrowserDataSource
 {
 public :
@@ -74,7 +94,7 @@ public :
 	virtual bool ConstructTree(bool bShouldRefresh) override;
 
 	// Constructs the top-level root for the given type, along with its direct children
-	virtual FWwiseTreeItemPtr ConstructTreeRoot(EWwiseItemType::Type Type) override;
+	virtual FWwiseTreeItemPtr ConstructTreeRoot(EWwiseItemType Type) override;
 
 	virtual int32 LoadChildren(const FGuid& InParentId, const FString& InParentPath, TArray<FWwiseTreeItemPtr>& OutChildren) override;
 
@@ -82,12 +102,12 @@ public :
 
 	virtual int32 GetChildItemCount(const FWwiseTreeItemPtr& InParentItem) override;
 
-	virtual FWwiseTreeItemPtr GetRootItem(EWwiseItemType::Type RootType) override;
+	virtual FWwiseTreeItemPtr GetRootItem(EWwiseItemType RootType) override;
 
 	FWwiseTreeItemPtr GetRootItem(const FString& InFullPath);
 
 
-	virtual FWwiseTreeItemPtr LoadFilteredRootItem(EWwiseItemType::Type RootType, TSharedPtr<StringFilter> CurrentFilterText) override;
+	virtual FWwiseTreeItemPtr LoadFilteredRootItem(EWwiseItemType RootType, TSharedPtr<StringFilter> CurrentFilterText) override;
 
 	// FWaapiDataSource
 
@@ -117,6 +137,9 @@ public :
 
 	EWwiseConnectionStatus IsProjectLoaded();
 
+	/** Refreshes the cached connection status by making the WAAPI call */
+	void RefreshConnectionStatus();
+
 	void SelectInProjectExplorer(TArray<FWwiseTreeItemPtr>& InTreeItems);
 
 	/**
@@ -141,8 +164,6 @@ private:
 	FCriticalSection WaapiRootItemsLock;
 	TArray< FWwiseTreeItemPtr > RootItems;
 
-	TArray<FGuid> ItemsToCreate;
-
 	// Container paths along the Browser Tree
 	TMap<FString, FWwiseTreeItemPtr> NodesByPath;
 
@@ -158,11 +179,23 @@ private:
 
 	void OnWaapiClientBeginDestroyCallback();
 
+	void OnWwiseSelectionChanged(uint64_t Id, TSharedPtr<FJsonObject> Response);
+
+#if WWISE_2025_1_OR_LATER
+	void OnStructureChanged(uint64_t Id, TSharedPtr<FJsonObject> Response);
+	void OnWaapiChildAdded(const TSharedPtr<FJsonObject>*& ChildJsonPtr);
+	void OnWaapiRenamed(const TSharedPtr<FJsonObject>*& ChildJsonPtr, const TSharedPtr<FJsonObject>*& NameChange);
+#else
 	void OnWaapiRenamed(uint64_t Id, TSharedPtr<FJsonObject> Response);
 	void OnWaapiChildAdded(uint64_t Id, TSharedPtr<FJsonObject> Response);
 	void OnWaapiChildRemoved(uint64_t Id, TSharedPtr<FJsonObject> Response);
-	void OnWwiseSelectionChanged(uint64_t Id, TSharedPtr<FJsonObject> Response);
-
+	TArray<FGuid> ItemsToCreate;
+#endif
+	
+	void OnWaapiChildMoved(const TSharedPtr<FJsonObject>*& ChildJsonPtr, const TSharedPtr<FJsonObject>*& NameChange);
+	void NodeByPathCleanup(FWwiseTreeItemPtr& Root);
+	void UpdateChildrenPath(const FWwiseTreeItemPtr& Root, const FString& Path);
+	
 	void SubscribeWaapiCallbacks();
 
 	void UnsubscribeWaapiCallbacks();
@@ -174,7 +207,26 @@ private:
 		uint64 ChildAdded = 0;
 		uint64 ChildRemoved = 0;
 		uint64 SelectionChanged = 0;
+		uint64 StructureChanged = 0;
 	} WaapiSubscriptionIds;
 
+	/** Cached connection status to avoid expensive WAAPI calls every frame */
+	std::atomic<EWwiseConnectionStatus> CachedConnectionStatus { EWwiseConnectionStatus::WwiseNotOpen };
+
+	/** Delegate handle for the editor tick callback */
+	FDelegateHandle ConnectionStatusTickHandle;
+
+	/** Delegate handles for RootOutputPath change callbacks */
+	FDelegateHandle RootOutputPathChangedHandle;
+	FDelegateHandle RootOutputPathOverrideChangedHandle;
+
+	/** Countdown timer for connection status heartbeat */
+	float ConnectionStatusTimer = 0.0f;
+
+	/** Interval in seconds for the connection status heartbeat */
+	static constexpr float ConnectionStatusHeartbeatInterval = 5.0f;
+
+	/** Called every editor tick to update the connection status timer */
+	void OnConnectionStatusTick(float DeltaSeconds);
 
 };

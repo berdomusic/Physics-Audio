@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseUnitTests.h"
@@ -53,7 +53,7 @@ WWISE_TEST_CASE(Concurrency_ExecutionQueue_Smoke, "Wwise::Concurrency::Execution
 				});
 			}
 		}
-		CHECK(Value.load() == LoopCount);
+		WWISE_CHECK(Value.load() == LoopCount);
 	}
 
 	SECTION("AsyncWait")
@@ -69,12 +69,12 @@ WWISE_TEST_CASE(Concurrency_ExecutionQueue_Smoke, "Wwise::Concurrency::Execution
 				{
 					if (FPlatformProcess::SupportsMultithreading())
 					{
-						CHECK_FALSE(CurrentThreadId == FPlatformTLS::GetCurrentThreadId());
+						WWISE_CHECK_FALSE(CurrentThreadId == FPlatformTLS::GetCurrentThreadId());
 					}
 					++Value;
 				});
 			}
-			CHECK(Value.load() == LoopCount);
+			WWISE_CHECK(Value.load() == LoopCount);
 		}
 	}
 
@@ -88,27 +88,27 @@ WWISE_TEST_CASE(Concurrency_ExecutionQueue_Smoke, "Wwise::Concurrency::Execution
 			{
 				ExecutionQueue.Async(WWISE_TEST_ASYNC_NAME, [&Value, ShouldBe = i]
 				{
-					CHECK(Value++ == ShouldBe);
+					WWISE_CHECK(Value++ == ShouldBe);
 				});
 			}
 		}
-		CHECK(Value.load() == LoopCount);
+		WWISE_CHECK(Value.load() == LoopCount);
 	}
 	
 	SECTION("IsRunningInThisThread")
 	{
 		const auto CurrentThreadId = FPlatformTLS::GetCurrentThreadId();
 		FWwiseExecutionQueue ExecutionQueue(WWISE_TEST_ASYNC_NAME);
-		CHECK_FALSE(ExecutionQueue.IsRunningInThisThread());
+		WWISE_CHECK_FALSE(ExecutionQueue.IsRunningInThisThread());
 		ExecutionQueue.AsyncWait(WWISE_TEST_ASYNC_NAME, [&ExecutionQueue, CurrentThreadId]
 		{
 			if (FPlatformProcess::SupportsMultithreading())
 			{
-				CHECK_FALSE(CurrentThreadId == FPlatformTLS::GetCurrentThreadId());
+				WWISE_CHECK_FALSE(CurrentThreadId == FPlatformTLS::GetCurrentThreadId());
 			}
-			CHECK(ExecutionQueue.IsRunningInThisThread());
+			WWISE_CHECK(ExecutionQueue.IsRunningInThisThread());
 		});
-		CHECK_FALSE(ExecutionQueue.IsRunningInThisThread());
+		WWISE_CHECK_FALSE(ExecutionQueue.IsRunningInThisThread());
 	}
 }
 
@@ -137,9 +137,9 @@ WWISE_TEST_CASE(Concurrency_ExecutionQueue_Perf, "Wwise::Concurrency::ExecutionQ
 			}
 			FTimespan Duration = FDateTime::UtcNow() - StartTime;
 			WWISE_TEST_LOG("AsyncAddingOpPerf %dus < %dus", (int)Duration.GetTotalMicroseconds(), ExpectedUS);
-			CHECK(Duration.GetTotalMicroseconds() < ExpectedUS);
+			WWISE_CHECK(Duration.GetTotalMicroseconds() < ExpectedUS);
 		}
-		CHECK(Value.load() == LoopCount);
+		WWISE_CHECK(Value.load() == LoopCount);
 	}
 
 	SECTION("AsyncExecutionPerf")
@@ -170,8 +170,8 @@ WWISE_TEST_CASE(Concurrency_ExecutionQueue_Perf, "Wwise::Concurrency::ExecutionQ
 		}
 		FTimespan Duration = FDateTime::UtcNow() - StartTime;
 		WWISE_TEST_LOG("AsyncExecutionPerf %dus < %dus", (int)Duration.GetTotalMicroseconds(), ExpectedUS);
-		CHECK(Value.load() == LoopCount);
-		CHECK(Duration.GetTotalMicroseconds() < ExpectedUS);
+		WWISE_CHECK(Value.load() == LoopCount);
+		WWISE_CHECK(Duration.GetTotalMicroseconds() < ExpectedUS);
 	}
 }
 
@@ -225,8 +225,8 @@ WWISE_TEST_CASE(Concurrency_ExecutionQueue, "Wwise::Concurrency::ExecutionQueue"
 			SubExecutionQueue->AsyncWait(WWISE_TEST_ASYNC_NAME, []{});
 			SubExecutionQueue->CloseAndDelete();
 		}
-		CHECK(Value.load() == LoopCount);
-		CHECK(OpenedQueues.load() == 0);
+		WWISE_CHECK(Value.load() == LoopCount);
+		WWISE_CHECK(OpenedQueues.load() == 0);
 	}
 
 	SECTION("Sleep on State Update")
@@ -291,7 +291,7 @@ WWISE_TEST_CASE(Concurrency_ExecutionQueue, "Wwise::Concurrency::ExecutionQueue"
 			DeletionExecutionQueue.Close();
 			FWwiseExecutionQueue::Test::bMockEngineDeletion = false;
 		}
-		CHECK(Value.load() == LoopCount);
+		WWISE_CHECK(Value.load() == LoopCount);
 	}
 	
 	SECTION("Async at exit")
@@ -308,11 +308,11 @@ WWISE_TEST_CASE(Concurrency_ExecutionQueue, "Wwise::Concurrency::ExecutionQueue"
 			{
 				ExecutionQueue.Async(WWISE_TEST_ASYNC_NAME, [&Value, ShouldBe = i]
 				{
-					CHECK(Value++ == ShouldBe);
+					WWISE_CHECK(Value++ == ShouldBe);
 				});
 			}
 		}
-		CHECK(Value.load() == LoopCount);
+		WWISE_CHECK(Value.load() == LoopCount);
 	}
 
 	SECTION("Async after exit")
@@ -333,13 +333,13 @@ WWISE_TEST_CASE(Concurrency_ExecutionQueue, "Wwise::Concurrency::ExecutionQueue"
 				{
 					if (FPlatformProcess::SupportsMultithreading())
 					{
-						CHECK(CurrentThreadId == FPlatformTLS::GetCurrentThreadId());
-					}
-					CHECK(Value++ == ShouldBe);
-				});
+						WWISE_CHECK(CurrentThreadId == FPlatformTLS::GetCurrentThreadId());
 			}
+					WWISE_CHECK(Value++ == ShouldBe);
+		});
 		}
-		CHECK(Value.load() == LoopCount);
+	}
+		WWISE_CHECK(Value.load() == LoopCount);
 	}
 }
 

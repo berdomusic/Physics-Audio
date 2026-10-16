@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkAuxBus.h"
@@ -20,6 +20,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "Wwise/WwiseResourceLoader.h"
 #include "AkInclude.h"
 #include "AkAudioDevice.h"
+#include "Wwise/WwiseGlobalCallbacks.h"
 #include "Wwise/Stats/AkAudio.h"
 
 #if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
@@ -34,6 +35,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 
 void UAkAuxBus::Serialize(FArchive& Ar)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAuxBus::Serialize"));
 	Super::Serialize(Ar);
 
 	if (HasAnyFlags(RF_ClassDefaultObject))
@@ -65,7 +67,7 @@ void UAkAuxBus::Serialize(FArchive& Ar)
 
 void UAkAuxBus::LoadAuxBus()
 {
-	SCOPED_AKAUDIO_EVENT_2(TEXT("LoadAuxBus"));
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAuxBus::LoadAuxBus"));
 	FWwiseResourceLoaderPtr ResourceLoader = FWwiseResourceLoader::Get();
 	if (UNLIKELY(!ResourceLoader))
 	{
@@ -93,8 +95,8 @@ void UAkAuxBus::LoadAuxBus()
 	
 	if (!ResourceCooker->PrepareCookedData(AuxBusCookedData, this, GetValidatedInfo(AuxBusInfo)))
 	{
-		const auto* AudioDevice = FAkAudioDevice::Get();
-		if( AudioDevice && AudioDevice->IsWwiseProfilerConnected())
+		const auto* GlobalCallbacks = FWwiseGlobalCallbacks::Get();
+		if( GlobalCallbacks && GlobalCallbacks->IsWwiseProfilerConnected())
 		{
 			UE_LOG(LogAkAudio, Verbose, TEXT("Could not fetch CookedData for Aux Bus %s, but Wwise profiler is connected. Previous errors can be ignored."),
 			*GetName());
@@ -118,6 +120,7 @@ void UAkAuxBus::LoadAuxBus()
 
 void UAkAuxBus::UnloadAuxBus(bool bAsync)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAuxBus::UnloadAuxBus"));
 	auto PreviouslyLoadedAuxBus = LoadedAuxBus.exchange(nullptr);
 	if (PreviouslyLoadedAuxBus)
 	{
@@ -205,19 +208,27 @@ bool UAkAuxBus::ObjectIsInSoundBanks()
 #if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
 UE_COOK_DEPENDENCY_FUNCTION(HashWwiseAuxBusDependenciesForCook, UAkAudioType::HashDependenciesForCook);
 
-void UAkAuxBus::PreSave(FObjectPreSaveContext SaveContext)
+#if UE_5_6_OR_LATER
+void UAkAuxBus::OnCookEvent(UE::Cook::ECookEvent CookEvent, UE::Cook::FCookEventContext& Context)
 {
 	ON_SCOPE_EXIT
 	{
-		Super::PreSave(SaveContext);
+		Super::OnCookEvent(CookEvent, Context);
 	};
-
-	if (!SaveContext.IsCooking())
+#else
+void UAkAuxBus::PreSave(FObjectPreSaveContext Context)
+{
+	ON_SCOPE_EXIT
+	{
+		Super::PreSave(Context);
+	};
+#endif
+	if (!Context.IsCooking())
 	{
 		return;
 	}
 
-	auto* ResourceCooker = IWwiseResourceCooker::GetForPlatform(SaveContext.GetTargetPlatform());
+	auto* ResourceCooker = IWwiseResourceCooker::GetForPlatform(Context.GetTargetPlatform());
 	if (UNLIKELY(!ResourceCooker))
 	{
 		return;
@@ -229,12 +240,12 @@ void UAkAuxBus::PreSave(FObjectPreSaveContext SaveContext)
 
 	FCbWriter Writer;
 	Writer.BeginObject();
-	CookedDataToArchive.PreSave(SaveContext, Writer);
+	CookedDataToArchive.GetPlatformCookDependencies(Context, Writer);
 	Writer
 		<< "Radius" << MaxAttenuationRadius;
 	Writer.EndObject();
 	
-	SaveContext.AddCookBuildDependency(
+	WwiseCookEventContext::AddLoadBuildDependency(Context,
 		UE::Cook::FCookDependency::Function(
 			UE_COOK_DEPENDENCY_FUNCTION_CALL(HashWwiseAuxBusDependenciesForCook), Writer.Save()));
 }
@@ -242,6 +253,7 @@ void UAkAuxBus::PreSave(FObjectPreSaveContext SaveContext)
 
 void UAkAuxBus::FillInfo()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAuxBus::FillInfo"));
 	auto* ResourceCooker = IWwiseResourceCooker::GetDefault();
 	if (UNLIKELY(!ResourceCooker))
 	{

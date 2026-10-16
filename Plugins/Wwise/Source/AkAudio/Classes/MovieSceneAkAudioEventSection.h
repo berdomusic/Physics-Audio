@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -48,9 +48,11 @@ class UMovieSceneAkAudioEventSection : public UMovieSceneSection
 	UPROPERTY(EditAnywhere, Category = "AkAudioEvent", meta = (NoResetToDefault))
 	TObjectPtr<UAkAudioEvent> Event = nullptr;
 
+public:
 	/* Indicates whether the Wwise event will be re-triggered when the end is reached. */
-	UPROPERTY(EditAnywhere, Category = "AkAudioEvent")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AkAudioEvent")
 	bool RetriggerEvent = false;
+private:
 
 	/* The length, in ms, of scrub snippets */
 	UPROPERTY(EditAnywhere, Category = "AkAudioEvent",
@@ -98,15 +100,15 @@ public:
 	TSharedPtr<FWwiseEventTracker> EventTracker = MakeShareable(new FWwiseEventTracker());
 
 	/** Indicates whether the Wwise event will be re-triggered when the end is reached. */
-	bool ShouldRetriggerEvent() const { return RetriggerEvent; }
+	AKAUDIO_API bool ShouldRetriggerEvent() const { return RetriggerEvent; }
 
 	/** Gets the section's Wwise event's GUID. */
-	FGuid GetEventWwiseGUID() const;
+	AKAUDIO_API FGuid GetEventWwiseGUID() const;
 
 	/** Gets the section's Wwise event's name. */
-	FString GetEventWwiseName() const;
+	AKAUDIO_API FString GetEventWwiseName() const;
 
-	virtual void BeginDestroy() override;
+	AKAUDIO_API virtual void BeginDestroy() override;
 
 
 #if WITH_EDITOR
@@ -134,7 +136,7 @@ public:
 	float TrimBegin = 0.0f;
 
 	/** Use WAAPI to update the MaxDurationSourceID and MaxSourceDuration. */
-	AKAUDIO_API void UpdateAudioSourceInfo();
+	virtual AKAUDIO_API void UpdateAudioSourceInfo();
 
 	/** Matches the duration of the Unreal Section to that of the Wwise Event. */
 	AKAUDIO_API void MatchSectionLengthToEventLength();
@@ -172,52 +174,52 @@ public:
 	/** Update the AK event info using the UAkAudioEvent Event member. This should be called when the event is changed. */
 	AKAUDIO_API bool UpdateAkEventInfo();
 
-	bool IsValid() const { return Event != nullptr;  }
+	AKAUDIO_API bool IsValid() const { return Event != nullptr;  }
 
-	bool GetStopAtSectionEnd() const { return StopAtSectionEnd; }
+	AKAUDIO_API bool GetStopAtSectionEnd() const { return StopAtSectionEnd; }
 
 	/** Returns the trim begin value for the Wwise event that this section triggers. */
-	float GetTrimBegin() const { return TrimBegin; }
+	AKAUDIO_API float GetTrimBegin() const { return TrimBegin; }
 
 	/** Returns the duration of the scrub snippets that this section produces when scrubbed. 
 	 *  This can be changed using the ScrubTailLengthMs property. 
 	 */
-	int GetScrubTailLength() const { return ScrubTailLengthMs; }
+	AKAUDIO_API int GetScrubTailLength() const { return ScrubTailLengthMs; }
 
 	/** Returns true if this section is set to retrigger Wwise events after they finish. Change using the RetriggerEvent property. */
-	bool DoesEventRetrigger() const { return RetriggerEvent; }
+	AKAUDIO_API bool DoesEventRetrigger() const { return RetriggerEvent; }
 
-	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& e) override;
+	AKAUDIO_API virtual void PostEditChangeProperty(struct FPropertyChangedEvent& e) override;
 
 	/** Associate a new AK audio event with this section. Also updates section time and audio source info. */
-	bool SetEvent(UAkAudioEvent* AudioEvent);
+	AKAUDIO_API bool SetEvent(UAkAudioEvent* AudioEvent);
 
 	/** Use WAAPI to get the peak data for the Wwise event, with the given arguments and options. This is called by GetAudioSourcePeaks(). */
-	void WAAPIGetPeaks(const char* in_uri, TSharedRef<FJsonObject> in_getPeaksArgs,
+	AKAUDIO_API void WAAPIGetPeaks(const char* in_uri, TSharedRef<FJsonObject> in_getPeaksArgs,
 	                   TSharedRef<FJsonObject> in_getPeaksOptions, TSharedPtr<FJsonObject> in_getPeaksResults);
 	/** Update the trim data for the longest audio source used by the Wwise event that this section triggers. */
-	void UpdateTrimData();
+	AKAUDIO_API void UpdateTrimData();
 
 	/** Subscribe to TrimBegin and TrimEnd properties via WAAPI for the longest audio source that the Wwise event contains. */
-	void SubscribeToTrimChanges();
+	AKAUDIO_API void SubscribeToTrimChanges();
 
 	/** Subscribes to child added and child removed for each of the action targets in the Wwise event that this section triggers. */
-	void SubscribeToEventChildren();
+	AKAUDIO_API void SubscribeToEventChildren();
 
 	/** Registers a call to update the audio source info when a child is added or removed from in_sParentID */
-	void SubscribeToChildAddedRemoved(FString in_sParentID, uint64& in_iAddedSubID, uint64& in_iRemovedSubID);
+	AKAUDIO_API void SubscribeToChildAddedRemoved(FString in_sParentID, uint64& in_iAddedSubID, uint64& in_iRemovedSubID);
 
 	/** Subscribed to child added and child removed for the event ID. When a child is added or removed, UpdateAudioSourceInfo() is called. */
-	void SubscribeToEventChildAddedRemoved();
+	AKAUDIO_API void SubscribeToEventChildAddedRemoved();
 
 	/** Unsubscribes a specific WAAPI subscription ID. */
-	void UnsubscribeWAAPICallback(uint64& in_iSubID);
+	AKAUDIO_API void UnsubscribeWAAPICallback(uint64& in_iSubID);
 
 	/** Unsubscribes from all existing WAAPI subscriptions for this section. */
-	void UnsubscribeAllWAAPICallbacks();
+	AKAUDIO_API void UnsubscribeAllWAAPICallbacks();
 
 	/** Gets the containing work unit for the given object ID, and checks whether that workunit is dirty. */
-	bool CheckWorkunitChangesForID(FGuid in_objectGUID);
+	AKAUDIO_API bool CheckWorkunitChangesForID(FGuid in_objectGUID);
 
 #endif //WITH_EDITOR
 };

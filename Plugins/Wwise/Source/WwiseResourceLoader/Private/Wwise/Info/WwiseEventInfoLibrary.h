@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -36,7 +36,7 @@ public:
 		int32 WwiseShortId,
 		const FString& WwiseName,
 		EWwiseEventSwitchContainerLoading SwitchContainerLoading,
-		EWwiseEventDestroyOptions DestroyOptions,
+		EWwiseAssetDestroyOptions DestroyOptions,
 		int32 HardCodedSoundBankShortId = 0)
 	{
 		return FWwiseEventInfo(WwiseGuid, (uint32)WwiseShortId, FName(WwiseName), SwitchContainerLoading, DestroyOptions, (uint32)HardCodedSoundBankShortId);
@@ -50,7 +50,7 @@ public:
 		int32& OutWwiseShortId,
 		FString& OutWwiseName,
 		EWwiseEventSwitchContainerLoading& OutSwitchContainerLoading,
-		EWwiseEventDestroyOptions& OutDestroyOptions,
+		EWwiseAssetDestroyOptions& OutDestroyOptions,
 		int32& OutHardCodedSoundBankShortId)
 	{
 		OutWwiseGuid = Ref.WwiseGuid;
@@ -99,7 +99,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Wwise|Event Info", Meta = (BlueprintThreadSafe))
 	static
-	UPARAM(DisplayName="Destroy Options") EWwiseEventDestroyOptions
+	UPARAM(DisplayName="Destroy Options") EWwiseAssetDestroyOptions
 	GetDestroyOptions(
 		UPARAM(DisplayName="Event Info") const FWwiseEventInfo& Ref)
 	{
@@ -168,7 +168,7 @@ public:
 	UPARAM(DisplayName="Struct Out") FWwiseEventInfo
 	SetDestroyOptions(
 		UPARAM(DisplayName="Event Info") const FWwiseEventInfo& Ref,
-		const EWwiseEventDestroyOptions& DestroyOptions)
+		const EWwiseAssetDestroyOptions& DestroyOptions)
 	{
 		auto Result = Ref;
 		Result.DestroyOptions = DestroyOptions;

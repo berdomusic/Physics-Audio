@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*=============================================================================
@@ -29,6 +29,7 @@ UAkAudioInputComponent::UAkAudioInputComponent(const class FObjectInitializer& O
 
 int32 UAkAudioInputComponent::PostAssociatedAudioInputEvent()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAudioInputComponent::PostAssociatedAudioInputEvent"));
 	AudioInputDelegate = FAkGlobalAudioInputDelegate::CreateLambda(
 		[this](uint32 NumChannels, uint32 NumSamples, float** BufferToFill) -> bool
 		{
@@ -53,6 +54,7 @@ int32 UAkAudioInputComponent::PostAssociatedAudioInputEvent()
 
 void UAkAudioInputComponent::PostUnregisterGameObject()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAudioInputComponent::PostUnregisterGameObject"));
 	if (AudioInputDelegate.IsBound())
 	{
 		AudioInputDelegate.Unbind();
@@ -77,6 +79,7 @@ void UAkAudioInputComponent::PostUnregisterGameObject()
 
 void UAkAudioInputComponent::Stop()
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkAudioInputComponent::Stop"));
 	Super::Stop();
 	for(auto& CurrentlyPlayingID : CurrentlyPlayingIDs)
 	{

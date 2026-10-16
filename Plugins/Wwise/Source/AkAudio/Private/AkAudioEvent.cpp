@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*=============================================================================
@@ -34,6 +34,9 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "Wwise/Stats/AkAudio.h"
 
 #include <inttypes.h>
+
+#include "WwiseCookEventContext.h"
+#include "Wwise/WwiseGlobalCallbacks.h"
 
 #if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
 #include "UObject/ObjectSaveContext.h"
@@ -187,7 +190,7 @@ int32 UAkAudioEvent::PostAtLocation(const FVector Location, const FRotator Orien
 		AkCallbackTypeHelpers::GetCallbackMaskFromBlueprintMask(CallbackMask), nullptr);
 }
 
-int32 UAkAudioEvent::ExecuteAction(const AkActionOnEventType ActionType, const AActor* Actor, const int32 PlayingID,
+int32 UAkAudioEvent::ExecuteAction(const EAkActionOnEventType ActionType, const AActor* Actor, const int32 PlayingID,
 	const int32 TransitionDuration, const EAkCurveInterpolation FadeCurve)
 {
 	SCOPED_AKAUDIO_EVENT(TEXT("UAkAudioEvent::ExecuteAction"));
@@ -214,7 +217,7 @@ int32 UAkAudioEvent::ExecuteAction(const AkActionOnEventType ActionType, const A
 	if (!Actor)
 	{
 		return SoundEngine->ExecuteActionOnEvent(GetShortID(),
-			static_cast<AK::SoundEngine::AkActionOnEventType>(ActionType),
+			static_cast<AkActionOnEventType>(ActionType),
 			AK_INVALID_GAME_OBJECT,
 			TransitionDuration,
 			static_cast<AkCurveInterpolation>(FadeCurve),
@@ -236,7 +239,7 @@ int32 UAkAudioEvent::ExecuteAction(const AkActionOnEventType ActionType, const A
 	}
 
 	return SoundEngine->ExecuteActionOnEvent(GetShortID(),
-		static_cast<AK::SoundEngine::AkActionOnEventType>(ActionType),
+		static_cast<AkActionOnEventType>(ActionType),
 		Component->GetAkGameObjectID(),
 		TransitionDuration,
 		static_cast<AkCurveInterpolation>(FadeCurve),
@@ -244,9 +247,55 @@ int32 UAkAudioEvent::ExecuteAction(const AkActionOnEventType ActionType, const A
 	);
 }
 
+int32 UAkAudioEvent::Seek(AActor* Actor, float Percent, bool bSeekToNearestMarker, int32 PlayingID)
+{
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAudioEvent::Seek"));
+	auto* SoundEngine = IWwiseSoundEngineAPI::Get();
+	if (UNLIKELY(!SoundEngine)) return AK_NotInitialized;
+
+	if (!Actor)
+	{
+		// SeekOnEvent must be bound to a game object. Passing DUMMY_GAMEOBJ as default game object.
+		return SoundEngine->SeekOnEvent(GetShortID(), DUMMY_GAMEOBJ, Percent, bSeekToNearestMarker, PlayingID);
+	}
+	else if (!Actor->IsActorBeingDestroyed() && IsValid(Actor))
+	{
+		UAkComponent* pComponent = FAkAudioDevice::GetAkComponent(Actor->GetRootComponent(), FName(), NULL, EAttachLocation::KeepRelativeOffset);
+		if (pComponent)
+		{
+			return Seek(pComponent, Percent, bSeekToNearestMarker, PlayingID);
+		}
+	}
+
+	return AKRESULT::AK_Fail;
+}
+
+AKRESULT UAkAudioEvent::Seek(
+	UAkComponent* Component,
+	AkReal32 Percent,
+	bool bSeekToNearestMarker /*= false*/,
+	AkPlayingID PlayingID      /*= AK_INVALID_PLAYING_ID*/
+)
+{
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAudioEvent::Seek"));
+	if (FAkAudioDevice::IsInitialized() && Component)
+	{
+		auto* SoundEngine = IWwiseSoundEngineAPI::Get();
+		if (UNLIKELY(!SoundEngine)) return AK_NotInitialized;
+
+		if (Component->AllowAudioPlayback())
+		{
+			AKRESULT Result = SoundEngine->SeekOnEvent(GetShortID(), Component->GetAkGameObjectID(), Percent,
+													   bSeekToNearestMarker, PlayingID);
+			return Result;
+		}
+	}
+	return AKRESULT::AK_Fail;
+}
+
 AkPlayingID UAkAudioEvent::PostOnActor(const AActor* Actor, const FOnAkPostEventCallback* Delegate,
-	const AkCallbackFunc Callback, void* Cookie, const AkCallbackType CallbackMask, FWaitEndOfEventAction* LatentAction,
-	const bool bStopWhenAttachedObjectDestroyed, const EAkAudioContext AudioContext)
+                                       const AkCallbackFunc Callback, void* Cookie, const AkCallbackType CallbackMask, FWaitEndOfEventAction* LatentAction,
+                                       const bool bStopWhenAttachedObjectDestroyed, const EAkAudioContext AudioContext)
 {
 	SCOPED_AKAUDIO_EVENT(TEXT("UAkAudioEvent::PostOnActor"));
 	const auto* AudioDevice = FAkAudioDevice::Get();
@@ -452,7 +501,7 @@ AkPlayingID UAkAudioEvent::PostOnGameObjectID(const AkGameObjectID GameObjectID,
 			{
 				auto* AudioDevice = FAkAudioDevice::Get();
 				auto* CallbackManager = AudioDevice->GetCallbackManager();
-				return CallbackManager->CreateCallbackPackage(*Delegate, CallbackMask, GameObjectID, true);
+				return CallbackManager->CreateCallbackPackage(*Delegate, CallbackMask, GameObjectID, true, GetShortID());
 			},
 			AudioContext);
 		return Result;
@@ -468,7 +517,7 @@ AkPlayingID UAkAudioEvent::PostOnGameObjectID(const AkGameObjectID GameObjectID,
 			{
 				auto* AudioDevice = FAkAudioDevice::Get();
 				auto* CallbackManager = AudioDevice->GetCallbackManager();
-				return CallbackManager->CreateCallbackPackage(LatentAction, GameObjectID, true);
+				return CallbackManager->CreateCallbackPackage(LatentAction, GameObjectID, true, GetShortID());
 			},
 			AudioContext);
 		return Result;
@@ -483,7 +532,7 @@ AkPlayingID UAkAudioEvent::PostOnGameObjectID(const AkGameObjectID GameObjectID,
 			{
 				auto* AudioDevice = FAkAudioDevice::Get();
 				auto* CallbackManager = AudioDevice->GetCallbackManager();
-				return CallbackManager->CreateCallbackPackage(Callback, Cookie, CallbackMask, GameObjectID, true);
+				return CallbackManager->CreateCallbackPackage(Callback, Cookie, CallbackMask, GameObjectID, true, GetShortID());
 			},
 			AudioContext);
 		return Result;
@@ -505,12 +554,6 @@ AkPlayingID UAkAudioEvent::PostEvent(const AkGameObjectID GameObjectID, FCreateC
 	if (UNLIKELY(!AudioDevice->IsInitialized()))
 	{
 		UE_LOG(LogAkAudio, Verbose, TEXT("Failed to post AkAudioEvent '%s' with the Sound Engine uninitialized."), *GetName());
-		return AK_INVALID_PLAYING_ID;
-	}
-
-	if (!IsLoaded())
-	{
-		UE_LOG(LogAkAudio, Warning, TEXT("Failed to post AkAudioEvent: Data for '%s' wasn't found. Make sure the GeneratedSoundBanks folder (%s) exists and is properly set in the project settings."), *GetName(), *WwiseUnrealHelper::GetSoundBankDirectory());
 		return AK_INVALID_PLAYING_ID;
 	}
 
@@ -565,6 +608,11 @@ AkPlayingID UAkAudioEvent::PostEvent(const AkGameObjectID GameObjectID, FCreateC
 
 	if (UNLIKELY(PlayingID == AK_INVALID_PLAYING_ID))
 	{
+		if (!IsLoaded())
+		{
+			UE_LOG(LogAkAudio, Warning, TEXT("Failed to post AkAudioEvent: Data for '%s' wasn't found. Make sure the GeneratedSoundBanks folder (%s) exists and is properly set in the project settings."), *GetName(), *WwiseUnrealHelper::GetSoundBankDirectory());
+			return AK_INVALID_PLAYING_ID;
+		}
 		UE_LOG(LogAkAudio, Log, TEXT("Failed to post AkAudioEvent '%s'."), *GetName());
 		CallbackManager->RemoveCallbackPackage(CallbackPackage, GameObjectID);
 		return AK_INVALID_PLAYING_ID;
@@ -578,6 +626,7 @@ AkPlayingID UAkAudioEvent::PostEvent(const AkGameObjectID GameObjectID, FCreateC
 
 void UAkAudioEvent::Serialize(FArchive& Ar)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAudioEvent::Serialize"));
 	Super::Serialize(Ar);
 
 	if (HasAnyFlags(RF_ClassDefaultObject))
@@ -616,19 +665,27 @@ void UAkAudioEvent::Serialize(FArchive& Ar)
 #if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
 UE_COOK_DEPENDENCY_FUNCTION(HashWwiseAudioEventDependenciesForCook, UAkAudioType::HashDependenciesForCook);
 
-void UAkAudioEvent::PreSave(FObjectPreSaveContext SaveContext)
+#if UE_5_6_OR_LATER
+void UAkAudioEvent::OnCookEvent(UE::Cook::ECookEvent CookEvent, UE::Cook::FCookEventContext& Context)
 {
 	ON_SCOPE_EXIT
 	{
-		Super::PreSave(SaveContext);
+		Super::OnCookEvent(CookEvent, Context);
 	};
-
-	if (!SaveContext.IsCooking())
+#else
+void UAkAudioEvent::PreSave(FObjectPreSaveContext Context)
+{
+	ON_SCOPE_EXIT
+	{
+		Super::PreSave(Context);
+	};
+#endif
+	if (!Context.IsCooking())
 	{
 		return;
 	}
-
-	auto* ResourceCooker = IWwiseResourceCooker::GetForPlatform(SaveContext.GetTargetPlatform());
+		
+	auto* ResourceCooker = IWwiseResourceCooker::GetForPlatform(Context.GetTargetPlatform());
 	if (UNLIKELY(!ResourceCooker))
 	{
 		return;
@@ -640,21 +697,22 @@ void UAkAudioEvent::PreSave(FObjectPreSaveContext SaveContext)
 
 	FCbWriter Writer;
 	Writer.BeginObject();
-	CookedDataToArchive.PreSave(SaveContext, Writer);
+	CookedDataToArchive.GetPlatformCookDependencies(Context, Writer);
 	Writer
 		<< "Max" << MaximumDuration
 		<< "Min" << MinimumDuration
 		<< "Infinite" << IsInfinite
 		<< "Radius" << MaxAttenuationRadius;
 	Writer.EndObject();
-	
-	SaveContext.AddCookBuildDependency(
+
+	WwiseCookEventContext::AddLoadBuildDependency(Context, 
 		UE::Cook::FCookDependency::Function(
 			UE_COOK_DEPENDENCY_FUNCTION_CALL(HashWwiseAudioEventDependenciesForCook), Writer.Save()));
 }
 #endif
 
 #if WITH_EDITORONLY_DATA
+
 void UAkAudioEvent::FillInfo()
 {
 	auto* ResourceCooker = IWwiseResourceCooker::GetDefault();
@@ -720,14 +778,20 @@ void UAkAudioEvent::FillMetadata(FWwiseProjectDatabase* ProjectDatabase)
 
 void UAkAudioEvent::LoadEventData()
 {
-	SCOPED_AKAUDIO_EVENT_2(TEXT("LoadEventData"));
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAudioEvent::LoadEventData"));
 	FWwiseResourceLoaderPtr ResourceLoader = FWwiseResourceLoader::Get();
 	if (UNLIKELY(!ResourceLoader))
 	{
 		return;
 	}
-
-	UnloadEventData(false);
+	if (UNLIKELY(!ResourceLoader->IsEnabled()))
+	{
+		return;
+	}
+	if (IsLoaded())
+	{
+		UnloadEventData(false);
+	}
 	
 #if WITH_EDITORONLY_DATA
 	if (!IWwiseProjectDatabaseModule::ShouldInitializeProjectDatabase())
@@ -748,8 +812,8 @@ void UAkAudioEvent::LoadEventData()
 	
 	if (!ResourceCooker->PrepareCookedData(EventCookedData, this, GetValidatedInfo(EventInfo)))
 	{
-		const auto* AudioDevice = FAkAudioDevice::Get();
-		if( AudioDevice && AudioDevice->IsWwiseProfilerConnected())
+		const auto* GlobalCallbacks = FWwiseGlobalCallbacks::Get();
+		if( GlobalCallbacks && GlobalCallbacks->IsWwiseProfilerConnected())
 		{
 			UE_LOG(LogAkAudio, Verbose, TEXT("Could not fetch CookedData for Event %s, but Wwise profiler is connected. Previous errors can be ignored."),
 			*GetName());
@@ -797,6 +861,7 @@ void UAkAudioEvent::OnBeginPIE(const bool bIsSimulating)
 
 void UAkAudioEvent::BeginDestroy()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAudioEvent::BeginDestroy"));
 	Super::BeginDestroy();
 
 #if WITH_EDITOR
@@ -810,6 +875,7 @@ void UAkAudioEvent::BeginDestroy()
 
 void UAkAudioEvent::UnloadEventData(bool bAsync)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAudioEvent::UnloadEventData"));
 	auto PreviouslyLoadedEvent = LoadedEvent.exchange(nullptr);
 	if (PreviouslyLoadedEvent)
 	{
@@ -834,8 +900,8 @@ void UAkAudioEvent::UnloadEventData(bool bAsync)
 
 bool UAkAudioEvent::IsDataFullyLoaded() const
 {
-	auto* AudioDevice = FAkAudioDevice::Get();
-	if(AudioDevice && AudioDevice->IsWwiseProfilerConnected())
+	auto* GlobalCallbacks = FWwiseGlobalCallbacks::Get();
+	if(GlobalCallbacks && GlobalCallbacks->IsWwiseProfilerConnected())
 	{
 		// Always assume data is loaded when profiler is connected, live edit takes care of everything
 		return true;
@@ -852,12 +918,6 @@ bool UAkAudioEvent::IsDataFullyLoaded() const
 
 bool UAkAudioEvent::IsLoaded() const
 {
-	auto* AudioDevice = FAkAudioDevice::Get();
-	if(AudioDevice && AudioDevice->IsWwiseProfilerConnected())
-	{
-		// Always assume data is loaded when profiler is connected, live edit takes care of everything
-		return true;
-	}
 	return LoadedEvent.load() != nullptr;
 }
 
@@ -911,9 +971,9 @@ TArray<FWwiseExternalSourceCookedData> UAkAudioEvent::GetAllExternalSources() co
 	}
 
 	auto Result = CookedData->ExternalSources;
-	for (const auto& Leaf : CookedData->SwitchContainerLeaves)
+	for (const auto& AudioNode : CookedData->AudioNodes)
 	{
-		Result.Append(Leaf.ExternalSources);
+		Result.Append(AudioNode.Value.ExternalSources);
 	}
 	return Result;
 }

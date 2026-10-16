@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*=============================================================================
@@ -22,8 +22,14 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "AkGameObject.h"
 #include "AkAudioEvent.h"
 #include "AkComponentCallbackManager.h"
+#include "AkDialogueEvent.h"
+#include "AkDynamicSequence.h"
+#include "AkDynamicSequenceBlueprintFunctionLibrary.h"
+#include "AkDynamicSequencePlaylist.h"
 #include "AkRtpc.h"
 #include "AkSettings.h"
+#include "AkSwitchValue.h"
+#include "AkTrigger.h"
 #include "Wwise/WwiseExternalSourceManager.h"
 #include "Wwise/API/WwiseSoundEngineAPI.h"
 
@@ -50,6 +56,7 @@ public:
 
 	virtual void UpdateOperation(FLatentResponse& Response) override
 	{
+		SCOPED_AKAUDIO_EVENT_3(TEXT("FPostAssociatedEventAction::UpdateOperation"));
 		bool futureIsReady = FuturePlayingID.IsReady();
 		if (futureIsReady)
 		{
@@ -85,6 +92,7 @@ float UAkGameObject::GetAttenuationScalingFactor() const
 
 bool UAkGameObject::SetAttenuationScalingFactor()
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkGameObject::SetAttenuationScalingFactor"));
 	AKRESULT result = AK_Fail;
 	if (FAkAudioDevice* AudioDevice = FAkAudioDevice::Get())
 	{
@@ -103,6 +111,7 @@ int32 UAkGameObject::PostAkEvent(UAkAudioEvent* AkEvent, int32 CallbackMask,
 	const FOnAkPostEventCallback& PostEventCallback
 )
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkGameObject::PostAkEvent"));
 	if (LIKELY(IsValid(AkEvent)))
 	{
 		return AkEvent->PostOnGameObject(this, PostEventCallback, CallbackMask);
@@ -130,8 +139,38 @@ AkPlayingID UAkGameObject::PostAkEvent(UAkAudioEvent* AkEvent, AkUInt32 Flags, A
 	return AkEvent->PostOnGameObject(this, nullptr, UserCallback, UserCookie, static_cast<AkCallbackType>(Flags), nullptr);
 }
 
+void UAkGameObject::PostAkDialogueEvent(UAkDialogueEvent* AkDialogueEvent, const TArray<UAkGroupValue*>& Arguments, bool bOrderedPath, bool bPlayImmediately)
+{
+	if (UNLIKELY(!IsValid(AkDialogueEvent)))
+	{
+		UE_LOG(LogAkAudio, Error, TEXT("Failed to post invalid AkDialogueEvent on game object '%s'."), *GetName());
+		return;
+	}
+	auto* Item{ UAkDynamicSequenceBlueprintFunctionLibrary::CreateDynamicSequencePlaylistItemFromDialogueEvent(AkDialogueEvent, Arguments, bOrderedPath, 0, nullptr) };
+	if (!Item)
+	{
+		return;
+	}
+	auto* DynamicSequence = OpenDynamicSequence(0, {});
+	if (!DynamicSequence)
+	{
+		return;
+	}
+	auto* Playlist = DynamicSequence->ModifyPlaylist();
+	if (!Playlist)
+	{
+		return;
+	}
+	Playlist->AddAndCommit(Item);
+	if (bPlayImmediately)
+	{
+		DynamicSequence->Play();
+	}
+}
+
 void UAkGameObject::PostAssociatedAkEventAsync(const UObject* WorldContextObject, int32 CallbackMask, const FOnAkPostEventCallback& PostEventCallback, FLatentActionInfo LatentInfo, int32& PlayingID)
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkGameObject::PostAssociatedAkEventAsync"));
 	AkDeviceAndWorld DeviceAndWorld(WorldContextObject);
 	FLatentActionManager& LatentActionManager = DeviceAndWorld.CurrentWorld->GetLatentActionManager();
 	FPostAssociatedEventAction* NewAction = LatentActionManager.FindExistingAction<FPostAssociatedEventAction>(LatentInfo.CallbackTarget, LatentInfo.UUID);
@@ -151,6 +190,7 @@ void UAkGameObject::PostAkEventAsync(const UObject* WorldContextObject,
 	FLatentActionInfo LatentInfo
 )
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkGameObject::PostAkEventAsync"));
 	AkDeviceAndWorld DeviceAndWorld(WorldContextObject);
 	FLatentActionManager& LatentActionManager = DeviceAndWorld.CurrentWorld->GetLatentActionManager();
 	FPostAssociatedEventAction* NewAction = LatentActionManager.FindExistingAction<FPostAssociatedEventAction>(LatentInfo.CallbackTarget, LatentInfo.UUID);
@@ -164,6 +204,7 @@ void UAkGameObject::PostAkEventAsync(const UObject* WorldContextObject,
 
 void UAkGameObject::SetRTPCValue(const UAkRtpc* RTPCValue, float Value, int32 InterpolationTimeMs, FString RTPC) const
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkGameObject::SetRTPCValue"));
 	if (FAkAudioDevice::Get())
 	{
 		auto* SoundEngine = IWwiseSoundEngineAPI::Get();
@@ -191,6 +232,7 @@ void UAkGameObject::SetRTPCValue(const UAkRtpc* RTPCValue, float Value, int32 In
 
 void UAkGameObject::GetRTPCValue(const UAkRtpc* RTPCValue, ERTPCValueType InputValueType, float& Value, ERTPCValueType& OutputValueType, FString RTPC, int32 PlayingID) const
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkGameObject::GetRTPCValue"));
 	if (FAkAudioDevice::Get())
 	{
 		auto* SoundEngine = IWwiseSoundEngineAPI::Get();
@@ -209,6 +251,68 @@ void UAkGameObject::GetRTPCValue(const UAkRtpc* RTPCValue, ERTPCValueType InputV
 
 		OutputValueType = (ERTPCValueType)RTPCType;
 	}
+}
+
+void UAkGameObject::PostTrigger(const UAkTrigger* TriggerValue)
+{
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkGameObject::PostTrigger"));
+	if (FAkAudioDevice::Get())
+	{
+		auto* SoundEngine = IWwiseSoundEngineAPI::Get();
+		if (UNLIKELY(!SoundEngine)) return;
+
+		if (TriggerValue)
+		{
+			SoundEngine->PostTrigger(TriggerValue->TriggerCookedData.TriggerId, GetAkGameObjectID());
+		}
+	}
+}
+
+void UAkGameObject::SetSwitch(const UAkSwitchValue* SwitchValue)
+{
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkGameObject::SetSwitch"));
+	if (FAkAudioDevice::Get())
+	{
+		auto* SoundEngine = IWwiseSoundEngineAPI::Get();
+		if (UNLIKELY(!SoundEngine)) return;
+
+		if (SwitchValue)
+		{
+			SoundEngine->SetSwitch(SwitchValue->GroupValueCookedData.GroupId, SwitchValue->GroupValueCookedData.Id, GetAkGameObjectID());
+		}
+	}
+}
+
+
+UAkDynamicSequence* UAkGameObject::OpenDynamicSequence(int32 CallbackMask, const FOnAkPostEventCallback& OpenSequenceCallback,
+	const FAkDynamicSequenceTransition DefaultTransition, bool bSampleAccurate, bool bNewInstance)
+{
+	if (!bNewInstance && AkDynamicSequence)
+	{
+		return AkDynamicSequence.Get();
+	}
+
+	auto* DynamicSequence{ UAkDynamicSequenceBlueprintFunctionLibrary::OpenDynamicSequence(
+		GetAkGameObjectID(), GetName(), CallbackMask, OpenSequenceCallback, DefaultTransition, bSampleAccurate, bNewInstance)
+	};
+	if (UNLIKELY(!DynamicSequence))
+	{
+		return {};
+	}
+
+	if (!bNewInstance)
+	{
+		AkDynamicSequence = DynamicSequence;
+	}
+	
+	return DynamicSequence;
+}
+
+UAkDynamicSequence* UAkGameObject::DetachDynamicSequence()
+{
+	auto* Result = AkDynamicSequence.Get();
+	AkDynamicSequence = nullptr;
+	return Result;
 }
 
 bool UAkGameObject::VerifyEventName(const FString& InEventName) const
@@ -242,12 +346,29 @@ AkGameObjectID UAkGameObject::GetAkGameObjectID() const
 
 void UAkGameObject::Stop()
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkGameObject::Stop"));
 	if (HasActiveEvents() && FAkAudioDevice::Get() && bIsRegisteredWithWwise)
 	{
 		auto* SoundEngine = IWwiseSoundEngineAPI::Get();
 		if (UNLIKELY(!SoundEngine)) return;
 
-		SoundEngine->StopAll(GetAkGameObjectID());
+		if (StopWhenOwnerDestroyed && StopFadeoutTime > 0)
+		{
+			TArray<uint32> EventIDs;
+			if (auto CallbackManager = FAkComponentCallbackManager::GetInstance())
+			{
+				CallbackManager->GetActiveEvents(GetAkGameObjectID(), EventIDs);
+			}
+			for (auto& EventID : EventIDs)
+			{
+				SoundEngine->ExecuteActionOnEvent(EventID, AkActionOnEventType_Stop, GetAkGameObjectID(), StopFadeoutTime);
+			}
+		}
+		else
+		{
+			SoundEngine->StopAll(GetAkGameObjectID());
+		}
+
 		SoundEngine->RenderAudio();
 	}
 }
@@ -260,6 +381,7 @@ bool UAkGameObject::HasActiveEvents() const
 
 void UAkGameObject::SetAttenuationScalingFactor(float InAttenuationScalingFactor)
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("UAkGameObject::SetAttenuationScalingFactor"));
 	if (InAttenuationScalingFactor <= 0.f)
 	{
 		UE_LOG(LogAkAudio, Warning, TEXT("UAkGameObject::SetAttenuationScalingFactor: Attenuation scaling factor of %s is zero or a negative number."), *GetName());

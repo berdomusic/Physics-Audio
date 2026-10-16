@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 using UnrealBuildTool;
@@ -21,9 +21,10 @@ public class WwiseAuthoring : ModuleRules
 {
 	public WwiseAuthoring(ReadOnlyTargetRules Target) : base(Target)
 	{
-		WwiseSoundEngine_2022_1.ApplyWaapi(this, Target);
-		WwiseSoundEngine_2023_1.ApplyWaapi(this, Target);
-		WwiseSoundEngine_2024_1.ApplyWaapi(this, Target, true);		// Latest version should be written with "latest" to true for logging purposes
+		new WwiseSoundEngine_2022_1().ApplyWaapi(this, Target);
+		new WwiseSoundEngine_2023_1().ApplyWaapi(this, Target);
+		new WwiseSoundEngine_2024_1().ApplyWaapi(this, Target);
+		new WwiseSoundEngine_2025_1().ApplyWaapi(this, Target, true);		// Latest version should be written with "latest" to true for logging purposes
 
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	

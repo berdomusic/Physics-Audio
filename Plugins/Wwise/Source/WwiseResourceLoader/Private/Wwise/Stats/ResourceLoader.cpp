@@ -12,14 +12,16 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Stats/ResourceLoader.h"
 #include "Wwise/Stats/Memory.h"
 
 DEFINE_STAT(STAT_WwiseResourceLoaderAssetLibraries);
+DEFINE_STAT(STAT_WwiseResourceLoaderAudioNodes);
 DEFINE_STAT(STAT_WwiseResourceLoaderAuxBusses);
+DEFINE_STAT(STAT_WwiseResourceLoaderDialogueEvents);
 DEFINE_STAT(STAT_WwiseResourceLoaderEvents);
 DEFINE_STAT(STAT_WwiseResourceLoaderExternalSources);
 DEFINE_STAT(STAT_WwiseResourceLoaderGroupValues);
@@ -36,7 +38,9 @@ DEFINE_LOG_CATEGORY(LogWwiseResourceLoader);
 #define WWISERESOURCELOADER_ASYNC_NAME(Text) TEXT("WwiseResourceLoader ") TEXT(Text)
 
 LLM_DEFINE_TAG(Audio_Wwise_ResourceLoader, TEXT("Wwise Resource Loader"));
+LLM_DEFINE_TAG(Audio_Wwise_ResourceLoader_AudioNodes, TEXT("Wwise Audio Nodes"));
 LLM_DEFINE_TAG(Audio_Wwise_ResourceLoader_AuxBusses, TEXT("Wwise Aux Busses"));
+LLM_DEFINE_TAG(Audio_Wwise_ResourceLoader_DialogueEvents, TEXT("Wwise Dialogue Events"));
 LLM_DEFINE_TAG(Audio_Wwise_ResourceLoader_Events, TEXT("Wwise Events"));
 LLM_DEFINE_TAG(Audio_Wwise_ResourceLoader_ExternalSources, TEXT("Wwise External Sources"));
 LLM_DEFINE_TAG(Audio_Wwise_ResourceLoader_GroupValues, TEXT("Wwise Group Values"));

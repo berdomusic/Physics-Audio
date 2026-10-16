@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -106,7 +106,12 @@ public:
 	virtual IWwiseExternalSourceManagerPtr InstantiateExternalSourceManager() { return nullptr; }
 	virtual IWwiseMediaManagerPtr InstantiateMediaManager() { return nullptr; }
 	virtual FWwiseFileCache* InstantiateFileCache() { return nullptr; }
-	virtual FWwiseExecutionQueue* InstantiateBankExecutionQueue() { return nullptr; } 
+	virtual FWwiseExecutionQueue* InstantiateBankExecutionQueue() { return nullptr; }
+
+	virtual void RegisterTermCallback() {}
+	virtual void OnPostTerm() {}
+	virtual void RequestProcessBanks() {}
+	virtual void OnTerm() {}
 
 private:
 	static inline FName GetModuleNameFromConfig()

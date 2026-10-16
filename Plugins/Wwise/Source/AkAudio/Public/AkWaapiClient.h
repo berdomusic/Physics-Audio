@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*=============================================================================
@@ -60,7 +60,7 @@ struct KeyValueArgs
 class FAkWaapiClientConnectionHandler : public FRunnable
 {
 public:
-    FAkWaapiClientConnectionHandler(FAkWaapiClient& in_Client);
+    FAkWaapiClientConnectionHandler();
     ~FAkWaapiClientConnectionHandler();
     // FRunnable interface.
     virtual bool   Init() override;
@@ -79,7 +79,6 @@ private:
     int m_iMaxReconnectDelay = 32;
     FEvent* WaitEvent;
     FCriticalSection AkSettingsSection;
-    FAkWaapiClient& m_Client;
     bool hadConnection = false;
     bool AttemptReconnect();
     FDelegateHandle AutoConnectChangedHandle;
@@ -149,19 +148,29 @@ public:
     * @return					 A boolean to ensure that the subscription was successfully done.
     */
     bool Subscribe(const char* in_uri, const FString& in_options, WampEventCallback in_callback,
-        uint64& out_subscriptionId, FString& out_result, int in_iTimeoutMs = 500);
+        uint64& out_subscriptionId, FString& out_result);
     bool Subscribe(const char* in_uri, const TSharedRef<FJsonObject>& in_options, WampEventCallback in_callback,
-        uint64& out_subscriptionId, TSharedPtr<FJsonObject>& out_result, int in_iTimeoutMs = 500);
+        uint64& out_subscriptionId, TSharedPtr<FJsonObject>& out_result);
 
     /**
-    * Unsubscribe to notifications
+    * Unsubscribe from notifications
     *
-    * @param in_subscriptionId	Gets the id of the current subscription to the event from which we want to be unsubscribed.
-    * @param out_result		A JSON object that contains useful information about the unsubscription process from a specific event, gets an error infos in case the unsubscription failed.
-    * @return					A boolean to ensure that the unsubscription was successfully done.
+    * @param in_subscriptionId	The id of the subscription from which we want to unsubscribe
+    * @param out_result		A JSON string that contains useful information about the unsubscription process, or error info if the WAAPI call failed
+    * @param in_bSilenceLog True to suppress log messages from the WAAPI unsubscription
+    * @return					True if the WAAPI call was successful. Regardless of this value, we always stop tracking this subscription.
     */
-    bool Unsubscribe(const uint64_t& in_subscriptionId, FString& out_result, int in_iTimeoutMs = 500, bool in_bSilenceLog = false);
-    bool Unsubscribe(const uint64_t& in_subscriptionId, TSharedPtr<FJsonObject>& out_result, int in_iTimeoutMs = 500, bool in_bSilenceLog = false);
+    bool Unsubscribe(const uint64_t& in_subscriptionId, FString& out_result, bool in_bSilenceLog = false);
+
+    /**
+    * Unsubscribe from notifications
+    *
+    * @param in_subscriptionId	The id of the subscription from which we want to unsubscribe
+    * @param out_result		A JSON object that contains useful information about the unsubscription process, or error info if the WAAPI call failed.
+    * @param in_bSilenceLog True to suppress log messages from the WAAPI unsubscription
+    * @return					True if the WAAPI call was successful. Regardless of this value, we always stop tracking this subscription.
+    */
+    bool Unsubscribe(const uint64_t& in_subscriptionId, TSharedPtr<FJsonObject>& out_result, bool in_bSilenceLog = false);
 
 	/**
 	 * Remove manually the WampEventCallback, used by the WAAPI picker when the connection is lost

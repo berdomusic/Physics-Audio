@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/CookedData/WwiseLocalizedShareSetCookedData.h"
@@ -43,7 +43,7 @@ void FWwiseLocalizedShareSetCookedData::Serialize(FArchive& Ar)
 }
 
 #if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-void FWwiseLocalizedShareSetCookedData::PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const
+void FWwiseLocalizedShareSetCookedData::GetPlatformCookDependencies(FWwiseCookEventContext& Context, FCbWriter& Writer) const
 {
 	Writer << "SS";
 	Writer.BeginObject();
@@ -58,7 +58,7 @@ void FWwiseLocalizedShareSetCookedData::PreSave(FObjectPreSaveContext& SaveConte
 	
 		for (const auto& Language : Languages)
 		{
-			ShareSetLanguageMap[Language].PreSave(SaveContext, Writer);
+			ShareSetLanguageMap[Language].GetPlatformCookDependencies(Context, Writer);
 		}
 		Writer.EndArray();
 	}

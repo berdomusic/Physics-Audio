@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -26,6 +26,8 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "Wwise/AkInclude_2024_1.h"
 #elif defined(AK_WWISE_SOUNDENGINE_2025_1)
 #include "Wwise/AkInclude_2025_1.h"
+#elif defined(AK_WWISE_SOUNDENGINE_2026_1)
+#include "Wwise/AkInclude_2026_1.h"
 #else
 #error "This file should be updated so SN-DBS can support this version"
 #endif

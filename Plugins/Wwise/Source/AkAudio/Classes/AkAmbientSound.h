@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*=============================================================================
@@ -33,6 +33,8 @@ class AKAUDIO_API AAkAmbientSound : public AActor
 
 public:
 	AAkAmbientSound(const class FObjectInitializer& ObjectInitializer);
+
+	AAkAmbientSound();
 
 	/** AkAudioEvent to play. Deprecated as UE4.7 integration: Use AkComponent->AkAudioEvent instead */
 	UPROPERTY()
@@ -69,12 +71,12 @@ public:
 	/**
 	 * Start the ambience playback
 	 */
-	void StartPlaying();
+	virtual void StartPlaying();
 
 	/**
 	 * Stop the ambience playback
 	 */
-	void StopPlaying();
+	virtual void StopPlaying();
 
 	/**
 	 * Is whether this ambient sound currently playing

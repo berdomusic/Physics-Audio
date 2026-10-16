@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -66,10 +66,11 @@ public:
 	TArray<TObjectPtr<UObject>> UserData;
 
 public:
-	void Serialize(FArchive& Ar) override;
-	void PostLoad() override;
-	void BeginDestroy() override;
-	void FinishDestroy() override;
+	virtual void Serialize(FArchive& Ar) override;
+	virtual void PostLoad() override;
+	virtual void BeginDestroy() override;
+	virtual bool IsReadyForFinishDestroy() override;
+	virtual void FinishDestroy() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Audiokinetic|AkAudioType")
 	virtual void LoadData()   {}
@@ -143,6 +144,12 @@ public:
 #if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
 	static void HashDependenciesForCook(FCbFieldViewIterator Args, UE::Cook::FCookDependencyContext& Context);
 #endif
+
+	/**
+	 * Should the resource wait for a full unload before finalizing destruction (true), or have potential dangling resources
+	 * for a short moment (false, default).
+	 */
+	static bool bWaitForResourceUnload;
 
 protected:
 	FWwiseResourceUnloadFuture ResourceUnload;

@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -68,7 +68,13 @@ public:
 	virtual void UnloadData(bool bAsync = false);
 
 #if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
+public:
+#if UE_5_6_OR_LATER
+	virtual void OnCookEvent(UE::Cook::ECookEvent CookEvent, UE::Cook::FCookEventContext& Context) override;
+#else
 	virtual void PreSave(FObjectPreSaveContext SaveContext) override;
+#endif
+
 	static void HashDependenciesForCook(FCbFieldViewIterator Args, UE::Cook::FCookDependencyContext& Context);
 #endif
 
@@ -80,6 +86,9 @@ public:
 	/// Package the assets found according to the filter criteria. When this option is cleared, this library is only used for filtering.
 	UPROPERTY(EditAnywhere, Category = "Default", AdvancedDisplay)
 	bool bPackageAssets{ true };
+
+	TArray<FString> RelevantGameplayModulePaths;
+	TArray<FString> ExcludedGameplayModulePaths;
 #endif
 
 #if !WITH_EDITORONLY_DATA

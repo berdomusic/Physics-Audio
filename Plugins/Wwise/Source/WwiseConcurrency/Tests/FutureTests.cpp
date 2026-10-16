@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseTask.h"
@@ -53,25 +53,25 @@ WWISE_TEST_CASE(Concurrency_Future_Smoke, "Wwise::Concurrency::Future_Smoke", "[
 		TWwiseFuture<int> IntFuture( IntPromise.GetFuture() );
 		TWwiseFuture<int&> IntRefFuture( IntRefPromise.GetFuture() );
 
-		CHECK(!UninitVoidFuture.IsValid());
-		CHECK(!UninitIntFuture.IsValid());
-		CHECK(!UninitIntRefFuture.IsValid());
-		CHECK(VoidFuture.IsValid());
-		CHECK(IntFuture.IsValid());
-		CHECK(IntRefFuture.IsValid());
+		WWISE_CHECK(!UninitVoidFuture.IsValid());
+		WWISE_CHECK(!UninitIntFuture.IsValid());
+		WWISE_CHECK(!UninitIntRefFuture.IsValid());
+		WWISE_CHECK(VoidFuture.IsValid());
+		WWISE_CHECK(IntFuture.IsValid());
+		WWISE_CHECK(IntRefFuture.IsValid());
 
-		CHECK(!VoidFuture.IsReady());
-		CHECK(!IntFuture.IsReady());
-		CHECK(!IntRefFuture.IsReady());
+		WWISE_CHECK(!VoidFuture.IsReady());
+		WWISE_CHECK(!IntFuture.IsReady());
+		WWISE_CHECK(!IntRefFuture.IsReady());
 
 		int Value = 1;
 		VoidPromise.SetValue();
 		IntPromise.SetValue(1);
 		IntRefPromise.SetValue(Value);
 
-		CHECK(VoidFuture.IsReady());
-		CHECK(IntFuture.IsReady());
-		CHECK(IntRefFuture.IsReady());
+		WWISE_CHECK(VoidFuture.IsReady());
+		WWISE_CHECK(IntFuture.IsReady());
+		WWISE_CHECK(IntRefFuture.IsReady());
 	}
 
 	SECTION("Next")
@@ -83,12 +83,12 @@ WWISE_TEST_CASE(Concurrency_Future_Smoke, "Wwise::Concurrency::Future_Smoke", "[
 		{
 			bDone = true;
 		}));
-		CHECK(!VoidFuture.IsValid());
-		CHECK(NewFuture.IsValid());
+		WWISE_CHECK(!VoidFuture.IsValid());
+		WWISE_CHECK(NewFuture.IsValid());
 	
 		VoidPromise.EmplaceValue();
-		CHECK(bDone);
-		CHECK(NewFuture.IsReady());
+		WWISE_CHECK(bDone);
+		WWISE_CHECK(NewFuture.IsReady());
 	}
 
 	SECTION("Next Already Emplaced")
@@ -102,11 +102,11 @@ WWISE_TEST_CASE(Concurrency_Future_Smoke, "Wwise::Concurrency::Future_Smoke", "[
 		{
 			bDone = true;
 		}));
-		CHECK(!VoidFuture.IsValid());
-		CHECK(NewFuture.IsValid());
+		WWISE_CHECK(!VoidFuture.IsValid());
+		WWISE_CHECK(NewFuture.IsValid());
 	
-		CHECK(bDone);
-		CHECK(NewFuture.IsReady());
+		WWISE_CHECK(bDone);
+		WWISE_CHECK(NewFuture.IsReady());
 	}
 
 	SECTION("Then")
@@ -117,15 +117,15 @@ WWISE_TEST_CASE(Concurrency_Future_Smoke, "Wwise::Concurrency::Future_Smoke", "[
 		auto NewFuture( VoidFuture.Then([&bDone](TWwiseFuture<int> Future) mutable
 		{
 			Future.Get();
-			CHECK(Future.IsReady());
+			WWISE_CHECK(Future.IsReady());
 			bDone = true;
 		}));
-		CHECK(!VoidFuture.IsValid());
-		CHECK(NewFuture.IsValid());
+		WWISE_CHECK(!VoidFuture.IsValid());
+		WWISE_CHECK(NewFuture.IsValid());
 
 		VoidPromise.EmplaceValue();
-		CHECK(bDone);
-		CHECK(NewFuture.IsReady());
+		WWISE_CHECK(bDone);
+		WWISE_CHECK(NewFuture.IsReady());
 	}
 
 	SECTION("Then Already Emplaced")
@@ -138,14 +138,14 @@ WWISE_TEST_CASE(Concurrency_Future_Smoke, "Wwise::Concurrency::Future_Smoke", "[
 		auto NewFuture( VoidFuture.Then([&bDone](TWwiseFuture<int> Future) mutable
 		{
 			Future.Get();
-			CHECK(Future.IsReady());
+			WWISE_CHECK(Future.IsReady());
 			bDone = true;
 		}));
-		CHECK(!VoidFuture.IsValid());
-		CHECK(NewFuture.IsValid());
+		WWISE_CHECK(!VoidFuture.IsValid());
+		WWISE_CHECK(NewFuture.IsValid());
 
-		CHECK(bDone);
-		CHECK(NewFuture.IsReady());
+		WWISE_CHECK(bDone);
+		WWISE_CHECK(NewFuture.IsReady());
 	}
 
 	SECTION("Wait Fulfilled")
@@ -153,7 +153,7 @@ WWISE_TEST_CASE(Concurrency_Future_Smoke, "Wwise::Concurrency::Future_Smoke", "[
 		TWwisePromise<void> VoidPromise;
 		auto VoidFuture( VoidPromise.GetFuture() );
 		VoidPromise.EmplaceValue();
-		CHECK(VoidFuture.WaitFor(0));
+		WWISE_CHECK(VoidFuture.WaitFor(0));
 	}
 
 	SECTION("Wait Unfulfilled")
@@ -164,7 +164,7 @@ WWISE_TEST_CASE(Concurrency_Future_Smoke, "Wwise::Concurrency::Future_Smoke", "[
 		{
 			VoidPromise.EmplaceValue();
 		});
-		CHECK(VoidFuture.WaitFor(FTimespan::FromMilliseconds(10)));
+		WWISE_CHECK(VoidFuture.WaitFor(FTimespan::FromMilliseconds(10)));
 	}
 
 	SECTION("Two Wait")
@@ -180,10 +180,10 @@ WWISE_TEST_CASE(Concurrency_Future_Smoke, "Wwise::Concurrency::Future_Smoke", "[
 	{
 		TWwisePromise<void> VoidPromise;
 		auto VoidFuture( VoidPromise.GetFuture() );
-		CHECK_FALSE(VoidFuture.WaitFor(0));
-		CHECK_FALSE(VoidFuture.WaitFor(0));
+		WWISE_CHECK_FALSE(VoidFuture.WaitFor(0));
+		WWISE_CHECK_FALSE(VoidFuture.WaitFor(0));
 		VoidPromise.EmplaceValue();
-		CHECK(VoidFuture.WaitFor(0));
+		WWISE_CHECK(VoidFuture.WaitFor(0));
 	}
 
 	if (FPlatformProcess::SupportsMultithreading())
@@ -192,7 +192,7 @@ WWISE_TEST_CASE(Concurrency_Future_Smoke, "Wwise::Concurrency::Future_Smoke", "[
 		{
 			TWwisePromise<void> VoidPromise;
 			auto VoidFuture( VoidPromise.GetFuture() );
-			CHECK(!VoidFuture.WaitFor(0));
+			WWISE_CHECK(!VoidFuture.WaitFor(0));
 			VoidPromise.EmplaceValue();
 		}
 	}
@@ -253,14 +253,14 @@ WWISE_TEST_CASE(Concurrency_Future_Stress, "Wwise::Concurrency::Future_Stress", 
 			
 			if (!( Num & 1 ))
 			{
-				CHECK(! Events[Num]->Wait(1) );
+				WWISE_CHECK(! Events[Num]->Wait(1) );
 				Promise.EmplaceValue(1);
 			}
 		}
 
 		for (int Num = 0; Num < Count; ++Num)
 		{
-			CHECK(Events[Num]->Wait(100));
+			WWISE_CHECK(Events[Num]->Wait(100));
 		}
 	}
 
@@ -278,10 +278,10 @@ WWISE_TEST_CASE(Concurrency_Future_Stress, "Wwise::Concurrency::Future_Stress", 
 
 			LaunchWwiseTask(WWISE_TEST_ASYNC_NAME, [Future = &Futures[Num], Event = &Events[Num]]() mutable
 			{
-				CHECK(Future->WaitFor(FTimespan::FromMilliseconds(100)));
+				WWISE_CHECK(Future->WaitFor(FTimespan::FromMilliseconds(100)));
 				if (Future->IsReady())
 				{
-					CHECK(Future->Get());
+					WWISE_CHECK(Future->Get());
 				}
 				(*Event)->Trigger();
 			});			
@@ -294,7 +294,7 @@ WWISE_TEST_CASE(Concurrency_Future_Stress, "Wwise::Concurrency::Future_Stress", 
 
 		for (int Num = 0; Num < Count; ++Num)
 		{
-			CHECK(Events[Num]->Wait(FTimespan::FromMilliseconds(200)));
+			WWISE_CHECK(Events[Num]->Wait(FTimespan::FromMilliseconds(200)));
 		}
 	}
 }

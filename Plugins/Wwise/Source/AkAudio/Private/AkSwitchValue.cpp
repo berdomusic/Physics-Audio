@@ -12,10 +12,12 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkSwitchValue.h"
+
+#include "Wwise/WwiseGlobalCallbacks.h"
 #include "Wwise/Stats/AkAudio.h"
 
 #include "Wwise/WwiseResourceLoader.h"
@@ -28,7 +30,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 
 void UAkSwitchValue::LoadGroupValue()
 {
-	SCOPED_AKAUDIO_EVENT_2(TEXT("UAkSwitchValue::LoadGroupValue"));
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkSwitchValue::LoadGroupValue"));
 	FWwiseResourceLoaderPtr ResourceLoader = FWwiseResourceLoader::Get();
 	if (UNLIKELY(!ResourceLoader))
 	{
@@ -55,8 +57,8 @@ void UAkSwitchValue::LoadGroupValue()
 	}
 	if (!ResourceCooker->PrepareCookedData(GroupValueCookedData, GetValidatedInfo(GroupValueInfo), EWwiseGroupType::Switch))
 	{
-		const auto* AudioDevice = FAkAudioDevice::Get();
-		if( AudioDevice && AudioDevice->IsWwiseProfilerConnected())
+		const auto* GlobalCallbacks = FWwiseGlobalCallbacks::Get();
+		if( GlobalCallbacks && GlobalCallbacks->IsWwiseProfilerConnected())
 		{
 			UE_LOG(LogAkAudio, Verbose, TEXT("Could not fetch CookedData for Switch Value %s, but Wwise profiler is connected. Previous errors can be ignored."),
 			*GetName());
@@ -105,6 +107,7 @@ void UAkSwitchValue::Serialize(FArchive& Ar)
 #if WITH_EDITORONLY_DATA
 void UAkSwitchValue::FillInfo()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkSwitchValue::FillInfo"));
 	auto* ResourceCooker = IWwiseResourceCooker::GetDefault();
 	if (UNLIKELY(!ResourceCooker))
 	{

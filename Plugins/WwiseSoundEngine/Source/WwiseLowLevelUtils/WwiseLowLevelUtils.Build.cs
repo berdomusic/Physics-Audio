@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 using UnrealBuildTool;
@@ -32,15 +32,16 @@ public class WwiseLowLevelUtils : ModuleRules
 		
 		PublicDefinitions.AddRange(new string[]
 		{
-			"WWISE_INTEGRATION_VERSION_MAJOR=2024",	
+			"WWISE_INTEGRATION_VERSION_MAJOR=2025",	
 			"WWISE_INTEGRATION_VERSION_MINOR=1",
-			"WWISE_INTEGRATION_VERSION=\"2024.1\"",
-			"WWISE_INTEGRATION_2024_1=1",	
+			"WWISE_INTEGRATION_VERSION=\"2025.1\"",
+			"WWISE_INTEGRATION_2025_1=1",	
 
 			"WWISE_INTEGRATION_2022_1_OR_LATER=1",	
 			"WWISE_INTEGRATION_2023_1_OR_LATER=1",	
 			"WWISE_INTEGRATION_2024_1_OR_LATER=1",	
-			"WWISE_INTEGRATION_2025_1_OR_LATER=0",	
+			"WWISE_INTEGRATION_2025_1_OR_LATER=1",	
+			"WWISE_INTEGRATION_2026_1_OR_LATER=0",	
 		});
 
 

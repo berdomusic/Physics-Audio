@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkSimd.h
@@ -208,6 +208,8 @@ static AkForceInline AKSIMD_V4COND AKSIMD_SETMASK_V4COND( AkUInt32 x )
 #define AKSIMD_MSUB_V4F32( __a__, __b__, __c__ ) _mm_sub_ps( _mm_mul_ps( (__a__), (__b__) ), (__c__) )
 #endif
 
+#define AKSIMD_LERP_V4F32( _alpha_, __a__, __b__ ) AKSIMD_MADD_V4F32(_alpha_, AKSIMD_SUB_V4F32(__b__, __a__), __a__)
+
 /// Vector multiply-add operation.
 #define AKSIMD_MADD_SS_V4F32( __a__, __b__, __c__ ) _mm_add_ss( _mm_mul_ss( (__a__), (__b__) ), (__c__) )
 
@@ -240,7 +242,7 @@ static AkForceInline AKSIMD_V4COND AKSIMD_SETMASK_V4COND( AkUInt32 x )
 /// Rounds to upper value
 static AkForceInline AKSIMD_V4F32 AKSIMD_CEIL_V4F32(const AKSIMD_V4F32 & x)
 {
-	static const AKSIMD_V4F32 vEpsilon = { 0.49999f, 0.49999f, 0.49999f, 0.49999f };
+	const AKSIMD_V4F32 vEpsilon = { 0.49999f, 0.49999f, 0.49999f, 0.49999f };
 	return _mm_cvtepi32_ps(_mm_cvtps_epi32(_mm_add_ps(x, vEpsilon)));
 }
 
@@ -266,7 +268,7 @@ static AkForceInline AKSIMD_V4F32 AKSIMD_DOTPRODUCT( AKSIMD_V4F32 & vVec, const 
 /// Cross-platform SIMD multiplication of 2 complex data elements with interleaved real and imaginary parts
 static AkForceInline AKSIMD_V4F32 AKSIMD_COMPLEXMUL_V4F32( const AKSIMD_V4F32 vCIn1, const AKSIMD_V4F32 vCIn2 )
 {
-	static const AKSIMD_V4F32 vSign = { -0.f, 0.f, -0.f, 0.f }; 
+	const AKSIMD_V4F32 vSign = { -0.f, 0.f, -0.f, 0.f }; 
 
 	AKSIMD_V4F32 vTmp1 = AKSIMD_SHUFFLE_V4F32( vCIn1, vCIn1, AKSIMD_SHUFFLE(2,2,0,0));
 	vTmp1 = AKSIMD_MUL_V4F32( vTmp1, vCIn2 );
@@ -752,3 +754,14 @@ typedef __m64	AKSIMD_V2F32;	///< Vector of 2 32-bit floats
 
 #endif
 
+
+////////////////////////////////////////////////////////////////////////
+/// @name AKSIMD int16 helpers
+//@{
+// AKSIMD helpers for loading int6 wav data
+
+/// Loads 64 bits (4 int16 values) into lower half of 128 bit vector from unaligned
+/// memory (see _mm_loadl_epi64)
+#define AKSIMD_LOAD_V1I64_LO( __addr__ ) _mm_loadl_epi64(reinterpret_cast<const __m128i*>(__addr__) )
+//@}
+////////////////////////////////////////////////////////////////////////

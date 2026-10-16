@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*=============================================================================
@@ -22,10 +22,14 @@ Copyright (c) 2025 Audiokinetic Inc.
 #pragma once
 
 #include "AkAudioDevice.h"
+#include "AkDynamicSequence.h"
 #include "AkGameplayTypes.h"
 #include "Components/SceneComponent.h"
 #include "AkGameObject.generated.h"
 
+
+class UAkDialogueEvent;
+class UAkDynamicSequence;
 
 UCLASS(ClassGroup=Audiokinetic, BlueprintType, Blueprintable, hidecategories=(Transform,Rendering,Mobility,LOD,Component,Activation), AutoExpandCategories=AkComponent, meta=(BlueprintSpawnableComponent))
 class AKAUDIO_API UAkGameObject: public USceneComponent
@@ -49,6 +53,18 @@ public:
 	/** Associated Wwise Event to be posted on this game object */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AkEvent")
 	TObjectPtr<UAkAudioEvent> AkAudioEvent = nullptr;
+
+	/** Associated dynamic sequence, as generated through OpenDynamicSequence */
+	UPROPERTY(Transient)
+	TObjectPtr<UAkDynamicSequence> AkDynamicSequence = nullptr;
+
+	/** Stop sound when owner is destroyed? */
+	UPROPERTY(EditAnywhere, DisplayName="Stop When Owner is Destroyed", Category="AkGameObject")
+	bool StopWhenOwnerDestroyed = false;
+
+	/** The time in ms by which a playing sound object fades out after it is destroyed*/
+	UPROPERTY(EditAnywhere, DisplayName="Stop Fadeout Time (ms)", Category="AkGameObject", meta=(EditCondition="StopWhenOwnerDestroyed", ClampMin=0, ClampMax=1000000))
+	int StopFadeoutTime = 0;
 
 	/**
 	 * Posts this game object's AkAudioEvent to Wwise, using this as the game object source
@@ -83,6 +99,21 @@ public:
 	virtual AkPlayingID PostAkEvent(UAkAudioEvent* AkEvent, AkUInt32 Flags = 0, AkCallbackFunc UserCallback = nullptr, void* UserCookie = nullptr);
 
 	/**
+	 * Post a Dialogue Event to the associated dynamic sequence.
+	 * @param AkDialogueEvent		The Dialogue Event to post
+	 * @param Arguments				The arguments to use on the Dialogue Event
+	 * @param bOrderedPath		Whether the arguments are ordered or not. See UAkDialogueEvent::ResolveOrderedArguments.
+	 * @param bPlayImmediately		Issues a Play command to the Dynamic Sequence.
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Audiokinetic|AkGameObject")
+	virtual void PostAkDialogueEvent(
+		UAkDialogueEvent* AkDialogueEvent,
+		const TArray<UAkGroupValue*>& Arguments,
+		bool bOrderedPath = false,
+		bool bPlayImmediately = true
+	);
+	
+	/**
 	 * Posts an event to Wwise, using this as the game object source
 	 *
 	 * @param AkEvent		The event to post
@@ -113,7 +144,7 @@ public:
 	* @param InterpolationTimeMs - Duration during which the RTPC is interpolated towards Value (in ms)
 	*/
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Audiokinetic|AkGameObject", meta = (AdvancedDisplay = "3"))
-	void SetRTPCValue(class UAkRtpc const* RTPCValue, float Value, int32 InterpolationTimeMs, FString RTPC) const;
+	virtual void SetRTPCValue(class UAkRtpc const* RTPCValue, float Value, int32 InterpolationTimeMs, FString RTPC) const;
 
 	/**
 	* Gets an RTPC value that was set on this game object as the game object source
@@ -127,6 +158,51 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Audiokinetic|AkGameObject", meta = (AdvancedDisplay = "RTPC"))
 	void GetRTPCValue(class UAkRtpc const* RTPCValue, ERTPCValueType InputValueType, float& Value, ERTPCValueType& OutputValueType, FString RTPC, int32 PlayingID = 0) const;
 
+	/**
+	 * Posts a trigger to wwise, using this component as the game object source
+	 *
+	 * @param Trigger		The name of the trigger
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category="Audiokinetic|AkComponent", meta = (AdvancedDisplay = "1"))
+	void PostTrigger(class UAkTrigger const* TriggerValue);
+	
+	/**
+	 * Sets a switch group in wwise, using this component as the game object source
+	 *
+	 * @param SwitchGroup	The name of the switch group
+	 * @param SwitchState	The new state of the switch
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category="Audiokinetic|AkComponent", meta = (AdvancedDisplay = "1"))
+	virtual void SetSwitch(class UAkSwitchValue const* SwitchValue);
+	
+	/**
+	 * Opens a dynamic sequence to Wwise, using this as the game object source.
+	 *
+	 * By default, the game object contains an associated dynamic sequence, and any new dialogue event will be added to this
+	 * associated dynamic sequence. By asking for a new dynamic sequence instance, you are responsible for its lifetime.
+	 *
+	 * If the dynamic sequence was already created, the provided callback and sample accurate is ignored.
+	 *
+	 * @param CallbackMask		Mask of desired callbacks
+	 * @param OpenSequenceCallback	Blueprint Event to execute on callback
+	 * @param DefaultTransition	The Transition Parameters when Pausing, Playing, Stopping the Dynamic Sequence. 
+	 * @param bSampleAccurate	Sample accurate Dynamic Sequence. Disallows playlist editing in specific cases.
+	 * @param bNewInstance		Request a new instance, separated from the associated dynamic sequence.
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Audiokinetic|AkGameObject", meta = (AdvancedDisplay = "1", AutoCreateRefTerm = "OpenSequenceCallback"))
+	virtual UAkDynamicSequence* OpenDynamicSequence(
+		UPARAM(meta = (Bitmask, BitmaskEnum = "/Script/AkAudio.EAkCallbackType")) int32 CallbackMask,
+		const FOnAkPostEventCallback& OpenSequenceCallback,
+		const FAkDynamicSequenceTransition DefaultTransition = FAkDynamicSequenceTransition(),
+		bool bSampleAccurate = false,
+		bool bNewInstance = false
+	);
+
+	/**
+	* Detaches the currently assigned dynamic sequence, resetting it.
+*/
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Audiokinetic|AkGameObject")
+	virtual UAkDynamicSequence* DetachDynamicSequence();
 
 #if WITH_EDITOR
 	virtual void PreEditChange(FProperty* PropertyAboutToChange) override;
@@ -136,7 +212,7 @@ public:
 #if CPP
 	bool VerifyEventName(const FString& InEventName) const;
 	bool AllowAudioPlayback() const;
-	AkGameObjectID GetAkGameObjectID() const;
+	virtual AkGameObjectID GetAkGameObjectID() const;
 	virtual void UpdateObstructionAndOcclusion() {};
 	bool HasActiveEvents() const;
 #endif

@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Packaging/WwisePackagingTypeActions.h"
@@ -24,6 +24,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "Wwise/WwisePackagingEditorModule.h"
 
 #include "Wwise/Packaging/WwiseAssetLibrary.h"
+#include "Wwise/Packaging/WwiseAssetLibraryGroup.h"
 #include "Wwise/Packaging/WwiseSharedAssetLibraryFilter.h"
 
 #define LOCTEXT_NAMESPACE "AssetTypeActions"
@@ -129,6 +130,46 @@ UClass* FAssetTypeActions_WwiseSharedAssetLibraryFilter::GetSupportedClass() con
 }
 
 uint32 FAssetTypeActions_WwiseSharedAssetLibraryFilter::GetCategories()
+{
+	if (auto* EditorUtils = IWwiseEditorUtilsModule::GetModule())
+	{
+		return EditorUtils->GetWwiseAssetTypeCategory();
+	}
+	else
+	{
+		return EAssetTypeCategories::Sounds;
+	}
+}
+
+FText FAssetTypeActions_WwiseAssetLibraryGroup::GetName() const
+{
+	return LOCTEXT("AssetTypeActions_WwiseAssetLibraryGroup", "Wwise Asset Library Group");
+}
+
+FColor FAssetTypeActions_WwiseAssetLibraryGroup::GetTypeColor() const
+{
+	return FColor(0, 84, 159);
+}
+
+const TArray<FText>& FAssetTypeActions_WwiseAssetLibraryGroup::GetSubMenus() const
+{
+	if (auto* EditorUtils = IWwisePackagingEditorModule::GetModule())
+	{
+		return EditorUtils->GetAssetLibraryGroupSubMenu();
+	}
+	else
+	{
+		static TArray<FText> Submenu{};
+		return Submenu;
+	}
+}
+
+UClass* FAssetTypeActions_WwiseAssetLibraryGroup::GetSupportedClass() const
+{
+	return UWwiseAssetLibraryGroup::StaticClass();
+}
+
+uint32 FAssetTypeActions_WwiseAssetLibraryGroup::GetCategories()
 {
 	if (auto* EditorUtils = IWwiseEditorUtilsModule::GetModule())
 	{

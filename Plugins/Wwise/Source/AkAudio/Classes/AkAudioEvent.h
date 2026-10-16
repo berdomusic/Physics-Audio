@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -191,11 +191,41 @@ public:
 	 * @return AKRESULT for the operation. AK_Success (0) if successful.
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Audiokinetic|Actor", meta=(AdvancedDisplay = "2"))
-	int32 ExecuteAction(const AkActionOnEventType ActionType,
+	int32 ExecuteAction(const EAkActionOnEventType ActionType,
 					    const AActor* Actor,
 					    const int32 PlayingID = 0,
 					    const int32 TransitionDuration = 0,
 					    const EAkCurveInterpolation FadeCurve = EAkCurveInterpolation::Linear);
+
+	/**
+	 * @brief Seeks on the event in the ak soundengine.
+	* @param Actor               The associated Actor. If this is nullptr, default object will be used.
+	* @param in_fPercent             Desired percent where playback should restart.
+	* @param in_bSeekToNearestMarker If true, the final seeking position will be made equal to the nearest marker.
+	*
+	* @return Success or failure.
+	*/
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Audiokinetic|Actor", meta=(AdvancedDisplay = "2"))
+	int32 Seek(
+		AActor* Actor,
+		float Percent,
+		bool bSeekToNearestMarker,
+		int32 PlayingID);
+
+	
+	/**
+	 * @brief Seeks on the event in the ak soundengine.
+	* @param Component              The associated Component.
+	* @param in_fPercent             Desired percent where playback should restart.
+	* @param in_bSeekToNearestMarker If true, the final seeking position will be made equal to the nearest marker.
+	*
+	* @return Success or failure.
+	*/
+	AKRESULT Seek(
+	UAkComponent* Component,
+	AkReal32 Percent,
+	bool bSeekToNearestMarker /*= false*/,
+	AkPlayingID PlayingID      /*= AK_INVALID_PLAYING_ID*/);
 
 public:
 	/**
@@ -340,7 +370,7 @@ public:
 	 * @param AudioContext Context in which the Event's sounds are played. Only GamePlayAudio sounds are affected by PIE pause/stop.
 	 * @return The Playing ID returned by the SoundEngine's PostEvent, or AK_INVALID_PLAYING_ID (0) if invalid.
 	 */
-	AkPlayingID PostOnGameObjectID(const AkGameObjectID GameObjectID,
+	virtual AkPlayingID PostOnGameObjectID(const AkGameObjectID GameObjectID,
 		const FOnAkPostEventCallback* Delegate,
 		AkCallbackFunc Callback,
 		void* Cookie,
@@ -379,7 +409,11 @@ private:
 
 #if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
 public:
-	virtual void PreSave(FObjectPreSaveContext SaveContext) override;
+#if UE_5_6_OR_LATER
+	virtual void OnCookEvent(UE::Cook::ECookEvent CookEvent, UE::Cook::FCookEventContext& Context) override;
+#else
+	virtual void PreSave(FObjectPreSaveContext Context) override;
+#endif
 #endif
 
 #if WITH_EDITORONLY_DATA

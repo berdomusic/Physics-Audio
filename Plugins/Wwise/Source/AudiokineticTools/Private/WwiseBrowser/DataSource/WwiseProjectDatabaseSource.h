@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -44,12 +44,12 @@ public:
 
 	virtual bool Init() override;
 	virtual bool ConstructTree(bool bShouldRefresh) override;
-	virtual FWwiseTreeItemPtr ConstructTreeRoot(EWwiseItemType::Type Type) override;
+	virtual FWwiseTreeItemPtr ConstructTreeRoot(EWwiseItemType Type) override;
 	virtual int32 LoadChildren(const FGuid& InParentId, const FString& InParentPath, TArray<FWwiseTreeItemPtr>& OutChildren) override;
 	virtual int32 LoadChildren(FWwiseTreeItemPtr InParentItem) override;
 	virtual int32 GetChildItemCount(const FWwiseTreeItemPtr& InParentItem) override;
-	virtual FWwiseTreeItemPtr GetRootItem(EWwiseItemType::Type RootType) override;
-	virtual FWwiseTreeItemPtr LoadFilteredRootItem(EWwiseItemType::Type ItemType, TSharedPtr<StringFilter> CurrentFilter) override;
+	virtual FWwiseTreeItemPtr GetRootItem(EWwiseItemType RootType) override;
+	virtual FWwiseTreeItemPtr LoadFilteredRootItem(EWwiseItemType ItemType, TSharedPtr<StringFilter> CurrentFilter) override;
 
 	FWwiseTreeItemPtr FindItemFromPath(const FString& InCurrentItemPath);
 	FWwiseTreeItemPtr FindItem(const FWwiseTreeItemPtr InItem);
@@ -58,8 +58,8 @@ public:
 
 private:
 
-
 	void BuildEvents(const WwiseEventGlobalIdsMap& Events);
+	void BuildDialogueEvents(const WwiseDialogueEventGlobalIdsMap& DialogueEvents);
 	void BuildBusses(const WwiseBusGlobalIdsMap& Busses);
 	void BuildAuxBusses(const WwiseAuxBusGlobalIdsMap& AuxBusses);
 	void BuildAcousticTextures(const WwiseAcousticTextureGlobalIdsMap& AcousticTextures);
@@ -73,7 +73,7 @@ private:
 	void BuildEffectShareSets(const WwisePluginShareSetGlobalIdsMap& EffectShareSets);
 	bool ParseTreePath(const FString& ObjectPath, WwiseItemTreePath& OutItemPath);
 
-	bool BuildFolderHierarchy(const WwiseMetadataBasicReference& WwiseItem, EWwiseItemType::Type ItemType,
+	bool BuildFolderHierarchy(const WwiseMetadataBasicReference& WwiseItem, EWwiseItemType ItemType,
 		const FWwiseTreeItemPtr
 		CurrentRootFolder, uint32 GroupId = 0);
 
@@ -81,7 +81,7 @@ private:
 
 	void FilterTree(FWwiseTreeItemPtr TreeItem, TSharedPtr<StringFilter> SearchFilter);
 
-	bool IsContainer(EWwiseItemType::Type ItemType) const;
+	bool IsContainer(EWwiseItemType ItemType) const;
 	
 	/** Root items, one for each type of Wwise object */
 	FCriticalSection RootItemsLock;

@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file
@@ -155,7 +155,7 @@ namespace AK
 		/// This function is only required for optimization purposes and does not have to be defined.
 		/// Therefore, unlike TermForThread, this is not expected to be called in all scenarios by Wwise.
 		/// It is also recommended to be called by game engine integrations in any worker threads that run Wwise jobs.
-		/// Refer to \ref eventmgrthread_jobmgr_best_practices for more information.
+		/// See \ref eventmgrthread_jobmgr_best_practices for more information.
 		/// \sa
 		/// - AkMemTrimForThread
 		AK_EXTERNAPIFUNC( void, TrimForThread )();

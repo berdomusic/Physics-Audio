@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -315,6 +315,7 @@ struct WWISEPROJECTDATABASE_API WwisePlatformDataStructure :
 	template <typename RequiredRef>
 	void AddRefToMap(WwiseDBMap<WwiseDatabaseLocalizableIdKey, RequiredRef>& OutMap, const RequiredRef& InRef, const WwiseDBShortId& InId, const WwiseDBString* InName, const WwiseDBString* InObjectPath, const WwiseDBGuid* InGuid);
 
+	void AddMediaCount(const WwiseDBArray<WwiseMetadataMedia>& InMedia);
 	void AddMediaRefsCount(const WwiseDBArray<WwiseMetadataMediaReference>& InMediaRefs);
 	void AddSoundBankCount(const uint32 InId, const uint32 InLanguageId, const uint32 InIncrement = 1);
 

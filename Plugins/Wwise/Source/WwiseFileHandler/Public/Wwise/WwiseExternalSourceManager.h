@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -62,6 +62,7 @@ public:
 	virtual void SetExternalSourceMediaByName(const FName& ExternalSourceName, const FName& MediaName) = 0;
 	virtual void SetExternalSourceMediaWithIds(const int32 ExternalSourceCookie, const int32 MediaId) = 0;
 
+	virtual void DoPostTerm() = 0;
 
 #if WITH_EDITORONLY_DATA
 	virtual void Cook(IWwiseResourceCooker& InResourceCooker, const FWwiseExternalSourceCookedData& InCookedData, const TCHAR* PackageFilename,

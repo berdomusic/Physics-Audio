@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "StaticPluginWriter.h"
@@ -73,7 +73,7 @@ namespace StaticPluginWriter_Helper
 		if (!PlatformPath.IsValid() || PlatformPath.IsNone())
 		{
 			UE_LOG(LogAudiokineticTools, Verbose,
-			       TEXT("StaticPluginWriter::GetLibraryFileNames, Could not find generated Soundbank for Platform %s"),
+			       TEXT("StaticPluginWriter::GetLibraryFileNames, Could not find generated SoundBank for Platform %s"),
 			       *InWwisePlatformName);
 			return Result;
 		}

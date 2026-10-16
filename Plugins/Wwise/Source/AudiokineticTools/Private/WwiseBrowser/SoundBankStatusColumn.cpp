@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "SoundBankStatusColumn.h"
@@ -34,9 +34,13 @@ FText FSoundBankStatusColumn::GetDisplayedName(FWwiseTreeItemPtr TreeItem)
 	{
 		return LOCTEXT("UAssetStatusUpToDate", "UAsset Up to Date");
 	}
+	else if (TreeItem->IsInWAAPIAndUnreal())
+	{
+		return LOCTEXT("UAssetStatusMissingInSoundbank", "Not in SoundBanks");
+	}
 	else if(TreeItem->IsUAssetOrphaned())
 	{
-		return LOCTEXT("UAssetStatusOrphaned", "UAsset Orphaned");
+		return LOCTEXT("UAssetStatusOrphaned", "Only in Unreal");
 	}
 	else if(TreeItem->IsUAssetOutOfDate())
 	{
@@ -54,6 +58,10 @@ FText FSoundBankStatusColumn::GetDisplayedName(FWwiseTreeItemPtr TreeItem)
 	{
 		return LOCTEXT("UAssetStatusMoved", "UAsset in Wrong Location");
 	}
+	else if (TreeItem->IsUnusedItem())
+	{
+		return LOCTEXT("UAssetStatusUnused", "");
+	}
 	else if(TreeItem->IsUAssetMissing())
 	{
 		return LOCTEXT("UAssetStatusMissing", "UAsset Missing");
@@ -69,6 +77,8 @@ FName FSoundBankStatusColumn::GetColumnId()
 const TSharedRef<SWidget> FSoundBankStatusColumn::ConstructRowWidget(FWwiseTreeItemPtr TreeItem,
 	const STableRow<FWwiseTreeItemPtr>& Row)
 {
+	bool bRequiresAttention = TreeItem->IsUnusedItem();
+
 	return SNew(SHorizontalBox)
 		+ SHorizontalBox::Slot()
 		.AutoWidth()
@@ -82,7 +92,7 @@ const TSharedRef<SWidget> FSoundBankStatusColumn::ConstructRowWidget(FWwiseTreeI
 		[
 			SNew(STextBlock)
 			.Text(GetDisplayedName(TreeItem))
-			.ColorAndOpacity(WwiseBrowserHelpers::GetTextColor(TreeItem->IsUAssetUpToDate()))
+			.ColorAndOpacity(WwiseBrowserHelpers::GetTextColor(TreeItem->IsUAssetUpToDate(), bRequiresAttention))
 		];
 }
 

@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 using UnrealBuildTool;
@@ -25,7 +25,7 @@ public class WwiseFileHandler : ModuleRules
 		
 		PublicDefinitions.AddRange(new string[]
 		{
-			"AK_ENABLE_BANK_MGR_THREAD=0"
+			"AK_ENABLE_BANK_MGR_THREAD=(!WWISE_2025_1_OR_LATER)"
 		});
 
 		PublicDependencyModuleNames.AddRange(new string[] {
@@ -36,9 +36,15 @@ public class WwiseFileHandler : ModuleRules
 
 		if (Target.bCompileAgainstCoreUObject)
 		{
-			PublicDependencyModuleNames.AddRange(new string[]
-			{
+			PublicDependencyModuleNames.AddRange(new string[] {
 				"WwiseObjectUtils"
+			});
+		}
+		
+		if (Target.bCompileAgainstEngine)
+		{
+			PublicDependencyModuleNames.AddRange(new string[] {
+				"WwiseEngineUtils"
 			});
 		}
 

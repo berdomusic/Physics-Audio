@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Packaging/WwiseAssetLibraryDetailsCustomization.h"
@@ -31,6 +31,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include <inttypes.h>
 
 #include "ISettingsModule.h"
+#include "WwiseUEFeatures.h"
 #include "Widgets/Input/SSearchBox.h"
 #include "Widgets/Input/SCheckBox.h"
 #include "Widgets/Input/SButton.h"
@@ -38,6 +39,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "Wwise/WwiseGuidConverter.h"
 #include "Wwise/Metadata/WwiseMetadataLanguage.h"
 #include "Wwise/Packaging/WwisePackagingSettings.h"
+#include "Wwise/Packaging/WwisePackagingUtils.h"
 
 #define LOCTEXT_NAMESPACE "WwisePackaging"
 
@@ -119,6 +121,35 @@ void FWwiseAssetLibraryDetailsCustomization::CustomizeDetails(IDetailLayoutBuild
 	PreviewCategory.AddCustomRow(LOCTEXT("FilteredAssets", "Filtered Assets"))
 	[
 		SNew(SVerticalBox)
+			+ SVerticalBox::Slot()
+			.AutoHeight()
+			.Padding(0.f, 10.f, 0.f, 10.f)
+			.HAlign(HAlign_Center)
+			.VAlign(VAlign_Top)
+			[
+				SNew(SHorizontalBox)
+				.IsEnabled_Raw(this, &FWwiseAssetLibraryDetailsCustomization::IsLibraryUnusedEnabled)
+				.Visibility_Raw(this, &FWwiseAssetLibraryDetailsCustomization::IsLibraryUnusedVisible)
+				+ SHorizontalBox::Slot()
+				.AutoWidth()
+				.HAlign(HAlign_Left)
+				.VAlign(VAlign_Top)
+				.Padding(0.f, 0.f, 2.f, 0.f)
+			[
+				SNew(SImage)
+				.Image(FAkAppStyle::Get().GetBrush("Icons.Warning"))
+				.ColorAndOpacity(FSlateColor(FColor::Yellow))
+			]
+			+ SHorizontalBox::Slot()
+			.AutoWidth()
+			.HAlign(HAlign_Left)
+			.VAlign(VAlign_Top)
+			[
+				SNew(STextBlock)
+				.Text(LOCTEXT("LibraryUnused", "This Library is not set in a Library Group"))
+				.ColorAndOpacity(FSlateColor(FColor::Yellow))
+			]
+		]
 		+ SVerticalBox::Slot()
 			.AutoHeight()
 			[
@@ -143,7 +174,7 @@ void FWwiseAssetLibraryDetailsCustomization::CustomizeDetails(IDetailLayoutBuild
 							.IsEnabled_Raw(this, &FWwiseAssetLibraryDetailsCustomization::IsHonorPackagingSettingsEnabled)
 							.IsChecked_Raw(this, &FWwiseAssetLibraryDetailsCustomization::IsHonorPackagingSettingsChecked)
 							.OnCheckStateChanged_Raw(this, &FWwiseAssetLibraryDetailsCustomization::HonorPackagingSettingsStateChanged)
-							.ToolTipText(LOCTEXT("HonorPackagingSettingsTooltip", "Display the actual contents of the Asset Library, according to its placement in the Asset Library list in the Wwise Packaging settings."))
+							.ToolTipText(LOCTEXT("HonorPackagingSettingsTooltip", "Display the actual contents of the Asset Library, according to its placement in its Asset Library Group."))
 							.Padding(4.f)
 							[
 								SNew(SHorizontalBox)
@@ -152,7 +183,7 @@ void FWwiseAssetLibraryDetailsCustomization::CustomizeDetails(IDetailLayoutBuild
 									.AutoWidth()
 									[
 										SNew(STextBlock)
-											.Text(LOCTEXT("HonorPackagingSettingsText", "Apply Wwise Packaging Settings"))
+											.Text(LOCTEXT("HonorPackagingSettingsText", "Apply Asset Library Group"))
 									]
 								+ SHorizontalBox::Slot()
 									.AutoWidth()
@@ -509,6 +540,78 @@ void FWwiseAssetLibraryDetailsCustomization::OnSortModeChanged(EColumnSortPriori
 	ApplySearchAndSort();
 }
 
+void FWwiseAssetLibraryDetailsCustomization::SetGameplayModulesTargeted(TArray<FString>& PackagePaths, TArray<FString>& ExcludedGameplayModules) const
+{
+	auto& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry").Get();
+	TArray<FName> References;
+	if (GetFilterableAssetLibrary() == nullptr)
+	{
+		return;
+	}
+	
+	if (GetFilterableAssetLibrary()->GetPackage() == nullptr)
+	{
+			return;
+	}
+
+	AssetRegistryModule.GetReferencers(*GetFilterableAssetLibrary()->GetPackage()->GetName(), References);
+	//The Asset Library is not used in a Group. Consider assets from its gameplay module
+	if (References.IsEmpty())
+	{
+		PackagePaths.Add(*GetFilterableAssetLibrary()->GetPackage()->GetName());
+		return;
+	}
+	FARFilter Filter;
+	Filter.ClassPaths.Add(UWwiseAssetLibraryGroup::StaticClass()->GetClassPathName());
+	Filter.bRecursiveClasses = true;
+
+	TArray<FAssetData> FilterGroups;
+	AssetRegistryModule.GetAssets(Filter, FilterGroups);
+	TArray<FString> VisitedGameplayModules;
+	bool bIsDefault = true;
+	FString DefaultGroupName;
+	if (UWwisePackagingSettings* PackagingSettings = GetMutableDefault<UWwisePackagingSettings>())
+	{
+		DefaultGroupName = PackagingSettings->DefaultAssetLibraryGroup.GetLongPackageName();
+	}
+	for (auto& Reference : FilterGroups)
+	{
+		bool bCurrentRefIsDefault = false;
+		if (References.Contains(Reference.PackageName))
+		{
+			if (Reference.PackageName != DefaultGroupName)
+			{
+				PackagePaths.Add(Reference.PackageName.ToString());
+				bIsDefault = false;
+				break;
+			}
+			else
+			{
+				bCurrentRefIsDefault = true;
+			}
+		}
+		if(!bCurrentRefIsDefault)
+		{
+			VisitedGameplayModules.Add(Reference.PackageName.ToString());		
+		}
+	}
+
+	if (bIsDefault)
+	{
+		ExcludedGameplayModules.Append(VisitedGameplayModules);
+	}
+
+	if (PackagePaths.IsEmpty() && !bIsDefault)
+	{
+		PackagePaths.Add(GetFilterableAssetLibrary()->GetPathName());
+	}
+}
+
+EVisibility FWwiseAssetLibraryDetailsCustomization::IsLibraryUnusedVisible() const
+{
+	return IsLibraryUnusedEnabled() ? EVisibility::Visible : EVisibility::Hidden;
+}
+
 void FWwiseAssetLibraryDetailsCustomization::RebuildFilteredAssets()
 {
 	// Don't rebuild twice in a row
@@ -518,62 +621,65 @@ void FWwiseAssetLibraryDetailsCustomization::RebuildFilteredAssets()
 	}
 	bRebuildAlreadyRequested = true;
 
+	TArray<FString> PackagePaths;
 	TArray<FAssetData> AssetsData;
-	FWwiseAssetLibraryProcessor::GetRelevantAssets(GetFilterableAssetLibrary()->GetPathName(), AssetsData);
+	TArray<FString> ExcludedGameplayModules;
+	SetGameplayModulesTargeted(PackagePaths, ExcludedGameplayModules);
 
-	AsyncTask(ENamedThreads::GameThread, [this, IsAliveRefCopy = IsAliveRef, AssetsData]() mutable
+	FWwiseAssetLibraryProcessor::GetRelevantAssets(PackagePaths, AssetsData, ExcludedGameplayModules);
+
+	AsyncTask(ENamedThreads::GameThread, [SharedThis = SharedThis(this), IsAliveRefCopy = IsAliveRef, AssetsData]() mutable
 	{
 		if (UNLIKELY(!*IsAliveRefCopy))
 		{
 			return;
 		}
-		
-		ClaimWorkingThread();
-		if (!WeakDetailBuilder.IsValid())
+		SharedThis->ClaimWorkingThread();
+		if (!SharedThis->WeakDetailBuilder.IsValid())
 		{
-			ReleaseWorkingThread();
+			SharedThis->ReleaseWorkingThread();
 			return;
 		}
 
-		if (UWwiseFilterableAssetLibrary* AssetLibrary { GetFilterableAssetLibrary() })
+		if (UWwiseFilterableAssetLibrary* AssetLibrary { SharedThis->GetFilterableAssetLibrary() })
 		{
 			AssetLibrary->Info.PreloadFilters();
 		}
 
-		ReleaseWorkingThread();
-		UE::Tasks::Launch(TEXT("FWwiseAssetLibraryDetailsCustomization::RebuildFilteredAssets"), [this, IsAliveRefCopy = IsAliveRef, AssetsData]
+		SharedThis->ReleaseWorkingThread();
+		UE::Tasks::Launch(TEXT("FWwiseAssetLibraryDetailsCustomization::RebuildFilteredAssets"), [SharedThis, IsAliveRefCopy = SharedThis->IsAliveRef, AssetsData]
 		{
 			if (UNLIKELY(!*IsAliveRefCopy))
 			{
 				return;
 			}
-			ClaimWorkingThread();
-			bRebuildAlreadyRequested = false;
+			SharedThis->ClaimWorkingThread();
+			SharedThis->bRebuildAlreadyRequested = false;
 
-			if (!WeakDetailBuilder.IsValid())
+			if (!SharedThis->WeakDetailBuilder.IsValid())
 			{
-				ReleaseWorkingThread();
+				SharedThis->ReleaseWorkingThread();
 				return;
 			}
 
-			UWwiseFilterableAssetLibrary* AssetLibrary { GetFilterableAssetLibrary() };
+			UWwiseFilterableAssetLibrary* AssetLibrary { SharedThis->GetFilterableAssetLibrary() };
 			if (!AssetLibrary)
 			{
-				ReleaseWorkingThread();
+				SharedThis->ReleaseWorkingThread();
 				return;
 			}
 
 			TUniquePtr<FWwiseAssetLibraryFilteringSharedData> FilteringSharedData;
 			
 			const bool bResult {
-				CalculateFilteredAssets(AssetLibrary, FilteringSharedData, AssetsData)
-				&& CopyFilteredAssets(FilteringSharedData)
+				SharedThis->CalculateFilteredAssets(AssetLibrary, FilteringSharedData, AssetsData)
+				&& SharedThis->CopyFilteredAssets(FilteringSharedData)
 			};
-			ReleaseWorkingThread();
+			SharedThis->ReleaseWorkingThread();
 
 			if (bResult)
 			{
-				ApplySearchAndSort();
+				SharedThis->ApplySearchAndSort();
 			}
 		});
 	});
@@ -825,14 +931,14 @@ void FWwiseAssetLibraryDetailsCustomization::ApplySearchAndSort()
 			});
 		}
 
-		AsyncTask(ENamedThreads::GameThread, [this, NewDisplayedAssets = MoveTemp(NewDisplayedAssets), IsAliveRefCopy = IsAliveRef]() mutable
+		AsyncTask(ENamedThreads::GameThread, [SharedThis = SharedThis(this), NewDisplayedAssets = MoveTemp(NewDisplayedAssets), IsAliveRefCopy = IsAliveRef]() mutable
 		{
 			if (UNLIKELY(!*IsAliveRefCopy))
 			{
 				return;
 			}
-			DisplayedAssets = MoveTemp(NewDisplayedAssets);
-			RefreshTree();
+			SharedThis->DisplayedAssets = MoveTemp(NewDisplayedAssets);
+			SharedThis->RefreshTree();
 		});
 		
 		ReleaseWorkingThread();
@@ -876,39 +982,33 @@ void FWwiseAssetLibraryDetailsCustomization::UpdateAssetLibraryInSettings(const 
 
 	bool bNewValue{ false };
 	
-	if (PackagingSettings->bPackageAsBulkData)
+	auto AssetRegistryModule = &FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+	FARFilter Filter;
+	Filter.ClassPaths.Add(UWwiseAssetLibraryGroup::StaticClass()->GetClassPathName());
+	Filter.bRecursivePaths = true;
+	Filter.PackagePaths.Add(*WwisePackagingUtils::GetGameplayModuleRoot(GetFilterableAssetLibrary()->GetPackage()->GetName()));
+	TArray<FAssetData> FilterGroups;
+	AssetRegistryModule->Get().GetAssets(Filter, FilterGroups);
+	for (auto& Reference : FilterGroups)
 	{
-		for (auto& AssetLibrarySoftPtr : PackagingSettings->AssetLibraries)
+		if (auto* Asset = (UWwiseAssetLibraryGroup*)Reference.GetAsset())
 		{
-			if (AssetLibrarySoftPtr.IsNull())
+			for (auto& Library : Asset->Libraries)
 			{
-				continue;
+				if (GetFilterableAssetLibrary() == Library)
+				{
+					bAssetLibraryInSettings = true;
+					LibraryGroup = Asset;
+					break;
+				}
 			}
-
-			UWwiseAssetLibrary* PackagedAssetLibrary;
-			if (!AssetLibrarySoftPtr.IsValid())
+			if (bAssetLibraryInSettings)
 			{
-				PackagedAssetLibrary = AssetLibrarySoftPtr.LoadSynchronous();
-			}
-			else
-			{
-				PackagedAssetLibrary = AssetLibrarySoftPtr.Get();
-			}
-			
-			if (!PackagedAssetLibrary)
-			{
-				continue;
-			}
-
-			if (PackagedAssetLibrary == AssetLibrary)
-			{
-				bNewValue = true;
-				// Do not break here. We must Get() all of the Asset Libraries in game thread.
+				break;
 			}
 		}
 	}
 	
-	bAssetLibraryInSettings = bNewValue;
 	if(bAssetLibraryInSettings)
 	{
 		RebuildFilteredAssets();
@@ -957,11 +1057,16 @@ void FWwiseAssetLibraryDetailsCustomization::FilterPackagingSettings(FWwiseAsset
 	{
 		return;
 	}
-	const auto& AssetLibraryArray{ PackagingSettings->AssetLibraries };
+	if (LibraryGroup == nullptr)
+	{
+		return;
+	}
+
+	const auto& AssetLibraryArray{ LibraryGroup->Libraries };
 	for (int Iter = 0; Iter < AssetLibraryArray.Num(); ++Iter)
 	{
 		const auto& AssetLibrarySoftPtr { AssetLibraryArray[Iter] };
-		if (AssetLibrarySoftPtr.IsNull())
+		if (AssetLibrarySoftPtr == nullptr)
 		{
 			continue;
 		}
@@ -979,6 +1084,11 @@ void FWwiseAssetLibraryDetailsCustomization::FilterPackagingSettings(FWwiseAsset
 		Processor->FilterLibraryAssets(*FilteringSharedData, AssetLibraryPtr->Info,
 			!AssetLibraryPtr->bFallthrough && Iter < AssetLibraryArray.Num() - 1, false);
 	}
+}
+
+bool FWwiseAssetLibraryDetailsCustomization::IsLibraryUnusedEnabled() const
+{
+	return LibraryGroup == nullptr;
 }
 
 void FWwiseAssetLibraryDetailsCustomization::ClaimWorkingThread()

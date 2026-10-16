@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -43,6 +43,7 @@ namespace WwiseBrowserHelpers
 		FString RelativePackagePath;
 		FString Name;
 		FGuid WwiseObjectGuid;
+		FWwiseTreeItemPtr TreeItem;
 	};
 
 	enum EAssetCreationMode
@@ -99,9 +100,9 @@ namespace WwiseBrowserHelpers
 
 	UAkAssetFactory* GetAssetFactory(const FWwiseTreeItemPtr& WwiseTreeItem);
 
-	EWwiseItemType::Type GetTypeFromClass(UClass* Class);
+	EWwiseItemType GetTypeFromClass(UClass* Class);
 	bool CanCreateAsset(const FWwiseTreeItemPtr& Item);
-	FLinearColor GetTextColor(bool UpToDate);
+	FLinearColor GetTextColor(bool bUpToDate, bool bRequireAttention = false);
 
 	const FName WwiseBrowserColumnId = TEXT("WwiseItem");
 }

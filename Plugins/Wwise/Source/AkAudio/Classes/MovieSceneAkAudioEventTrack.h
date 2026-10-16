@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -44,8 +44,8 @@ public:
 	}
 
 	AKAUDIO_API virtual UMovieSceneSection* CreateNewSection() override;
-	virtual bool SupportsMultipleRows() const override { return true; }
-	virtual bool SupportsType(TSubclassOf<UMovieSceneSection> SectionClass) const override;
+	AKAUDIO_API virtual bool SupportsMultipleRows() const override { return true; }
+	AKAUDIO_API virtual bool SupportsType(TSubclassOf<UMovieSceneSection> SectionClass) const override;
 
 	AKAUDIO_API virtual FName GetTrackName() const override;
 
@@ -54,9 +54,9 @@ public:
 #endif
 
 #if WITH_EDITOR
-	AKAUDIO_API bool AddNewEvent(FFrameNumber Time, UAkAudioEvent* Event);
+	virtual AKAUDIO_API bool AddNewEvent(FFrameNumber Time, UAkAudioEvent* Event);
 
-    void WorkUnitChangesDetectedFromSection(UMovieSceneAkAudioEventSection* in_pSection);
+    AKAUDIO_API void WorkUnitChangesDetectedFromSection(UMovieSceneAkAudioEventSection* in_pSection);
 #endif
 
 protected:

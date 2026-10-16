@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ public:
 	/** The path of the tree item including the name */
 	FString FolderPath;
 	/** Type of the item */
-	EWwiseItemType::Type ItemType = EWwiseItemType::None;
+	EWwiseItemType ItemType = EWwiseItemType::None;
 	/** Id of the item */
 	FGuid ItemId;
 	/** ShortId of the item*/
@@ -113,6 +113,8 @@ public:
 
 	bool IsUAssetMissing() const;
 
+	bool IsInWAAPIAndUnreal() const;
+
 	bool IsUAssetOrphaned() const;
 
 	bool IsNotInSoundBankOrUnreal() const;
@@ -129,6 +131,14 @@ public:
 
 	bool IsFolder() const;
 
+	bool IsInGroup() const;
+
+	bool IsUnusedEffect() const;
+
+	bool IsUnusedTrigger() const;
+
+	bool IsUnusedItem() const;
+
 	bool IsAuxBus() const;
 
 	bool ShouldDisplayInfo() const;
@@ -144,7 +154,7 @@ public:
 	const FString GetDefaultAssetName() const;
 
 	/** Constructor */
-	FWwiseTreeItem(FString InDisplayName, FString InFolderPath, TSharedPtr<FWwiseTreeItem> InParent, EWwiseItemType::Type InItemType, const FGuid& InItemId, uint32 InShortId = AK_INVALID_UNIQUE_ID)
+	FWwiseTreeItem(FString InDisplayName, FString InFolderPath, TSharedPtr<FWwiseTreeItem> InParent, EWwiseItemType InItemType, const FGuid& InItemId, uint32 InShortId = AK_INVALID_UNIQUE_ID)
 		: DisplayName(MoveTemp(InDisplayName))
 		, FolderPath(MoveTemp(InFolderPath))
 		, ItemType(MoveTemp(InItemType))
@@ -156,7 +166,7 @@ public:
 	}
 
 #if WITH_EDITORONLY_DATA
-	FWwiseTreeItem(const WwiseMetadataBasicReference& ItemRef, TSharedPtr<FWwiseTreeItem> InParent, EWwiseItemType::Type InItemType)
+	FWwiseTreeItem(const WwiseMetadataBasicReference& ItemRef, TSharedPtr<FWwiseTreeItem> InParent, EWwiseItemType InItemType)
 		: ItemType(InItemType)
 		, ChildCountInWwise(m_Children.Num())
 		, Parent(MoveTemp(InParent))
@@ -188,9 +198,9 @@ public:
 
 	bool IsBrowserType() const;
 
-	bool IsOfType(const TArray<EWwiseItemType::Type>& Types) const;
+	bool IsOfType(const TArray<EWwiseItemType>& Types) const;
 
-	bool IsNotOfType(const TArray<EWwiseItemType::Type>& Types) const;
+	bool IsNotOfType(const TArray<EWwiseItemType>& Types) const;
 
 	/** Returns the child item by name or NULL if the child does not exist */
 	TSharedPtr<FWwiseTreeItem> GetChild(const FString& InChildName);

@@ -12,13 +12,14 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkUnrealAssetDataHelper.h"
 #include "Wwise/WwiseReconcile.h"
 #include "AkAudioEvent.h"
 #include "AkAuxBus.h"
+#include "AkDialogueEvent.h"
 #include "AkEffectShareSet.h"
 #include "AkGroupValue.h"
 #include "AkSettings.h"
@@ -34,18 +35,30 @@ Copyright (c) 2025 Audiokinetic Inc.
 
 namespace AkUnrealAssetDataHelper
 {
-	bool IsSameType(const FAssetData& AssetData, EWwiseItemType::Type ItemType)
+	bool IsSameType(const FAssetData& AssetData, EWwiseItemType ItemType)
 	{
+		if (ItemType == EWwiseItemType::Event)
+		{
+			UClass* Class = AssetData.GetClass();
+			if (Class && Class->IsChildOf(UAkAudioEvent::StaticClass()))
+			{
+				return true;
+			}
+		}
+		
 		return GetUClassName(ItemType) == GetAssetClassName(AssetData);
 	}
 
-	FName GetUClassName(EWwiseItemType::Type ItemType)
+	FName GetUClassName(EWwiseItemType ItemType)
 	{
 		UClass* Class = nullptr;
 		switch (ItemType)
 		{
 		case EWwiseItemType::Event:
 			Class = UAkAudioEvent::StaticClass();
+			break;
+		case EWwiseItemType::DialogueEvent:
+			Class = UAkDialogueEvent::StaticClass();
 			break;
 		case EWwiseItemType::AuxBus:
 			Class = UAkAuxBus::StaticClass();
@@ -126,7 +139,24 @@ namespace AkUnrealAssetDataHelper
 		{
 			DefaultPath = DefaultPath.Left(Index);
 		}
-		return UPackageTools::SanitizePackageName(DefaultPath);;
+		return UPackageTools::SanitizePackageName(DefaultPath);
+	}
+
+	FString GetAssetDefaultPackagePath(const TSharedPtr<FWwiseTreeItem> WwiseTreeItem)
+	{
+		auto AkSettings = GetDefault<UAkSettings>();
+		if (LIKELY(AkSettings))
+		{
+			FString DefaultPath = AkSettings->DefaultAssetCreationPath / WwiseTreeItem->FolderPath;
+			DefaultPath.ReplaceCharInline('\\', '/');
+			int32 Index;
+			if(DefaultPath.FindLastChar('/', Index))
+			{
+				DefaultPath = DefaultPath.Left(Index);
+			}
+			return UPackageTools::SanitizePackageName(DefaultPath);
+		}
+		return FPaths::ProjectContentDir();
 	}
 
 	FName GetAssetDefaultName(const FAssetData& AssetData)
@@ -154,6 +184,7 @@ namespace AkUnrealAssetDataHelper
 		case WwiseRefType::GameParameter:
 		case WwiseRefType::PluginShareSet:
 		case WwiseRefType::Trigger:
+		case WwiseRefType::DialogueEvent:
 			return WwiseName;
 
 		case WwiseRefType::Switch:

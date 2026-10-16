@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseSoundBankManagerImpl.h"
@@ -32,7 +32,8 @@ FWwiseSoundBankManagerImpl::~FWwiseSoundBankManagerImpl()
 void FWwiseSoundBankManagerImpl::LoadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, FLoadSoundBankCallback&& InCallback)
 {
 	SCOPED_WWISEFILEHANDLER_EVENT_4(TEXT("FWwiseSoundBankManagerImpl::LoadSoundBank"));
-	IncrementFileStateUseAsync(InSoundBankCookedData.SoundBankId, EWwiseFileStateOperationOrigin::Loading, [WeakThis=AsWeak(), InSoundBankCookedData]() mutable
+	auto ShortId = HashCombine(InSoundBankCookedData.SoundBankId, (int32)InSoundBankCookedData.SoundBankType);
+	IncrementFileStateUseAsync(ShortId, EWwiseFileStateOperationOrigin::Loading, [WeakThis=AsWeak(), InSoundBankCookedData]() mutable
 	{
 		LLM_SCOPE_BYTAG(Audio_Wwise_FileHandler_SoundBanks);
 		auto SharedSoundBankManager = StaticCastSharedPtr<FWwiseSoundBankManagerImpl>(WeakThis.Pin());
@@ -52,13 +53,33 @@ void FWwiseSoundBankManagerImpl::LoadSoundBank(const FWwiseSoundBankCookedData& 
 void FWwiseSoundBankManagerImpl::UnloadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, FUnloadSoundBankCallback&& InCallback)
 {
 	SCOPED_WWISEFILEHANDLER_EVENT_4(TEXT("FWwiseSoundBankManagerImpl::UnloadSoundBank"));
-	DecrementFileStateUseAsync(InSoundBankCookedData.SoundBankId, nullptr, EWwiseFileStateOperationOrigin::Loading, MoveTemp(InCallback));
+	auto ShortId = HashCombine(InSoundBankCookedData.SoundBankId, (int32)InSoundBankCookedData.SoundBankType);
+	DecrementFileStateUseAsync(ShortId, nullptr, EWwiseFileStateOperationOrigin::Loading, MoveTemp(InCallback));
 }
 
 void FWwiseSoundBankManagerImpl::SetGranularity(uint32 InStreamingGranularity)
 {
 	SCOPED_WWISEFILEHANDLER_EVENT_4(TEXT("FWwiseSoundBankManagerImpl::SetGranularity"));
 	StreamingGranularity = InStreamingGranularity;
+}
+
+void FWwiseSoundBankManagerImpl::DoPostTerm()
+{
+	for (auto FileStateTuple : FileStatesById)
+	{
+		auto& FileStateSharedPtr{ FileStateTuple.Value };
+		if (!FileStateSharedPtr.IsValid())
+		{
+			continue;
+		}
+		auto& FileState = *FileStateSharedPtr.Get();
+		if (FileState.State != FWwiseFileState::EState::Loaded && FileState.State != FWwiseFileState::EState::Unloading)
+		{
+			continue;
+		}
+
+		FileState.SetState(TEXT("FWwiseSoundBankManagerImpl::DoPostTerm"), FWwiseFileState::EState::Opened);
+	}
 }
 
 FWwiseFileStateSharedPtr FWwiseSoundBankManagerImpl::CreateOp(const FWwiseSoundBankCookedData& InSoundBankCookedData)

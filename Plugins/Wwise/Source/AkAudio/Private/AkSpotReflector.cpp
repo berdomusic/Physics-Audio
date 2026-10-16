@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkSpotReflector.h"
@@ -43,6 +43,7 @@ AAkSpotReflector::AAkSpotReflector(const FObjectInitializer& ObjectInitializer)
 		SpriteComponent->SetSprite(LoadObject<UTexture2D>(NULL, TEXT("/Wwise/S_AkSpotReflector.S_AkSpotReflector")));
 		SpriteComponent->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 		SpriteComponent->SetupAttachment(RootComponent);
+		SpriteComponent->bIsScreenSizeScaled = true;
 	}
 #endif
 
@@ -114,6 +115,7 @@ AkAuxBusID AAkSpotReflector::GetAuxBusID() const
 
 void AAkSpotReflector::SetImageSource(UAkComponent* AkComponent)
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("AAkSpotReflector::SetImageSource"));
 	FAkAudioDevice* pDev = FAkAudioDevice::Get();
 	if (!pDev)
 		return;
@@ -157,6 +159,7 @@ void AAkSpotReflector::SetImageSource(UAkComponent* AkComponent)
 
 void AAkSpotReflector::UpdateSpotReflectors(UAkComponent* AkComponent)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("AAkSpotReflector::UpdateSpotReflectors"));
 	FAkAudioDevice* pDev = FAkAudioDevice::Get();
 	if (pDev)
 	{

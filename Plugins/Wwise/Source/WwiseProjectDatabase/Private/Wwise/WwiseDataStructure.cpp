@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseDataStructure.h"
@@ -508,6 +508,10 @@ WwisePlatformDataStructure::WwisePlatformDataStructure(const WwiseDBSharedPlatfo
                             AddBasicRefToMap(DialogueArguments, WwiseRefDialogueArgument(SharedRootFile, JsonFilePath, SoundBankIndex, LanguageId, DialogueEventIndex, DialogueArgumentIndex), DialogueArgument);
                         }
                     }
+                    if (SoundBank.DialogueEvents.Size() > 0)
+                    {
+                        AddMediaCount(SoundBank.Media);
+                    }
 
                     // We have multiple copies of the Busses. We currently want the Init Bank version.
                     if (SoundBank.IsInitBank())
@@ -892,6 +896,22 @@ bool WwisePlatformDataStructure::GetFromId(WwiseRefMedia& OutRef, WwiseDBShortId
     }
 
     return true;
+}
+
+void WwisePlatformDataStructure::AddMediaCount(const WwiseDBArray<WwiseMetadataMedia>& InMedia)
+{
+    for (const auto& Media : InMedia)
+    {
+        const WwiseDatabaseLocalizableIdKey MediaId{ Media.Id, 0 };
+        if (auto CountPtr = MediaUsageCount.Find(MediaId.Id))
+        {
+            ++(*CountPtr);
+        }
+        else
+        {
+            MediaUsageCount.Add(MediaId.Id, 1);
+        }
+    }
 }
 
 void WwisePlatformDataStructure::AddMediaRefsCount(const WwiseDBArray<WwiseMetadataMediaReference>& InMediaRefs)

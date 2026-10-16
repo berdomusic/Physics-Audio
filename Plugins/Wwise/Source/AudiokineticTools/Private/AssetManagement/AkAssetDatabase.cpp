@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AssetManagement/AkAssetDatabase.h"
@@ -26,6 +26,8 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "AkTrigger.h"
 #include "WwiseUnrealHelper.h"
 #include "AkAudioDevice.h"
+#include "AkAudioNode.h"
+#include "AkDialogueEvent.h"
 #include "AkSettingsPerUser.h"
 #include "IAudiokineticTools.h"
 #include "AssetRegistry/AssetRegistryModule.h"
@@ -211,6 +213,8 @@ bool AkAssetDatabase::IsAkAudioType(const FAssetData& AssetData)
 	static const TArray<FTopLevelAssetPath> AkAudioClassPaths = {
 		UAkAcousticTexture::StaticClass()->GetClassPathName(),
 		UAkAudioEvent::StaticClass()->GetClassPathName(),
+		UAkAudioNode::StaticClass()->GetClassPathName(),
+		UAkDialogueEvent::StaticClass()->GetClassPathName(),
 		UAkAuxBus::StaticClass()->GetClassPathName(),
 		UAkRtpc::StaticClass()->GetClassPathName(),
 		UAkStateValue::StaticClass()->GetClassPathName(),
@@ -220,6 +224,11 @@ bool AkAssetDatabase::IsAkAudioType(const FAssetData& AssetData)
 
 	if (AkAudioClassPaths.Contains(AssetData.AssetClassPath))
 		return true;
+
+	UClass* const assetClass = AssetData.GetClass();
+	if (assetClass && assetClass->IsChildOf<UAkAudioEvent>())
+		return true;
+	
 	return false;
 }
 

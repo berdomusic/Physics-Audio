@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseSoundBankFileState.h"
@@ -24,6 +24,8 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "Async/Async.h"
 
 #include <inttypes.h>
+
+#include "WwiseDefines.h"
 
 FWwiseSoundBankFileState::FWwiseSoundBankFileState(const FWwiseSoundBankCookedData& InCookedData):
 	FWwiseSoundBankCookedData(InCookedData)
@@ -123,8 +125,7 @@ void FWwiseInMemorySoundBankFileState::LoadInSoundEngine(FLoadInSoundEngineCallb
 		Cookie->Callback = MoveTemp(InCallback);
 		AKRESULT LoadResult;
 
-#if AK_ENABLE_BANK_MGR_THREAD
-		if (FPlatformProcess::SupportsMultithreading())
+		if (FPlatformProcess::SupportsMultithreading() && (WWISE_2025_1_OR_LATER || AK_ENABLE_BANK_MGR_THREAD))
 		{
 			if (LoadAsMemoryView())
 			{
@@ -146,9 +147,13 @@ void FWwiseInMemorySoundBankFileState::LoadInSoundEngine(FLoadInSoundEngineCallb
 				LoadInSoundEngineFailed(MoveTemp(Callback));
 				return;
 			}
+
+			if (auto* FileHandler = IWwiseFileHandlerModule::GetModule())
+			{
+				FileHandler->RequestProcessBanks();
+			}
 		}
 		else
-#endif
 		{
 			if (LoadAsMemoryView())
 			{
@@ -203,24 +208,27 @@ void FWwiseInMemorySoundBankFileState::UnloadFromSoundEngine(FUnloadFromSoundEng
 		Cookie->Callback = MoveTemp(InCallback);
 		AKRESULT Result;
 
-#if AK_ENABLE_BANK_MGR_THREAD
-		if (FPlatformProcess::SupportsMultithreading())
+		if (FPlatformProcess::SupportsMultithreading() && (WWISE_2025_1_OR_LATER || AK_ENABLE_BANK_MGR_THREAD))
 		{
 			Result = SoundEngine->UnloadBank(SoundBankId, Ptr, &FWwiseInMemorySoundBankFileState::BankUnloadCallback, Cookie, static_cast<AkBankType>(SoundBankType));
+			if(Result != AK_Success)
+			{
+				UE_LOG(LogWwiseFileHandler, Log, TEXT("FWwiseInMemorySoundBankFileState::UnloadFromSoundEngine %" PRIu32 " (%s): Call to SoundEngine failed with result %s"), SoundBankId, *DebugName.ToString(), WwiseUnrealHelper::GetResultString(Result));
+				auto Callback = MoveTemp(Cookie->Callback);
+				delete Cookie;
+				UnloadFromSoundEngineToClosedFile(MoveTemp(Callback));
+				return;
+			}
+
+			if (auto* FileHandler = IWwiseFileHandlerModule::GetModule())
+			{
+				FileHandler->RequestProcessBanks();
+			}
 		}
 		else
-#endif
 		{
 			Result = SoundEngine->UnloadBank(SoundBankId, Ptr, static_cast<AkBankType>(SoundBankType));
 			BankUnloadCallback(SoundBankId, Ptr, Result, Cookie); 
-		}
-		if(Result != AK_Success)
-		{
-			UE_LOG(LogWwiseFileHandler, Log, TEXT("FWwiseInMemorySoundBankFileState::UnloadFromSoundEngine %" PRIu32 " (%s): Call to SoundEngine failed with result %s"), SoundBankId, *DebugName.ToString(), WwiseUnrealHelper::GetResultString(Result));
-			auto Callback = MoveTemp(Cookie->Callback);
-			delete Cookie;
-			UnloadFromSoundEngineToClosedFile(MoveTemp(Callback));
-			return;
 		}
 	});
 }

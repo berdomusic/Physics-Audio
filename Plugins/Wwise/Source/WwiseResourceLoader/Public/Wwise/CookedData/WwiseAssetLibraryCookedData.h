@@ -12,11 +12,12 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
 
+#include "WwiseCookEventContext.h"
 #include "Wwise/WwisePackagedFile.h"
 
 #include "WwiseAssetLibraryCookedData.generated.h"
@@ -33,7 +34,7 @@ public:
 	virtual void Serialize(FArchive& Ar);
 	virtual void SerializeBulkData(FArchive& Ar, const FWwisePackagedFileSerializationOptions& Options);
 #if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-	void PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const;
+	void GetPlatformCookDependencies(FWwiseCookEventContext& Context, FCbWriter& Writer) const;
 #endif
 
 	virtual FString GetDebugString() const;

@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/AudioLink/WwiseAudioLinkSynchronizer.h"
@@ -61,7 +61,7 @@ bool FWwiseAudioLinkSynchronizer::ExecuteOpenStream()
 	AkAudioSettings Settings;
 	SoundEngine->GetAudioSettings(Settings);					
 	const AkChannelConfig SinkConfig = SoundEngine->GetSpeakerConfiguration();
-
+	
 	FOnOpenStreamParams Params;
 	if (!SinkConfig.IsValid())
 	{
@@ -72,12 +72,12 @@ bool FWwiseAudioLinkSynchronizer::ExecuteOpenStream()
 		Params.Name = TEXT("AudioLink for Wwise (Invalid)");
 		return false;
 	}
-
+	
 	Params.NumChannels = SinkConfig.uNumChannels;
 	Params.SampleRate = Settings.uNumSamplesPerSecond;
 	Params.NumFrames = Settings.uNumSamplesPerFrame;
 	Params.Name = TEXT("AudioLink for Wwise");
-
+	
 	OnOpenStream.Broadcast(Params);
 
 	return true;
@@ -127,11 +127,11 @@ bool FWwiseAudioLinkSynchronizer::Bind()
 		{
 			return EWwiseDeferredAsyncResult::Done;
 		}
-
+	
 		This->ExecuteBeginRender(InContext);
 		return EWwiseDeferredAsyncResult::KeepRunning;
 	});
-
+	
 	Callbacks->EndRenderSync([WeakThis = AsWeak()](AK::IAkGlobalPluginContext* InContext) mutable
 	{
 		auto This = WeakThis.Pin();
@@ -139,11 +139,11 @@ bool FWwiseAudioLinkSynchronizer::Bind()
 		{
 			return EWwiseDeferredAsyncResult::Done;
 		}
-
+	
 		This->ExecuteEndRender(InContext);
 		return EWwiseDeferredAsyncResult::KeepRunning;
 	});
-
+	
 	if (SoundEngine->IsInitialized())
 	{
 		if (!ExecuteOpenStream())
@@ -152,6 +152,11 @@ bool FWwiseAudioLinkSynchronizer::Bind()
 			return false;
 		}
 	}
+	else
+	{
+		BindingState = ESynchronizerBindingState::Unbound;
+		return false;
+	}
 	Callbacks->InitAsync([WeakThis = AsWeak()]() mutable
 	{
 		auto This = WeakThis.Pin();
@@ -159,11 +164,11 @@ bool FWwiseAudioLinkSynchronizer::Bind()
 		{
 			return EWwiseDeferredAsyncResult::Done;
 		}
-
+	
 		This->ExecuteOpenStream();
 		return EWwiseDeferredAsyncResult::KeepRunning;
 	});
-
+	
 	Callbacks->TermAsync([WeakThis = AsWeak()]() mutable
 	{
 		auto This = WeakThis.Pin();
@@ -171,7 +176,7 @@ bool FWwiseAudioLinkSynchronizer::Bind()
 		{
 			return EWwiseDeferredAsyncResult::Done;
 		}
-
+	
 		This->ExecuteCloseStream();
 		return EWwiseDeferredAsyncResult::KeepRunning;
 	});

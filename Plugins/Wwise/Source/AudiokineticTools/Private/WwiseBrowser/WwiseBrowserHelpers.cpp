@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "WwiseBrowser/WwiseBrowserHelpers.h"
@@ -21,17 +21,22 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "AkAcousticTexture.h"
 #include "AkAudioDeviceShareSet.h"
 #include "AkAudioEvent.h"
+#include "AkAudioNode.h"
 #include "AkAuxBus.h"
+#include "AkDialogueEvent.h"
+#include "AkEffectShareSet.h"
+#include "AkInitBank.h"
 #include "AkRtpc.h"
 #include "AkStateValue.h"
 #include "AkSwitchValue.h"
 #include "AkTrigger.h"
-#include "AkEffectShareSet.h"
-#include "AkInitBank.h"
 #include "WwiseUnrealHelper.h"
 #include "AkAssetFactories.h"
+#include "AkSettings.h"
+#include "AkUnrealAssetDataHelper.h"
 #include "AssetManagement/AkAssetDatabase.h"
 #include "IAudiokineticTools.h"
+#include "Wwise/WwiseReconcile.h"
 
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "AssetToolsModule.h"
@@ -40,15 +45,20 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "FileHelpers.h"
 #include "ObjectTools.h"
 #include "PackageTools.h"
+#include "DataSource/WwiseBrowserDataSource.h"
 
 #define LOCTEXT_NAMESPACE "AkAudio"
 
 
-EWwiseItemType::Type WwiseBrowserHelpers::GetTypeFromClass(UClass* Class)
+EWwiseItemType WwiseBrowserHelpers::GetTypeFromClass(UClass* Class)
 {
-	if (Class == UAkAudioEvent::StaticClass())
+	if (Class == UAkAudioEvent::StaticClass() || Class->IsChildOf(UAkAudioEvent::StaticClass()) )
 	{
 		return EWwiseItemType::Event;
+	}
+	if (Class == UAkDialogueEvent::StaticClass())
+	{
+		return EWwiseItemType::DialogueEvent;
 	}
 	if (Class == UAkAcousticTexture::StaticClass())
 	{
@@ -86,6 +96,10 @@ EWwiseItemType::Type WwiseBrowserHelpers::GetTypeFromClass(UClass* Class)
 	{
 		return EWwiseItemType::InitBank;
 	}
+	if(Class == UAkAudioNode::StaticClass())
+	{
+		return EWwiseItemType::AudioNode;
+	}
 	return EWwiseItemType::None;
 }
 
@@ -106,6 +120,11 @@ void WwiseBrowserHelpers::FindOrCreateAssetsRecursive(const FWwiseTreeItemPtr& W
 	{
 		Name = WwiseTreeItem->DisplayName;
 		WwiseAssetClass = UAkAudioEvent::StaticClass();
+	}
+	if (WwiseTreeItem->ItemType == EWwiseItemType::DialogueEvent)
+	{
+		Name = WwiseTreeItem->DisplayName;
+		WwiseAssetClass = UAkDialogueEvent::StaticClass();
 	}
 	if (WwiseTreeItem->ItemType == EWwiseItemType::AcousticTexture)
 	{
@@ -177,6 +196,7 @@ void WwiseBrowserHelpers::FindOrCreateAssetsRecursive(const FWwiseTreeItemPtr& W
 		Payload.Name = UPackageTools::SanitizePackageName(Name);
 		Payload.RelativePackagePath = UPackageTools::SanitizePackageName(CurrentRelativePath);
 		Payload.WwiseObjectGuid = WwiseTreeItem->ItemId;
+		Payload.TreeItem = WwiseTreeItem;
 		InOutBrowserAssetPayloads.Add(Payload);
 		InOutKnownGuids.Add(WwiseTreeItem->ItemId);
 	}
@@ -297,15 +317,29 @@ void WwiseBrowserHelpers::SaveSelectedAssetsTask(TArray<WwiseBrowserAssetPayload
 	TArray<FAssetData> RenamedTransientAssets;
 	TArray<UPackage*> PackagesToSave;
 
+	auto WwiseReconcile = IWwiseReconcile::Get();
+
 	for (WwiseBrowserAssetPayload& AssetResult : Assets)
 	{
 		const bool bPreExisting = AssetResult.ExistingAssets.Num() > 0;
 		FString Path = AssetResult.RelativePackagePath;
+		TArray<FWwiseTreeItemPtr> TreeItems;
+		TArray<FWwiseReconcileItem>	ReconcileItems;
+
 		FString PackagePath = RootPackagePath;
-		if (!Path.IsEmpty())
+		if (PackagePath.IsEmpty() && WwiseReconcile && AssetResult.TreeItem)
 		{
-			PackagePath = UPackageTools::SanitizePackageName(PackagePath / Path);
+			WwiseReconcile->ConvertWwiseItemTypeToReconcileItem({AssetResult.TreeItem}, ReconcileItems, EWwiseReconcileOperationFlags::None, false);
+			if (ReconcileItems.Num() > 0)
+			{
+				PackagePath = AkUnrealAssetDataHelper::GetAssetDefaultPackagePath(ReconcileItems[0].WwiseAnyRef.WwiseAnyRef);				
+			}
 		}
+		if (PackagePath.IsEmpty())
+		{
+			PackagePath =  AkUnrealAssetDataHelper::GetAssetDefaultPackagePath(AssetResult.TreeItem);
+		}
+
 		FString NewAssetPath = PackagePath / AssetResult.Name;
 
 		if (bPreExisting)
@@ -403,6 +437,9 @@ UAkAssetFactory* WwiseBrowserHelpers::GetAssetFactory(const FWwiseTreeItemPtr& W
 	case EWwiseItemType::Event:
 		Factory = UAkAudioEventFactory::StaticClass()->GetDefaultObject<UFactory>();
 		break;
+	case EWwiseItemType::DialogueEvent:
+		Factory = UAkDialogueEventFactory::StaticClass()->GetDefaultObject<UFactory>();
+		break;
 	case EWwiseItemType::AcousticTexture:
 		Factory = UAkAcousticTextureFactory::StaticClass()->GetDefaultObject<UFactory>();
 		break;
@@ -447,9 +484,20 @@ bool WwiseBrowserHelpers::CanCreateAsset(const FWwiseTreeItemPtr& Item)
 	return !Item->IsOfType({ EWwiseItemType::Sound });
 }
 
-FLinearColor WwiseBrowserHelpers::GetTextColor(bool bUpToDate)
+FLinearColor WwiseBrowserHelpers::GetTextColor(bool bUpToDate, bool bRequireAttention)
 {
-	return bUpToDate ? FLinearColor::Gray : FLinearColor(1.f, 0.33f, 0);
+	if (bRequireAttention)
+	{
+		return FLinearColor(0.2, 0.8, 0.9);
+	}
+	else if (bUpToDate)
+	{
+		return FLinearColor::Gray;
+	}
+	else
+	{
+		return FLinearColor(1.f, 0.33f, 0);
+	}
 }
 
 #undef LOCTEXT_NAMESPACE

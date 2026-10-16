@@ -12,10 +12,12 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkTrigger.h"
+
+#include "Wwise/WwiseGlobalCallbacks.h"
 #include "Wwise/Stats/AkAudio.h"
 
 #if WITH_EDITORONLY_DATA
@@ -31,6 +33,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 
 void UAkTrigger::Serialize(FArchive& Ar)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkTrigger::Serialize"));
 	Super::Serialize(Ar);
 
 	if (HasAnyFlags(RF_ClassDefaultObject))
@@ -66,6 +69,7 @@ void UAkTrigger::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEv
 #if WITH_EDITORONLY_DATA
 void UAkTrigger::FillInfo()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkTrigger::FillInfo"));
 	auto* ResourceCooker = IWwiseResourceCooker::GetDefault();
 	if (UNLIKELY(!ResourceCooker))
 	{
@@ -140,8 +144,8 @@ void UAkTrigger::GetTriggerCookedData()
 	}
 	if(!ResourceCooker->PrepareCookedData(TriggerCookedData, GetValidatedInfo(TriggerInfo)))
 	{
-		const auto* AudioDevice = FAkAudioDevice::Get();
-		if( AudioDevice && AudioDevice->IsWwiseProfilerConnected())
+		const auto* GlobalCallbacks = FWwiseGlobalCallbacks::Get();
+		if( GlobalCallbacks && GlobalCallbacks->IsWwiseProfilerConnected())
 		{
 			UE_LOG(LogAkAudio, Verbose, TEXT("Could not fetch CookedData for Trigger %s, but Wwise profiler is connected. Previous errors can be ignored."),
 			*GetName());
@@ -157,19 +161,27 @@ void UAkTrigger::GetTriggerCookedData()
 #if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
 UE_COOK_DEPENDENCY_FUNCTION(HashWwiseTriggerDependenciesForCook, UAkAudioType::HashDependenciesForCook);
 
-void UAkTrigger::PreSave(FObjectPreSaveContext SaveContext)
+#if UE_5_6_OR_LATER
+void UAkTrigger::OnCookEvent(UE::Cook::ECookEvent CookEvent, UE::Cook::FCookEventContext& Context)
 {
 	ON_SCOPE_EXIT
 	{
-		Super::PreSave(SaveContext);
+		Super::OnCookEvent(CookEvent, Context);
 	};
-
-	if (!SaveContext.IsCooking())
+#else
+void UAkTrigger::PreSave(FObjectPreSaveContext Context)
+{
+	ON_SCOPE_EXIT
+	{
+		Super::PreSave(Context);
+	};
+#endif
+	if (!Context.IsCooking())
 	{
 		return;
 	}
 
-	auto* ResourceCooker = IWwiseResourceCooker::GetForPlatform(SaveContext.GetTargetPlatform());
+	auto* ResourceCooker = IWwiseResourceCooker::GetForPlatform(Context.GetTargetPlatform());
 	if (UNLIKELY(!ResourceCooker))
 	{
 		return;
@@ -181,10 +193,10 @@ void UAkTrigger::PreSave(FObjectPreSaveContext SaveContext)
 
 	FCbWriter Writer;
 	Writer.BeginObject();
-	CookedDataToArchive.PreSave(SaveContext, Writer);
+	CookedDataToArchive.GetPlatformCookDependencies(Context, Writer);
 	Writer.EndObject();
 	
-	SaveContext.AddCookBuildDependency(
+	WwiseCookEventContext::AddLoadBuildDependency(Context,
 		UE::Cook::FCookDependency::Function(
 			UE_COOK_DEPENDENCY_FUNCTION_CALL(HashWwiseTriggerDependenciesForCook), Writer.Save()));
 }

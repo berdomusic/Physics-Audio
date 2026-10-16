@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -32,11 +32,11 @@ public:
 	virtual void GetAllAssets(TArray<FWwiseReconcileItem>& ReconcileItems) override;
 	virtual TArray<FAssetData> CreateAssets(FScopedSlowTask& SlowTask) override;
 	virtual TArray<FAssetData> UpdateExistingAssets(FScopedSlowTask& SlowTask) override;
-	virtual void ConvertWwiseItemTypeToReconcileItem(const TArray<TSharedPtr<FWwiseTreeItem>>& InWwiseItems, TArray<FWwiseReconcileItem>& OutReconcileItems, EWwiseReconcileOperationFlags OperationFlags = EWwiseReconcileOperationFlags::All, bool bFirstLevel = true) override;
+	virtual void ConvertWwiseItemTypeToReconcileItem(const TArray<TSharedPtr<FWwiseTreeItem>>& InWwiseItems, TArray<FWwiseReconcileItem>& OutReconcileItems, EWwiseReconcileOperationFlags OperationFlags = EWwiseReconcileOperationFlags::All, bool bProcessRefsAndChanges = false) override;
 	virtual bool RenameExistingAssets(FScopedSlowTask& SlowTask) override;
 	virtual int32 MoveAssets(FScopedSlowTask& SlowTask) override;
 	virtual int GetNumberOfAssets() override;
-	virtual int32 DeleteAssets(FScopedSlowTask& SlowTask) override;
+	virtual int32 DeleteAssets(FScopedSlowTask& SlowTask, bool bForceDelete = false) override;
 	virtual UClass* GetUClassFromWwiseRefType(WwiseRefType RefType) override;
 	virtual void GetAssetChanges(TArray<FWwiseReconcileItem>& ReconcileItems, EWwiseReconcileOperationFlags OperationFlags = EWwiseReconcileOperationFlags::All) override;
 	virtual bool AddToDelete(FWwiseReconcileItem& Item) override;

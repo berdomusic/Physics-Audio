@@ -21,7 +21,7 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Copyright (c) 2025 Audiokinetic Inc.
+  Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -39,9 +39,16 @@ public:
 	static constexpr AkUInt32 RANDOM_MAX = 0x7FFFFFFF; // 31 bits
 
 	/// Initialize using the specified seed
-	CAkRng(AkUInt64 uSeed)
+	inline CAkRng(AkUInt64 uSeed)
 		: m_uSeed(uSeed)
 	{}
+
+	/// Initialize using the specified instance
+	inline CAkRng& operator=(const CAkRng& in_other)
+	{
+		m_uSeed = in_other.m_uSeed;
+		return *this;
+	}
 
 	/// Returns the current seed value of the RNG
 	inline AkUInt64 Seed() const
@@ -68,9 +75,9 @@ public:
 	}
 
 	/// Returns a random float from 0.0 to 1.0
-	AkReal32 RandomFloat()
+	inline AkReal32 RandomFloat()
 	{
-		return (AkReal32)Random(m_uSeed) / (AkReal32)RANDOM_MAX;
+		return RandomFloat(m_uSeed);
 	}
 
 	/// Returns a random 31-bit unsigned integer using provided seed
@@ -85,6 +92,11 @@ public:
 	{
 		io_uSeed = io_uSeed * RANDOM_A + RANDOM_C;
 		return (AkInt32)Peek(io_uSeed);
+	}
+
+	static inline AkReal32 RandomFloat(AkUInt64& io_uSeed)
+	{
+		return (AkReal32)Random(io_uSeed) / (AkReal32)RANDOM_MAX;
 	}
 
 	/// Returns the next random number to be generated without advancing the RNG state

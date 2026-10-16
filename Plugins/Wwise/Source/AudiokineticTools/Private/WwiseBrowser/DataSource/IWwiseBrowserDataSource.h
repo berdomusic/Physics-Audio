@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -33,7 +33,7 @@ public:
 	virtual bool ConstructTree(bool bShouldRefresh) = 0;
 
 	// Constructs the top-level root for the given type, along with its direct children
-	virtual FWwiseTreeItemPtr ConstructTreeRoot(EWwiseItemType::Type Type) = 0;
+	virtual FWwiseTreeItemPtr ConstructTreeRoot(EWwiseItemType Type) = 0;
 
 	// Loads children for the item matching first InParentId, then InParentPath
 	virtual int32 LoadChildren(const FGuid& InParentId, const FString& InParentPath, TArray<FWwiseTreeItemPtr>& OutChildren) = 0;
@@ -43,7 +43,7 @@ public:
 
 	virtual int32 GetChildItemCount(const FWwiseTreeItemPtr& InParentItem) = 0;
 
-	virtual FWwiseTreeItemPtr GetRootItem(EWwiseItemType::Type RootType) = 0;
+	virtual FWwiseTreeItemPtr GetRootItem(EWwiseItemType RootType) = 0;
 
-	virtual FWwiseTreeItemPtr LoadFilteredRootItem(EWwiseItemType::Type Type, TSharedPtr<StringFilter> CurrentFilterText) = 0;
+	virtual FWwiseTreeItemPtr LoadFilteredRootItem(EWwiseItemType Type, TSharedPtr<StringFilter> CurrentFilterText) = 0;
 };

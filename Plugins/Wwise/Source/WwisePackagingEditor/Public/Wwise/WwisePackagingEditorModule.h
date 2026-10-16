@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -99,6 +99,7 @@ public:
 	virtual void SetAssetLibrarySubMenus() = 0;
 	virtual const TArray<FText>& GetAssetLibrarySubMenu() = 0;
 	virtual const TArray<FText>& GetSharedAssetLibraryFilterSubMenu() = 0;
+	virtual const TArray<FText>& GetAssetLibraryGroupSubMenu() = 0;
 
 private:
 	static inline FName GetModuleNameFromConfig()

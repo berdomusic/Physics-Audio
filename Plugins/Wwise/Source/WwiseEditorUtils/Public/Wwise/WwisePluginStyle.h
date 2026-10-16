@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -30,17 +30,23 @@ public:
 	static TSharedPtr< FWwisePluginStyle > Get();
 	static void InitializeWwisePluginStyle();
 	static void ShutdownWwisePluginStyle();
+	static FName GetWwisePluginStyleSetName();
 
 	static const FName AcousticTextureIconName;
 	static const FName ActorMixerIconName;
 	static const FName AssetLibraryIconName;
 	static const FName AssetLibraryFilterIconName;
 	static const FName AudioDeviceIconName;
+	static const FName AudioNodeIconName;
 	static const FName AuxBusIconName;
 	static const FName BlendContainerIconName;
 	static const FName BusIconName;
+	static const FName CollapseAll;
+	static const FName DialogueEventIconName;
+	static const FName DynamicSequenceIconName;
 	static const FName EffectShareSetIconName;
 	static const FName EventIconName;
+	static const FName ExpandAll;
 	static const FName ExternalSourceIconName;
 	static const FName FolderIconName;
 	static const FName GameParameterIconName;

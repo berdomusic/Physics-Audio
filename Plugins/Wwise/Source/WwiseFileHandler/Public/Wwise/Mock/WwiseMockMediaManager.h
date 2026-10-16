@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -56,6 +56,9 @@ public:
 	}
 	void SetGranularity(uint32 InStreamingGranularity) override {}
 
+	void DoTerm() override {}
+	void DoPostTerm() override {}
+
 	IWwiseStreamingManagerHooks& GetStreamingHooks() override final { return *this; }
 
 	bool IsMediaLoaded(int32 mediaId)
@@ -78,7 +81,7 @@ public:
 protected:
 	virtual FWwiseFileStateSharedPtr CreateOp(const FWwiseMediaCookedData& InMediaCookedData)
 	{
-		auto* FileState = new FWwiseMockFileState(InMediaCookedData.MediaId);
+		auto* FileState = new FWwiseMockFileState(InMediaCookedData.MediaId, FWwiseMockFileState::EFileType::Media);
 		if (InMediaCookedData.PackagedFile.bStreaming)
 		{
 			FileState->bIsStreamedState = FWwiseMockFileState::OptionalBool::True;

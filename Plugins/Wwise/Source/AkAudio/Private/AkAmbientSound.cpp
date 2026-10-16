@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*=============================================================================
@@ -32,25 +32,29 @@ Copyright (c) 2025 Audiokinetic Inc.
 AAkAmbientSound::AAkAmbientSound(const class FObjectInitializer& ObjectInitializer) :
 Super(ObjectInitializer)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("AAkAmbientSound Ctor"));
 	// Property initialization
 	StopWhenOwnerIsDestroyed = true;
 	CurrentlyPlaying = false;
 	
 	static const FName ComponentName = TEXT("AkAudioComponent0");
-	AkComponent = ObjectInitializer.CreateDefaultSubobject<UAkComponent>(this, ComponentName);
-	
-	AkComponent->StopWhenOwnerDestroyed = StopWhenOwnerIsDestroyed;
+	AkComponent = ObjectInitializer.CreateOptionalDefaultSubobject<UAkComponent>(this, ComponentName);
 
-	RootComponent = AkComponent;
+	if (AkComponent)
+	{
+		AkComponent->StopWhenOwnerDestroyed = StopWhenOwnerIsDestroyed;
+		RootComponent = AkComponent;
+	}
 
-
-	//bNoDelete = true;
 	SetHidden(true);
 	AutoPost = false;
 }
 
+AAkAmbientSound::AAkAmbientSound() : CurrentlyPlaying(false) {}
+
 void AAkAmbientSound::PostLoad()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("AAkAmbientSound::PostLoad"));
 	Super::PostLoad();
 #if WITH_EDITOR
 	if( AkAudioEvent_DEPRECATED )
@@ -62,12 +66,14 @@ void AAkAmbientSound::PostLoad()
 
 void AAkAmbientSound::PostInitializeComponents()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("AAkAmbientSound::PostInitializeComponents"));
 	Super::PostInitializeComponents();
 	AkComponent->UpdateAkLateReverbComponentList(AkComponent->GetComponentLocation());
 }
 
 void AAkAmbientSound::BeginPlay()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("AAkAmbientSound::BeginPlay"));
 	Super::BeginPlay();
 	if (AutoPost)
 	{
@@ -93,16 +99,19 @@ void AAkAmbientSound::PostEditChangeProperty(FPropertyChangedEvent& PropertyChan
 
 void AAkAmbientSound::StartAmbientSound()
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("AAkAmbientSound::StartAmbientSound"));
 	StartPlaying();
 }
 
 void AAkAmbientSound::StopAmbientSound()
 {
+	SCOPED_AKAUDIO_EVENT(TEXT("AAkAmbientSound::StopAmbientSound"));
 	StopPlaying();
 }
 
 void AAkAmbientSound::StartPlaying()
 {
+	SCOPED_AKAUDIO_EVENT_2(TEXT("AAkAmbientSound::StartPlaying"));
 	if( !IsCurrentlyPlaying() )
 	{
 		if (AkComponent->AkAudioEvent)
@@ -118,6 +127,7 @@ void AAkAmbientSound::StartPlaying()
 
 void AAkAmbientSound::StopPlaying()
 {
+	SCOPED_AKAUDIO_EVENT_2(TEXT("AAkAmbientSound::StopPlaying"));
 	if( IsCurrentlyPlaying() )
 	{
 		// State of CurrentlyPlaying gets updated in UAkComponent::Stop() through the EndOfEvent callback.

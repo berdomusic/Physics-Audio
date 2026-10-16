@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseResourceCookerModuleImpl.h"
@@ -80,6 +80,7 @@ IWwiseResourceCooker* FWwiseResourceCookerModule::CreateCookerForPlatform(const 
 			if (!IWwiseProjectDatabaseModule::ShouldInitializeProjectDatabase()
 				&& !FParse::Param(FCommandLine::Get(), TEXT("CookOnTheFly"))
 				&& !FParse::Param(FCommandLine::Get(), TEXT("CookSinglePackage"))
+				&& !FParse::Param(FCommandLine::Get(), TEXT("CookSinglePackageNoRefs"))
 #if UE_5_4_OR_LATER
 				&& UE::GetMultiprocessId() == 0
 #else

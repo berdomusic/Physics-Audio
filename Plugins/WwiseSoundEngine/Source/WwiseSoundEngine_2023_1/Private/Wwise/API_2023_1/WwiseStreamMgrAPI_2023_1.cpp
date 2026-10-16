@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/API_2023_1/WwiseStreamMgrAPI_2023_1.h"
@@ -56,9 +56,9 @@ void FWwiseStreamMgrAPI_2023_1::SetFileLocationResolver(
 }
 
 AKRESULT FWwiseStreamMgrAPI_2023_1::CreateDevice(
-	const AkDeviceSettings& in_settings,		///< Device settings.
-	AK::StreamMgr::IAkLowLevelIOHook* in_pLowLevelHook,	///< Associated low-level I/O hook. Pass either a IAkLowLevelIOHook interface, consistent with the type of the scheduler.
-	AkDeviceID& out_idDevice		///< Assigned unique device id to use in all other functions of this interface.
+	const AkDeviceSettings& in_settings,
+	AK::StreamMgr::IAkLowLevelIOHook* in_pLowLevelHook,
+	AkDeviceID& out_idDevice
 )
 {
 	SCOPE_CYCLE_COUNTER(STAT_WwiseSoundEngineAPI);

@@ -12,19 +12,20 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkComponentHelpers.h"
 #include "Components/PrimitiveComponent.h"
 #include "AkAudioDevice.h"
 #include "GameFramework/WorldSettings.h"
+#include "AkAcousticTexture.h"
 
 namespace AkComponentHelpers
 {
 	bool HasSimpleCollisionGeometry(const UBodySetup* bodySetup)
 	{
-		FKAggregateGeom geometry = bodySetup->AggGeom;
+		const FKAggregateGeom& geometry = bodySetup->AggGeom;
 		return geometry.BoxElems.Num() > 0 || geometry.ConvexElems.Num() > 0 || geometry.SphereElems.Num() > 0 || geometry.TaperedCapsuleElems.Num() > 0 || geometry.SphylElems.Num() > 0;
 	}
 
@@ -90,6 +91,18 @@ namespace AkComponentHelpers
 	float UnrealUnitsPerCubicMeter(const UActorComponent* component)
 	{
 		return FMath::Pow(UnrealUnitsPerMeter(component), 3.0f);
+	}
+
+	AkUInt32 GetAcousticTextureID(const TWeakObjectPtr<UAkAcousticTexture> InAcousticTexture)
+	{
+		if (InAcousticTexture.IsValid())
+		{
+			return InAcousticTexture->GetShortID();
+		}
+		else
+		{
+			return AK_INVALID_UNIQUE_ID;
+		}
 	}
 
 	bool IsInGameWorld(const UActorComponent* InComponent)

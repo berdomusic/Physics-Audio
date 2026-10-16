@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "WwiseBrowserTreeColumn.h"
@@ -41,6 +41,7 @@ const TSharedRef<SWidget> FWwiseBrowserTreeColumn::ConstructRowWidget(FWwiseTree
 	auto WwiseBrowser = WwiseBrowserWeak.Pin();
 
 	bool bItemUpToDate = WwiseBrowser->IsWaapiAvailable() == EWwiseConnectionStatus::Connected ? TreeItem->IsItemUpToDate() : TreeItem->IsUAssetUpToDate();
+	bool bRequiresAttention = TreeItem->IsUnusedItem();
 
 	return SNew(SHorizontalBox)
 		+ SHorizontalBox::Slot()
@@ -58,7 +59,7 @@ const TSharedRef<SWidget> FWwiseBrowserTreeColumn::ConstructRowWidget(FWwiseTree
 		[
 			SNew(STextBlock)
 			.Text(FText::FromString(TreeItem->DisplayName))
-			.ColorAndOpacity(WwiseBrowserHelpers::GetTextColor(bItemUpToDate || !TreeItem->ShouldDisplayInfo()))
+			.ColorAndOpacity(WwiseBrowserHelpers::GetTextColor(bItemUpToDate || !TreeItem->ShouldDisplayInfo(), bRequiresAttention))
 			.HighlightText(WwiseBrowser->GetFilterHighlightText())
 		];
 }

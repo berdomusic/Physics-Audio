@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseUnitTests.h"
@@ -43,6 +43,50 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		FWwiseResourceLoaderImpl ResourceLoaderImpl;
 	}
 
+	SECTION("Sync AudioNode")
+	{
+		TSharedRef ExternalSourceManager = MakeShared<FWwiseMockExternalSourceManager>();
+		auto MediaManager = MakeShared<FWwiseMockMediaManager>();
+		auto SoundBankManager = MakeShared<FWwiseMockSoundBankManager>();
+		auto ResourceLoaderImpl = MakeShared<FWwiseResourceLoaderImpl>(ExternalSourceManager, MediaManager, SoundBankManager);
+
+		FWwiseAudioNodeCookedData CookedData;
+		CookedData.Media.Emplace(FWwiseMediaCookedData{});
+		CookedData.SoundBanks.Emplace(FWwiseSoundBankCookedData{});
+		CookedData.ExternalSources.Emplace(FWwiseExternalSourceCookedData{});
+		
+		// Creating Node
+		auto* Node = ResourceLoaderImpl->CreateAudioNodeListEntry(CookedData);
+
+		WWISE_CHECK(Node);
+		if (UNLIKELY(!Node))
+		{
+			return;
+		}
+
+		// Loading Node
+		FWwiseLoadedAudioNodePromise LoadPromise;
+		auto LoadFuture = LoadPromise.GetFuture();
+		ResourceLoaderImpl->LoadAudioNodeNode(MoveTemp(LoadPromise), MoveTemp(Node));
+		auto LoadedNode = LoadFuture.Get();		// Synchronously
+		WWISE_CHECK(LoadedNode);
+		if (UNLIKELY(!LoadedNode))
+		{
+			return;
+		}
+
+		// Unloading Node
+		FWwiseResourceUnloadPromise UnloadPromise;
+		auto UnloadFuture = UnloadPromise.GetFuture();
+		ResourceLoaderImpl->UnloadAudioNodeNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+		UnloadFuture.Get();		// Synchronously
+
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
+	}
+
 	SECTION("Sync AuxBus")
 	{
 		TSharedRef ExternalSourceManager = MakeShared<FWwiseMockExternalSourceManager>();
@@ -59,9 +103,9 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		}
 		
 		// Creating Node
-		auto* Node = ResourceLoaderImpl->CreateAuxBusNode(CookedData, nullptr);
+		auto* Node = ResourceLoaderImpl->CreateAuxBusListEntry(CookedData, nullptr);
 
-		CHECK(Node);
+		WWISE_CHECK(Node);
 		if (UNLIKELY(!Node))
 		{
 			return;
@@ -72,7 +116,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		auto LoadFuture = LoadPromise.GetFuture();
 		ResourceLoaderImpl->LoadAuxBusNode(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto LoadedNode = LoadFuture.Get();		// Synchronously
-		CHECK(LoadedNode);
+		WWISE_CHECK(LoadedNode);
 		if (UNLIKELY(!LoadedNode))
 		{
 			return;
@@ -84,10 +128,74 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		ResourceLoaderImpl->UnloadAuxBusNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 		UnloadFuture.Get();		// Synchronously
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
+	}
+
+	SECTION("Sync Dialogue Event")
+	{
+		TSharedRef ExternalSourceManager = MakeShared<FWwiseMockExternalSourceManager>();
+		auto MediaManager = MakeShared<FWwiseMockMediaManager>();
+		auto SoundBankManager = MakeShared<FWwiseMockSoundBankManager>();
+		auto ResourceLoaderImpl = MakeShared<FWwiseResourceLoaderImpl>(ExternalSourceManager, MediaManager, SoundBankManager);
+
+		FWwiseLocalizedDialogueEventCookedData CookedData;
+		{
+			FWwiseDialogueEventCookedData Data1;
+			Data1.SoundBanks.Emplace(FWwiseSoundBankCookedData{});
+
+			FWwiseGroupValueCookedDataSet GroupValueSet;
+			GroupValueSet.GroupValues.Emplace(FWwiseGroupValueCookedData{});
+			
+			FWwiseAudioNodeCookedData AudioNode;
+			AudioNode.Media.Emplace(FWwiseMediaCookedData{});
+			AudioNode.SoundBanks.Emplace(FWwiseSoundBankCookedData{});
+			AudioNode.ExternalSources.Emplace(FWwiseExternalSourceCookedData{});
+			Data1.AudioNodes.Emplace(GroupValueSet, AudioNode);
+			
+			CookedData.DialogueEventLanguageMap.Emplace(FWwiseLanguageCookedData::Sfx, MoveTemp(Data1));
+
+			FWwiseDialogueArgumentItem ArgItem;
+			ArgItem.Type = EWwiseGroupType::Switch;
+			FWwiseDialogueArgumentPosition ArgPosition;
+			ArgPosition.Positions.Emplace(0);
+
+			CookedData.RequiredArguments.Emplace(ArgItem, ArgPosition);
+		}
+		
+		// Creating Node
+		auto* Node = ResourceLoaderImpl->CreateDialogueEventListEntry(CookedData, nullptr);
+
+		WWISE_CHECK(Node);
+		if (UNLIKELY(!Node))
+		{
+			return;
+		}
+
+		// Loading Node
+		FWwiseLoadedDialogueEventPromise LoadPromise;
+		auto LoadFuture = LoadPromise.GetFuture();
+		ResourceLoaderImpl->LoadDialogueEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
+		auto LoadedNode = LoadFuture.Get();		// Synchronously
+		WWISE_CHECK(LoadedNode);
+		if (UNLIKELY(!LoadedNode))
+		{
+			return;
+		}
+
+		// Unloading Node
+		FWwiseResourceUnloadPromise UnloadPromise;
+		auto UnloadFuture = UnloadPromise.GetFuture();
+		ResourceLoaderImpl->UnloadDialogueEventNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+		UnloadFuture.Get();		// Synchronously
+
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
+		
 	}
 
 	SECTION("Sync Event")
@@ -103,24 +211,24 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 			Data1.Media.Emplace(FWwiseMediaCookedData{});
 			Data1.SoundBanks.Emplace(FWwiseSoundBankCookedData{});
 
-			FWwiseSwitchContainerLeafCookedData Leaf1;
-			FWwiseMediaCookedData Leaf1Media;
-			Leaf1Media.MediaId = 1;
-			Leaf1.Media.Emplace(MoveTemp(Leaf1Media));
-			FWwiseGroupValueCookedData Leaf1GroupValue;
-			Leaf1GroupValue.Id = 1;
-			Leaf1GroupValue.GroupId = 1;
-			Leaf1GroupValue.Type = EWwiseGroupType::Switch;
-			Leaf1.GroupValueSet.Emplace(MoveTemp(Leaf1GroupValue));
-			Data1.SwitchContainerLeaves.Emplace(MoveTemp(Leaf1));
-			
+			FWwiseAudioNodeCookedData AudioNode1;
+			FWwiseMediaCookedData AudioNode1Media;
+			AudioNode1Media.MediaId = 1;
+			AudioNode1.Media.Emplace(MoveTemp(AudioNode1Media));
+			FWwiseGroupValueCookedData AudioNode1GroupValue;
+			AudioNode1GroupValue.Id = 1;
+			AudioNode1GroupValue.GroupId = 1;
+			AudioNode1GroupValue.Type = EWwiseGroupType::Switch;
+			FWwiseGroupValueCookedDataSet AudioNode1GroupValueSet;
+			AudioNode1GroupValueSet.GroupValues.Emplace(MoveTemp(AudioNode1GroupValue));
+			Data1.AudioNodes.Emplace(MoveTemp(AudioNode1GroupValueSet), MoveTemp(AudioNode1));
 			CookedData.EventLanguageMap.Emplace(FWwiseLanguageCookedData::Sfx, MoveTemp(Data1));
 		}
 
 		// Creating Node
-		auto* Node = ResourceLoaderImpl->CreateEventNode(CookedData, nullptr);
+		auto* Node = ResourceLoaderImpl->CreateEventListEntry(CookedData, nullptr);
 
-		CHECK(Node);
+		WWISE_CHECK(Node);
 		if (UNLIKELY(!Node))
 		{
 			return;
@@ -131,7 +239,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		auto LoadFuture = LoadPromise.GetFuture();
 		ResourceLoaderImpl->LoadEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded = LoadFuture.Get();		// Synchronously
-		CHECK(Loaded);
+		WWISE_CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
 		{
 			return;
@@ -143,10 +251,10 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		ResourceLoaderImpl->UnloadEventNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 
 	SECTION("Sync External Sources")
@@ -159,9 +267,9 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		FWwiseExternalSourceCookedData CookedData;
 
 		// Creating Node
-		auto* Node = ResourceLoaderImpl->CreateExternalSourceNode(CookedData);
+		auto* Node = ResourceLoaderImpl->CreateExternalSourceListEntry(CookedData);
 
-		CHECK(Node)
+		WWISE_CHECK(Node)
 		if (UNLIKELY(!Node))
 		{
 			return;;
@@ -172,7 +280,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		auto LoadFuture = LoadPromise.GetFuture();
 		ResourceLoaderImpl->LoadExternalSourceNode(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded  = LoadFuture.Get(); // Synchronously
-		CHECK(Loaded);
+		WWISE_CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
 		{
 			return;
@@ -184,10 +292,10 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		ResourceLoaderImpl->UnloadExternalSourceNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 
 	SECTION("Sync GroupValue Switch")
@@ -201,9 +309,9 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		CookedData.Type = EWwiseGroupType::Switch;
 
 		// Creating Node
-		auto* Node = ResourceLoaderImpl->CreateGroupValueNode(CookedData);
+		auto* Node = ResourceLoaderImpl->CreateGroupValueListEntry(CookedData);
 
-		CHECK(Node);
+		WWISE_CHECK(Node);
 		if (UNLIKELY(!Node))
 		{
 			return;
@@ -214,7 +322,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		auto LoadFuture = LoadPromise.GetFuture();
 		ResourceLoaderImpl->LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded = LoadFuture.Get();		// Synchronously
-		CHECK(Loaded);
+		WWISE_CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
 		{
 			return;
@@ -226,10 +334,10 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		ResourceLoaderImpl->UnloadGroupValueNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 
 	SECTION("Sync GroupValue State")
@@ -243,9 +351,9 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		CookedData.Type = EWwiseGroupType::State;
 
 		// Creating Node
-		auto* Node = ResourceLoaderImpl->CreateGroupValueNode(CookedData);
+		auto* Node = ResourceLoaderImpl->CreateGroupValueListEntry(CookedData);
 
-		CHECK(Node);
+		WWISE_CHECK(Node);
 		if (UNLIKELY(!Node))
 		{
 			return;
@@ -256,7 +364,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		auto LoadFuture = LoadPromise.GetFuture();
 		ResourceLoaderImpl->LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded = LoadFuture.Get();		// Synchronously
-		CHECK(Loaded);
+		WWISE_CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
 		{
 			return;
@@ -268,10 +376,10 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		ResourceLoaderImpl->UnloadGroupValueNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 
 	SECTION("Sync InitBank")
@@ -284,9 +392,9 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		FWwiseInitBankCookedData CookedData;
 
 		// Creating Node
-		auto* Node = ResourceLoaderImpl->CreateInitBankNode(CookedData);
+		auto* Node = ResourceLoaderImpl->CreateInitBankListEntry(CookedData);
 
-		CHECK(Node);
+		WWISE_CHECK(Node);
 		if (UNLIKELY(!Node))
 		{
 			return;
@@ -297,7 +405,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		auto LoadFuture = LoadPromise.GetFuture();
 		ResourceLoaderImpl->LoadInitBankNode(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded = LoadFuture.Get();		// Synchronously
-		CHECK(Loaded);
+		WWISE_CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
 		{
 			return;
@@ -309,10 +417,10 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		ResourceLoaderImpl->UnloadInitBankNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 	
 	SECTION("Sync Media")
@@ -325,9 +433,9 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		FWwiseMediaCookedData CookedData;
 
 		// Creating Node
-		auto* Node = ResourceLoaderImpl->CreateMediaNode(CookedData);
+		auto* Node = ResourceLoaderImpl->CreateMediaListEntry(CookedData);
 
-		CHECK(Node);
+		WWISE_CHECK(Node);
 		if (UNLIKELY(!Node))
 		{
 			return;
@@ -338,7 +446,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		auto LoadFuture = LoadPromise.GetFuture();
 		ResourceLoaderImpl->LoadMediaNode(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded = LoadFuture.Get();		// Synchronously
-		CHECK(Loaded);
+		WWISE_CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
 		{
 			return;
@@ -350,10 +458,10 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		ResourceLoaderImpl->UnloadMediaNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 	
 	SECTION("Sync ShareSet")
@@ -372,9 +480,9 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		}
 
 		// Creating Node
-		auto* Node = ResourceLoaderImpl->CreateShareSetNode(CookedData, &FWwiseLanguageCookedData::Sfx);
+		auto* Node = ResourceLoaderImpl->CreateShareSetListEntry(CookedData, &FWwiseLanguageCookedData::Sfx);
 
-		CHECK(Node);
+		WWISE_CHECK(Node);
 		if (UNLIKELY(!Node))
 		{
 			return;
@@ -385,7 +493,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		auto LoadFuture = LoadPromise.GetFuture();
 		ResourceLoaderImpl->LoadShareSetNode(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded = LoadFuture.Get();		// Synchronously
-		CHECK(Loaded);
+		WWISE_CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
 		{
 			return;
@@ -397,10 +505,10 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		ResourceLoaderImpl->UnloadShareSetNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 
 	SECTION("Sync SoundBank")
@@ -417,9 +525,9 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		}
 
 		// Creating Node
-		auto* Node = ResourceLoaderImpl->CreateSoundBankNode(CookedData, nullptr);
+		auto* Node = ResourceLoaderImpl->CreateSoundBankListEntry(CookedData, nullptr);
 
-		CHECK(Node);
+		WWISE_CHECK(Node);
 		if (UNLIKELY(!Node))
 		{
 			return;
@@ -430,7 +538,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		auto LoadFuture = LoadPromise.GetFuture();
 		ResourceLoaderImpl->LoadSoundBankNode(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded = LoadFuture.Get();		// Synchronously
-		CHECK(Loaded);
+		WWISE_CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
 		{
 			return;
@@ -442,10 +550,10 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		ResourceLoaderImpl->UnloadSoundBankNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 
 	SECTION("Sync SwitchContainer (Event First)")
@@ -472,20 +580,21 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 				Data1.Media.Emplace(FWwiseMediaCookedData{});
 				Data1.SoundBanks.Emplace(FWwiseSoundBankCookedData{});
 
-				FWwiseSwitchContainerLeafCookedData Leaf1;
-				FWwiseMediaCookedData Leaf1Media;
-				Leaf1Media.MediaId = 1;
-				Leaf1.Media.Emplace(MoveTemp(Leaf1Media));
-				Leaf1.GroupValueSet.Emplace(GroupValue);
-				Data1.SwitchContainerLeaves.Emplace(MoveTemp(Leaf1));
+				FWwiseAudioNodeCookedData AudioNode1;
+				FWwiseMediaCookedData AudioNode1Media;
+				AudioNode1Media.MediaId = 1;
+				AudioNode1.Media.Emplace(MoveTemp(AudioNode1Media));
+				FWwiseGroupValueCookedDataSet AudioNode1GroupValueSet;
+				AudioNode1GroupValueSet.GroupValues.Emplace(MoveTemp(GroupValue));
+				Data1.AudioNodes.Emplace(MoveTemp(AudioNode1GroupValueSet), MoveTemp(AudioNode1));
 				
 				CookedData.EventLanguageMap.Emplace(FWwiseLanguageCookedData::Sfx, MoveTemp(Data1));
 			}
 
 			// Creating Node
-			auto* Node = ResourceLoaderImpl->CreateEventNode(CookedData, nullptr);
+			auto* Node = ResourceLoaderImpl->CreateEventListEntry(CookedData, nullptr);
 
-			CHECK(Node);
+			WWISE_CHECK(Node);
 			if (UNLIKELY(!Node))
 			{
 				break;
@@ -496,7 +605,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 			auto LoadFuture = LoadPromise.GetFuture();
 			ResourceLoaderImpl->LoadEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
 			LoadedEvent = LoadFuture.Get();		// Synchronously
-			CHECK(LoadedEvent);
+			WWISE_CHECK(LoadedEvent);
 			if (UNLIKELY(!LoadedEvent))
 			{
 				break;
@@ -508,9 +617,9 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		do
 		{
 			// Creating Node
-			auto* Node = ResourceLoaderImpl->CreateGroupValueNode(GroupValue);
+			auto* Node = ResourceLoaderImpl->CreateGroupValueListEntry(GroupValue);
 
-			CHECK(Node);
+			WWISE_CHECK(Node);
 			if (UNLIKELY(!Node))
 			{
 				break;
@@ -521,7 +630,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 			auto LoadFuture = LoadPromise.GetFuture();
 			ResourceLoaderImpl->LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
 			LoadedGroupValue = LoadFuture.Get();		// Synchronously
-			CHECK(LoadedGroupValue);
+			WWISE_CHECK(LoadedGroupValue);
 			if (UNLIKELY(!LoadedGroupValue))
 			{
 				break;
@@ -547,10 +656,10 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 			UnloadFuture.Get();		// Synchronously
 		}
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 
 	SECTION("Sync SwitchContainer (Switch First)")
@@ -572,9 +681,9 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		do
 		{
 			// Creating Node
-			auto* Node = ResourceLoaderImpl->CreateGroupValueNode(GroupValue);
+			auto* Node = ResourceLoaderImpl->CreateGroupValueListEntry(GroupValue);
 
-			CHECK(Node);
+			WWISE_CHECK(Node);
 			if (UNLIKELY(!Node))
 			{
 				break;
@@ -585,7 +694,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 			auto LoadFuture = LoadPromise.GetFuture();
 			ResourceLoaderImpl->LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
 			LoadedGroupValue = LoadFuture.Get();		// Synchronously
-			CHECK(LoadedGroupValue);
+			WWISE_CHECK(LoadedGroupValue);
 			if (UNLIKELY(!LoadedGroupValue))
 			{
 				break;
@@ -602,20 +711,21 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 				Data1.Media.Emplace(FWwiseMediaCookedData{});
 				Data1.SoundBanks.Emplace(FWwiseSoundBankCookedData{});
 
-				FWwiseSwitchContainerLeafCookedData Leaf1;
-				FWwiseMediaCookedData Leaf1Media;
-				Leaf1Media.MediaId = 1;
-				Leaf1.Media.Emplace(MoveTemp(Leaf1Media));
-				Leaf1.GroupValueSet.Emplace(GroupValue);
-				Data1.SwitchContainerLeaves.Emplace(MoveTemp(Leaf1));
+				FWwiseAudioNodeCookedData AudioNode1;
+				FWwiseMediaCookedData AudioNode1Media;
+				AudioNode1Media.MediaId = 1;
+				AudioNode1.Media.Emplace(MoveTemp(AudioNode1Media));
+				FWwiseGroupValueCookedDataSet AudioNode1GroupValueSet;
+				AudioNode1GroupValueSet.GroupValues.Emplace(MoveTemp(GroupValue));
+				Data1.AudioNodes.Emplace(MoveTemp(AudioNode1GroupValueSet), MoveTemp(AudioNode1));
 				
 				CookedData.EventLanguageMap.Emplace(FWwiseLanguageCookedData::Sfx, MoveTemp(Data1));
 			}
 
 			// Creating Node
-			auto* Node = ResourceLoaderImpl->CreateEventNode(CookedData, nullptr);
+			auto* Node = ResourceLoaderImpl->CreateEventListEntry(CookedData, nullptr);
 
-			CHECK(Node);
+			WWISE_CHECK(Node);
 			if (UNLIKELY(!Node))
 			{
 				break;
@@ -626,7 +736,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 			auto LoadFuture = LoadPromise.GetFuture();
 			ResourceLoaderImpl->LoadEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
 			LoadedEvent = LoadFuture.Get();		// Synchronously
-			CHECK(LoadedEvent);
+			WWISE_CHECK(LoadedEvent);
 			if (UNLIKELY(!LoadedEvent))
 			{
 				break;
@@ -652,10 +762,10 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 			UnloadFuture.Get();		// Synchronously
 		}
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 }
 
@@ -667,6 +777,69 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 	static constexpr const auto CookedDataCount = 11;
 	static constexpr const auto NodeCount = 13;
 	
+	SECTION("Async AudioNode")
+	{
+		TSharedRef<FWwiseMockExternalSourceManager> ExternalSourceManager = MakeShared<FWwiseMockExternalSourceManager>();
+		auto MediaManager = MakeShared<FWwiseMockMediaManager>();
+		auto SoundBankManager = MakeShared<FWwiseMockSoundBankManager>();
+		auto ResourceLoaderImpl = MakeShared<FWwiseResourceLoaderImpl>(ExternalSourceManager, MediaManager, SoundBankManager);
+
+		FWwiseAudioNodeCookedData CookedDatas[CookedDataCount];
+		for (auto i = 0; i < CookedDataCount; ++i)
+		{
+			FWwiseAudioNodeCookedData Data;
+			Data.AudioNodeId = i % CookedDataCount; 
+			Data.Media.Emplace(FWwiseMediaCookedData{});
+			Data.Media[0].MediaId = i % FileCount;
+			Data.SoundBanks.Emplace(FWwiseSoundBankCookedData{});
+			CookedDatas[i] = MoveTemp(Data);
+		}
+		
+		FWwiseResourceUnloadFuture UnloadFutures[NodeCount];
+		for (auto i = 0; i < NodeCount; ++i)
+		{
+			// Creating Node
+			auto* Node = ResourceLoaderImpl->CreateAudioNodeListEntry(CookedDatas[i%CookedDataCount]);
+
+			WWISE_CHECK(Node);
+			if (UNLIKELY(!Node))
+			{
+				continue;
+			}
+
+			// Loading Node
+			FWwiseLoadedAudioNodePromise LoadPromise;
+			auto NodeFuture = LoadPromise.GetFuture();
+			ResourceLoaderImpl->LoadAudioNodeNode(MoveTemp(LoadPromise), MoveTemp(Node));
+
+			// Unloading Node
+			FWwiseResourceUnloadPromise UnloadPromise;
+			UnloadFutures[i] = UnloadPromise.GetFuture();
+
+			NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedAudioNodePtr LoadedNode) mutable
+			{
+				WWISE_CHECK(LoadedNode);
+				if (UNLIKELY(!LoadedNode))
+				{
+					UnloadPromise.EmplaceValue();
+					return;
+				}
+
+				ResourceLoaderImpl->UnloadAudioNodeNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+			});
+		}
+
+		for (auto i = 0; i < NodeCount; ++i)
+		{
+			UnloadFutures[i].Get();
+		}
+
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
+	}
+
 	SECTION("Async AuxBus")
 	{
 		TSharedRef<FWwiseMockExternalSourceManager> ExternalSourceManager = MakeShared<FWwiseMockExternalSourceManager>();
@@ -689,9 +862,9 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 		for (auto i = 0; i < NodeCount; ++i)
 		{
 			// Creating Node
-			auto* Node = ResourceLoaderImpl->CreateAuxBusNode(CookedDatas[i%CookedDataCount], nullptr);
+			auto* Node = ResourceLoaderImpl->CreateAuxBusListEntry(CookedDatas[i%CookedDataCount], nullptr);
 
-			CHECK(Node);
+			WWISE_CHECK(Node);
 			if (UNLIKELY(!Node))
 			{
 				continue;
@@ -708,7 +881,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 
 			NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedAuxBusPtr LoadedNode) mutable
 			{
-				CHECK(LoadedNode);
+				WWISE_CHECK(LoadedNode);
 				if (UNLIKELY(!LoadedNode))
 				{
 					UnloadPromise.EmplaceValue();
@@ -724,42 +897,50 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 			UnloadFutures[i].Get();
 		}
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 
-	SECTION("Async Event & GroupValue")
+	SECTION("Async Dialogue Event & GroupValue")
 	{
 		TSharedRef<FWwiseMockExternalSourceManager> ExternalSourceManager = MakeShared<FWwiseMockExternalSourceManager>();
 		auto MediaManager = MakeShared<FWwiseMockMediaManager>();
 		auto SoundBankManager = MakeShared<FWwiseMockSoundBankManager>();
 		auto ResourceLoaderImpl = MakeShared<FWwiseResourceLoaderImpl>(ExternalSourceManager, MediaManager, SoundBankManager);
 
-		FWwiseLocalizedEventCookedData EventCookedDatas[CookedDataCount];
+		FWwiseLocalizedDialogueEventCookedData EventCookedDatas[CookedDataCount];
 		for (auto i = 0; i < CookedDataCount; ++i)
 		{
-			FWwiseEventCookedData Data;
-			Data.EventId = i % CookedDataCount;
-			Data.Media.Emplace(FWwiseMediaCookedData{});
-			Data.Media[0].MediaId = i % FileCount;
+			FWwiseDialogueEventCookedData Data;
+			Data.DialogueEventId = i % CookedDataCount;
 			Data.SoundBanks.Emplace(FWwiseSoundBankCookedData{});
 
-			FWwiseSwitchContainerLeafCookedData Leaf;
-			FWwiseMediaCookedData LeafMedia;
-			LeafMedia.MediaId = (i % FileCount) + 2;		// Allow overlap while allow for uniques
-			Leaf.Media.Emplace(MoveTemp(LeafMedia));
+			FWwiseAudioNodeCookedData AudioNode;
+			FWwiseMediaCookedData AudioNodeMedia;
+			AudioNodeMedia.MediaId = (i % FileCount) + 2;		// Allow overlap while allow for uniques
+			AudioNode.Media.Emplace(MoveTemp(AudioNodeMedia));
 
-			FWwiseGroupValueCookedData LeafGroupValue;
-			LeafGroupValue.Id = i % GroupValueCount;
-			LeafGroupValue.GroupId = 1;
-			LeafGroupValue.Type = EWwiseGroupType::Switch;
-			Leaf.GroupValueSet.Emplace(MoveTemp(LeafGroupValue));
+			FWwiseGroupValueCookedData AudioNodeGroupValue;
+			AudioNodeGroupValue.Id = i % GroupValueCount;
+			AudioNodeGroupValue.GroupId = 1;
+			AudioNodeGroupValue.Type = EWwiseGroupType::Switch;
+			FWwiseGroupValueCookedDataSet AudioNode1GroupValueSet;
+			AudioNode1GroupValueSet.GroupValues.Emplace(MoveTemp(AudioNodeGroupValue));
+			Data.AudioNodes.Emplace(MoveTemp(AudioNode1GroupValueSet), MoveTemp(AudioNode));
 
-			Data.SwitchContainerLeaves.Emplace(MoveTemp(Leaf));
+			EventCookedDatas[i].DialogueEventLanguageMap.Emplace(FWwiseLanguageCookedData::Sfx, MoveTemp(Data));
+			
+			{
+				FWwiseDialogueArgumentItem ArgItem;
+				ArgItem.Type = EWwiseGroupType::Switch;
+				ArgItem.GroupId = 1;
+				FWwiseDialogueArgumentPosition ArgPosition;
+				ArgPosition.Positions.Emplace(0);
 
-			EventCookedDatas[i].EventLanguageMap.Emplace(FWwiseLanguageCookedData::Sfx, MoveTemp(Data));
+				EventCookedDatas[i].RequiredArguments.Emplace(ArgItem, ArgPosition);
+			}
 		}
 
 		FWwiseGroupValueCookedData GroupValueCookedDatas[CookedDataCount];
@@ -778,42 +959,42 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 			auto DoEvent = [&ResourceLoaderImpl, &EventCookedDatas, i, &UnloadFutures]() mutable
 			{
 				// Creating Node
-				auto* Node = ResourceLoaderImpl->CreateEventNode(EventCookedDatas[i%CookedDataCount], nullptr);
+				auto* Node = ResourceLoaderImpl->CreateDialogueEventListEntry(EventCookedDatas[i%CookedDataCount], nullptr);
 
-				CHECK(Node);
+				WWISE_CHECK(Node);
 				if (UNLIKELY(!Node))
 				{
 					return;
 				}
 
 				// Loading Node
-				FWwiseLoadedEventPromise LoadPromise;
+				FWwiseLoadedDialogueEventPromise LoadPromise;
 				auto NodeFuture = LoadPromise.GetFuture();
-				ResourceLoaderImpl->LoadEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
+				ResourceLoaderImpl->LoadDialogueEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
 
 				// Unloading Node
 				FWwiseResourceUnloadPromise UnloadPromise;
 				UnloadFutures[i] = UnloadPromise.GetFuture();
 
-				NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedEventPtr LoadedNode) mutable
+				NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedDialogueEventPtr LoadedNode) mutable
 				{
-					CHECK(LoadedNode);
+					WWISE_CHECK(LoadedNode);
 					if (UNLIKELY(!LoadedNode))
 					{
 						UnloadPromise.EmplaceValue();
 						return;
 					}
 
-					ResourceLoaderImpl->UnloadEventNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+					ResourceLoaderImpl->UnloadDialogueEventNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 				});
 			};
 
 			auto DoGroupValue = [&ResourceLoaderImpl, &GroupValueCookedDatas, i, &UnloadFutures]() mutable
 			{
 				// Creating Node
-				auto* Node = ResourceLoaderImpl->CreateGroupValueNode(GroupValueCookedDatas[i%CookedDataCount]);
+				auto* Node = ResourceLoaderImpl->CreateGroupValueListEntry(GroupValueCookedDatas[i%CookedDataCount]);
 
-				CHECK(Node);
+				WWISE_CHECK(Node);
 				if (UNLIKELY(!Node))
 				{
 					return;
@@ -830,7 +1011,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 
 				NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedGroupValuePtr LoadedNode) mutable
 				{
-					CHECK(LoadedNode);
+					WWISE_CHECK(LoadedNode);
 					if (UNLIKELY(!LoadedNode))
 					{
 						UnloadPromise.EmplaceValue();
@@ -859,10 +1040,146 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 			UnloadFutures[i].Get();
 		}
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
+		UE_LOG(LogWwiseResourceLoader, Log, TEXT("Finished Resource Loader Tests"))
+	}
+
+	SECTION("Async Event & GroupValue")
+	{
+		TSharedRef<FWwiseMockExternalSourceManager> ExternalSourceManager = MakeShared<FWwiseMockExternalSourceManager>();
+		auto MediaManager = MakeShared<FWwiseMockMediaManager>();
+		auto SoundBankManager = MakeShared<FWwiseMockSoundBankManager>();
+		auto ResourceLoaderImpl = MakeShared<FWwiseResourceLoaderImpl>(ExternalSourceManager, MediaManager, SoundBankManager);
+
+		FWwiseLocalizedEventCookedData EventCookedDatas[CookedDataCount];
+		for (auto i = 0; i < CookedDataCount; ++i)
+		{
+			FWwiseEventCookedData Data;
+			Data.EventId = i % CookedDataCount;
+			Data.Media.Emplace(FWwiseMediaCookedData{});
+			Data.Media[0].MediaId = i % FileCount;
+			Data.SoundBanks.Emplace(FWwiseSoundBankCookedData{});
+
+			FWwiseAudioNodeCookedData AudioNode;
+			FWwiseMediaCookedData AudioNodeMedia;
+			AudioNodeMedia.MediaId = (i % FileCount) + 2;		// Allow overlap while allow for uniques
+			AudioNode.Media.Emplace(MoveTemp(AudioNodeMedia));
+
+			FWwiseGroupValueCookedData AudioNodeGroupValue;
+			AudioNodeGroupValue.Id = i % GroupValueCount;
+			AudioNodeGroupValue.GroupId = 1;
+			AudioNodeGroupValue.Type = EWwiseGroupType::Switch;
+			FWwiseGroupValueCookedDataSet AudioNode1GroupValueSet;
+			AudioNode1GroupValueSet.GroupValues.Emplace(MoveTemp(AudioNodeGroupValue));
+			Data.AudioNodes.Emplace(MoveTemp(AudioNode1GroupValueSet), MoveTemp(AudioNode));
+
+			EventCookedDatas[i].EventLanguageMap.Emplace(FWwiseLanguageCookedData::Sfx, MoveTemp(Data));
+		}
+
+		FWwiseGroupValueCookedData GroupValueCookedDatas[CookedDataCount];
+		for (auto i = 0; i < CookedDataCount; ++i)
+		{
+			GroupValueCookedDatas[i].Id = GroupValueCount - (i % GroupValueCount) - 1;	// Make them opposite
+			GroupValueCookedDatas[i].GroupId = 1;
+			GroupValueCookedDatas[i].Type = EWwiseGroupType::Switch;
+		}
+
+		constexpr const auto FuturesCount = NodeCount * 2; 
+		FWwiseResourceUnloadFuture UnloadFutures[FuturesCount];
+
+		for (auto i = 0; i < NodeCount; ++i)
+		{
+			auto DoEvent = [&ResourceLoaderImpl, &EventCookedDatas, i, &UnloadFutures]() mutable
+			{
+				// Creating Node
+				auto* Node = ResourceLoaderImpl->CreateEventListEntry(EventCookedDatas[i%CookedDataCount], nullptr);
+
+				WWISE_CHECK(Node);
+				if (UNLIKELY(!Node))
+				{
+					return;
+				}
+
+				// Loading Node
+				FWwiseLoadedEventPromise LoadPromise;
+				auto NodeFuture = LoadPromise.GetFuture();
+				ResourceLoaderImpl->LoadEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
+
+				// Unloading Node
+				FWwiseResourceUnloadPromise UnloadPromise;
+				UnloadFutures[i] = UnloadPromise.GetFuture();
+
+				NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedEventPtr LoadedNode) mutable
+				{
+					WWISE_CHECK(LoadedNode);
+					if (UNLIKELY(!LoadedNode))
+					{
+						UnloadPromise.EmplaceValue();
+						return;
+					}
+
+					ResourceLoaderImpl->UnloadEventNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+				});
+			};
+
+			auto DoGroupValue = [&ResourceLoaderImpl, &GroupValueCookedDatas, i, &UnloadFutures]() mutable
+			{
+				// Creating Node
+				auto* Node = ResourceLoaderImpl->CreateGroupValueListEntry(GroupValueCookedDatas[i%CookedDataCount]);
+
+				WWISE_CHECK(Node);
+				if (UNLIKELY(!Node))
+				{
+					return;
+				}
+
+				// Loading Node
+				FWwiseLoadedGroupValuePromise LoadPromise;
+				auto NodeFuture = LoadPromise.GetFuture();
+				ResourceLoaderImpl->LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
+
+				// Unloading Node
+				FWwiseResourceUnloadPromise UnloadPromise;
+				UnloadFutures[NodeCount+i] = UnloadPromise.GetFuture();
+
+				NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedGroupValuePtr LoadedNode) mutable
+				{
+					WWISE_CHECK(LoadedNode);
+					if (UNLIKELY(!LoadedNode))
+					{
+						UnloadPromise.EmplaceValue();
+						return;
+					}
+
+					ResourceLoaderImpl->UnloadGroupValueNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+				});
+			};
+
+			// Vary which one is done first
+			if (i & 4)
+			{
+				DoEvent();
+				DoGroupValue();
+			}
+			else
+			{
+				DoGroupValue();
+				DoEvent();
+			}
+		}
+
+		for (auto i = 0; i < FuturesCount; ++i)
+		{
+			UnloadFutures[i].Get();
+		}
+
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 		UE_LOG(LogWwiseResourceLoader, Log, TEXT("Finished Resource Loader Tests"))
 	}
 
@@ -883,9 +1200,9 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 		FWwiseResourceUnloadFuture UnloadFutures[NodeCount];
 		for (auto i = 0; i < NodeCount; ++i)
 		{
-			auto* Node = ResourceLoaderImpl->CreateExternalSourceNode(CookedDatas[i%CookedDataCount]);
+			auto* Node = ResourceLoaderImpl->CreateExternalSourceListEntry(CookedDatas[i%CookedDataCount]);
 
-			CHECK(Node);
+			WWISE_CHECK(Node);
 
 			if (UNLIKELY(!Node))
 			{
@@ -903,7 +1220,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 
 			NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedExternalSourcePtr LoadedNode) mutable
 			{
-				CHECK(LoadedNode);
+				WWISE_CHECK(LoadedNode);
 				if (UNLIKELY(!LoadedNode))
 				{
 					UnloadPromise.EmplaceValue();
@@ -919,10 +1236,10 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 			UnloadFutures[i].Get();
 		}
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 
 
@@ -945,9 +1262,9 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 		for (auto i = 0; i < NodeCount; ++i)
 		{
 			// Creating Node
-			auto* Node = ResourceLoaderImpl->CreateInitBankNode(CookedDatas[i%CookedDataCount]);
+			auto* Node = ResourceLoaderImpl->CreateInitBankListEntry(CookedDatas[i%CookedDataCount]);
 
-			CHECK(Node);
+			WWISE_CHECK(Node);
 			if (UNLIKELY(!Node))
 			{
 				continue;
@@ -964,7 +1281,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 
 			NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedInitBankPtr LoadedNode) mutable
 			{
-				CHECK(LoadedNode);
+				WWISE_CHECK(LoadedNode);
 				if (UNLIKELY(!LoadedNode))
 				{
 					UnloadPromise.EmplaceValue();
@@ -980,10 +1297,10 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 			UnloadFutures[i].Get();
 		}
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 	
 	SECTION("Async Media")
@@ -1004,9 +1321,9 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 		for (auto i = 0; i < NodeCount; ++i)
 		{
 			// Creating Node
-			auto* Node = ResourceLoaderImpl->CreateMediaNode(CookedDatas[i%CookedDataCount]);
+			auto* Node = ResourceLoaderImpl->CreateMediaListEntry(CookedDatas[i%CookedDataCount]);
 
-			CHECK(Node);
+			WWISE_CHECK(Node);
 			if (UNLIKELY(!Node))
 			{
 				continue;
@@ -1023,7 +1340,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 
 			NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedMediaPtr LoadedNode) mutable
 			{
-				CHECK(LoadedNode);
+				WWISE_CHECK(LoadedNode);
 				if (UNLIKELY(!LoadedNode))
 				{
 					UnloadPromise.EmplaceValue();
@@ -1039,10 +1356,10 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 			UnloadFutures[i].Get();
 		}
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 	
 	SECTION("Async ShareSet")
@@ -1067,9 +1384,9 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 		for (auto i = 0; i < NodeCount; ++i)
 		{
 			// Creating Node
-			auto* Node = ResourceLoaderImpl->CreateShareSetNode(CookedDatas[i%CookedDataCount], &FWwiseLanguageCookedData::Sfx);
+			auto* Node = ResourceLoaderImpl->CreateShareSetListEntry(CookedDatas[i%CookedDataCount], &FWwiseLanguageCookedData::Sfx);
 
-			CHECK(Node);
+			WWISE_CHECK(Node);
 			if (UNLIKELY(!Node))
 			{
 				continue;
@@ -1086,7 +1403,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 
 			NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedShareSetPtr LoadedNode) mutable
 			{
-				CHECK(LoadedNode);
+				WWISE_CHECK(LoadedNode);
 				if (UNLIKELY(!LoadedNode))
 				{
 					UnloadPromise.EmplaceValue();
@@ -1102,10 +1419,10 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 			UnloadFutures[i].Get();
 		}
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 
 	SECTION("Async SoundBank")
@@ -1127,9 +1444,9 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 		for (auto i = 0; i < NodeCount; ++i)
 		{
 			// Creating Node
-			auto* Node = ResourceLoaderImpl->CreateSoundBankNode(CookedDatas[i%CookedDataCount], nullptr);
+			auto* Node = ResourceLoaderImpl->CreateSoundBankListEntry(CookedDatas[i%CookedDataCount], nullptr);
 
-			CHECK(Node);
+			WWISE_CHECK(Node);
 			if (UNLIKELY(!Node))
 			{
 				continue;
@@ -1146,7 +1463,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 
 			NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedSoundBankPtr LoadedNode) mutable
 			{
-				CHECK(LoadedNode);
+				WWISE_CHECK(LoadedNode);
 				if (UNLIKELY(!LoadedNode))
 				{
 					UnloadPromise.EmplaceValue();
@@ -1162,10 +1479,10 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 			UnloadFutures[i].Get();
 		}
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 }
 
@@ -1195,18 +1512,18 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 			Data.Media.Emplace(FWwiseMediaCookedData{});
 			Data.Media[0].MediaId = i + Count;
 
-			FWwiseSwitchContainerLeafCookedData Leaf;
-			FWwiseMediaCookedData LeafMedia;
-			LeafMedia.MediaId = i;
-			Leaf.Media.Emplace(MoveTemp(LeafMedia));
+			FWwiseAudioNodeCookedData AudioNode;
+			FWwiseMediaCookedData AudioNodeMedia;
+			AudioNodeMedia.MediaId = i;
+			AudioNode.Media.Emplace(MoveTemp(AudioNodeMedia));
 
-			FWwiseGroupValueCookedData LeafGroupValue;
-			LeafGroupValue.Id = i;
-			LeafGroupValue.GroupId = 1;
-			LeafGroupValue.Type = EWwiseGroupType::Switch;
-			Leaf.GroupValueSet.Emplace(MoveTemp(LeafGroupValue));
-
-			Data.SwitchContainerLeaves.Emplace(MoveTemp(Leaf));
+			FWwiseGroupValueCookedData AudioNodeGroupValue;
+			AudioNodeGroupValue.Id = i;
+			AudioNodeGroupValue.GroupId = 1;
+			AudioNodeGroupValue.Type = EWwiseGroupType::Switch;
+			FWwiseGroupValueCookedDataSet AudioNode1GroupValueSet;
+			AudioNode1GroupValueSet.GroupValues.Emplace(MoveTemp(AudioNodeGroupValue));
+			Data.AudioNodes.Emplace(MoveTemp(AudioNode1GroupValueSet), MoveTemp(AudioNode));
 
 			EventCookedDatas[i].EventLanguageMap.Emplace(FWwiseLanguageCookedData::Sfx, MoveTemp(Data));
 
@@ -1225,9 +1542,9 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 			auto DoEvent = [&LoadFutures, &ResourceLoaderImpl, &EventCookedDatas, i]() mutable
 			{
 				// Creating Node
-				auto* Node = ResourceLoaderImpl->CreateEventNode(EventCookedDatas[i%Count], nullptr);
+				auto* Node = ResourceLoaderImpl->CreateEventListEntry(EventCookedDatas[i%Count], nullptr);
 
-				CHECK(Node);
+				WWISE_CHECK(Node);
 				if (UNLIKELY(!Node))
 				{
 					return;
@@ -1245,15 +1562,15 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 				// Unloading Event
 				FWwiseResourceUnloadPromise UnloadPromise;
 				UnloadFutures[i] = UnloadPromise.GetFuture();
-				ResourceLoaderImpl->UnloadEventNode(MoveTemp(UnloadPromise), LoadFutures[i].Get());
+				ResourceLoaderImpl->UnloadEventNode(MoveTemp(UnloadPromise), std::move(LoadFutures[i].Get()));
 			};
 
 			auto DoGroupValue = [&ResourceLoaderImpl, &GroupValueCookedDatas, i, &UnloadFutures]() mutable
 			{
 				// Creating Node
-				auto* Node = ResourceLoaderImpl->CreateGroupValueNode(GroupValueCookedDatas[i%Count]);
+				auto* Node = ResourceLoaderImpl->CreateGroupValueListEntry(GroupValueCookedDatas[i%Count]);
 
-				CHECK(Node);
+				WWISE_CHECK(Node);
 				if (UNLIKELY(!Node))
 				{
 					return;
@@ -1270,7 +1587,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 
 				NodeFuture.Next([i, &GroupValueCookedDatas, &ResourceLoaderImpl, UnloadPromise2 = MoveTemp(UnloadPromise2)](FWwiseLoadedGroupValuePtr LoadedNode) mutable
 				{
-					CHECK(LoadedNode);
+					WWISE_CHECK(LoadedNode);
 					if (UNLIKELY(!LoadedNode))
 					{
 						UnloadPromise2.EmplaceValue();
@@ -1278,7 +1595,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 					}
 
 					// Loading Node 2
-					auto* Node = ResourceLoaderImpl->CreateGroupValueNode(GroupValueCookedDatas[i%Count]);
+					auto* Node = ResourceLoaderImpl->CreateGroupValueListEntry(GroupValueCookedDatas[i%Count]);
 					FWwiseLoadedGroupValuePromise LoadPromise2;
 					auto NodeFuture2 = LoadPromise2.GetFuture();
 
@@ -1300,7 +1617,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 					// Wait for Loading Node 2
 					NodeFuture2.Next([&ResourceLoaderImpl, UnloadFuture = MoveTemp(UnloadFuture), UnloadPromise2 = MoveTemp(UnloadPromise2)](FWwiseLoadedGroupValuePtr LoadedNode) mutable
 					{
-						CHECK(LoadedNode);
+						WWISE_CHECK(LoadedNode);
 						if (UNLIKELY(!LoadedNode))
 						{
 							UnloadPromise2.EmplaceValue();
@@ -1327,10 +1644,10 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 			UnloadFutures[i].Get();
 		}
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 
 	SECTION("Event PendingKill Reload")
@@ -1357,18 +1674,18 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 			Data.Media.Emplace(FWwiseMediaCookedData{});
 			Data.Media[0].MediaId = i + Count;
 
-			FWwiseSwitchContainerLeafCookedData Leaf;
-			FWwiseMediaCookedData LeafMedia;
-			LeafMedia.MediaId = i;
-			Leaf.Media.Emplace(MoveTemp(LeafMedia));
+			FWwiseAudioNodeCookedData AudioNode;
+			FWwiseMediaCookedData AudioNodeMedia;
+			AudioNodeMedia.MediaId = i;
+			AudioNode.Media.Emplace(MoveTemp(AudioNodeMedia));
 
-			FWwiseGroupValueCookedData LeafGroupValue;
-			LeafGroupValue.Id = i;
-			LeafGroupValue.GroupId = 1;
-			LeafGroupValue.Type = EWwiseGroupType::Switch;
-			Leaf.GroupValueSet.Emplace(MoveTemp(LeafGroupValue));
-
-			Data.SwitchContainerLeaves.Emplace(MoveTemp(Leaf));
+			FWwiseGroupValueCookedData AudioNodeGroupValue;
+			AudioNodeGroupValue.Id = i;
+			AudioNodeGroupValue.GroupId = 1;
+			AudioNodeGroupValue.Type = EWwiseGroupType::Switch;
+			FWwiseGroupValueCookedDataSet AudioNode1GroupValueSet;
+			AudioNode1GroupValueSet.GroupValues.Emplace(MoveTemp(AudioNodeGroupValue));
+			Data.AudioNodes.Emplace(MoveTemp(AudioNode1GroupValueSet), MoveTemp(AudioNode));
 
 			EventCookedDatas[i].EventLanguageMap.Emplace(FWwiseLanguageCookedData::Sfx, MoveTemp(Data));
 
@@ -1387,9 +1704,9 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 			auto DoEvent = [&ResourceLoaderImpl, &EventCookedDatas, i, &UnloadFutures]() mutable
 			{
 				// Creating Node
-				auto* Node = ResourceLoaderImpl->CreateEventNode(EventCookedDatas[i%Count], nullptr);
+				auto* Node = ResourceLoaderImpl->CreateEventListEntry(EventCookedDatas[i%Count], nullptr);
 
-				CHECK(Node);
+				WWISE_CHECK(Node);
 				if (UNLIKELY(!Node))
 				{
 					return;
@@ -1406,7 +1723,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 
 				NodeFuture.Next([i, &EventCookedDatas, &ResourceLoaderImpl, UnloadPromise2 = MoveTemp(UnloadPromise2)](FWwiseLoadedEventPtr LoadedNode) mutable
 				{
-					CHECK(LoadedNode);
+					WWISE_CHECK(LoadedNode);
 					if (UNLIKELY(!LoadedNode))
 					{
 						UnloadPromise2.EmplaceValue();
@@ -1414,7 +1731,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 					}
 
 					// Creating Node 2
-					auto* Node2 = ResourceLoaderImpl->CreateEventNode(EventCookedDatas[i%Count], nullptr);
+					auto* Node2 = ResourceLoaderImpl->CreateEventListEntry(EventCookedDatas[i%Count], nullptr);
 
 					// Loading Node 2
                     FWwiseLoadedEventPromise LoadPromise2;
@@ -1437,7 +1754,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 					// Wait for Loading Node 2
 					NodeFuture2.Next([&ResourceLoaderImpl, UnloadFuture = MoveTemp(UnloadFuture), UnloadPromise2 = MoveTemp(UnloadPromise2)](FWwiseLoadedEventPtr LoadedNode) mutable
 					{
-						CHECK(LoadedNode);
+						WWISE_CHECK(LoadedNode);
 						if (UNLIKELY(!LoadedNode))
 						{
 							UnloadPromise2.EmplaceValue();
@@ -1457,9 +1774,9 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 			auto DoGroupValue = [&LoadFutures, &ResourceLoaderImpl, &GroupValueCookedDatas, i]() mutable
 			{
 				// Creating Node
-				auto* Node = ResourceLoaderImpl->CreateGroupValueNode(GroupValueCookedDatas[i%Count]);
+				auto* Node = ResourceLoaderImpl->CreateGroupValueListEntry(GroupValueCookedDatas[i%Count]);
 
-				CHECK(Node);
+				WWISE_CHECK(Node);
 				if (UNLIKELY(!Node))
 				{
 					return;
@@ -1478,7 +1795,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 				// Future for completion (Unloading Node 2)
 				FWwiseResourceUnloadPromise UnloadPromise2;
 				UnloadFutures[Count+i] = UnloadPromise2.GetFuture();
-				ResourceLoaderImpl->UnloadGroupValueNode(MoveTemp(UnloadPromise2), LoadFutures[i].Get());
+				ResourceLoaderImpl->UnloadGroupValueNode(MoveTemp(UnloadPromise2), std::move(LoadFutures[i].Get()));
 			};
 
 			DoEvent();
@@ -1491,10 +1808,10 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 			UnloadFutures[i].Get();
 		}
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 }
 
@@ -1504,8 +1821,10 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 	{
 		static constexpr const auto NumOp = 10000;
 
+		static constexpr const uint32 NumAudioNodes = 191;
 		static constexpr const uint32 NumAuxBusses = 31;
-		static constexpr const uint32 NumEvents = 500;
+		static constexpr const uint32 NumDialogueEvents = 249;
+		static constexpr const uint32 NumEvents = 501;
 		static constexpr const uint32 NumExternalSources = 16;
 		static constexpr const uint32 NumInitBanks = 10;
 		static constexpr const uint32 NumMedia = 2000;
@@ -1515,7 +1834,9 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 		static constexpr const uint32 NumSwitches = 14;
 		static constexpr const uint32 MaxLeaves = 10;
 
+		auto AudioNodesPtr = std::make_unique<std::array<FWwiseAudioNodeCookedData, NumAudioNodes>>();
 		auto AuxBussesPtr = std::make_unique<std::array<FWwiseLocalizedAuxBusCookedData, NumAuxBusses>>();
+		auto DialogueEventsPtr = std::make_unique<std::array<FWwiseLocalizedDialogueEventCookedData, NumDialogueEvents>>();
 		auto EventsPtr = std::make_unique<std::array<FWwiseLocalizedEventCookedData, NumEvents>>();
 		auto ExternalSourcePtr = std::make_unique<std::array<FWwiseExternalSourceCookedData, NumExternalSources>>();
 		auto InitBanksPtr = std::make_unique<std::array<FWwiseInitBankCookedData, NumInitBanks>>();
@@ -1525,7 +1846,9 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 		auto StatesPtr = std::make_unique<std::array<FWwiseGroupValueCookedData, NumStates>>();
 		auto SwitchesPtr = std::make_unique<std::array<FWwiseGroupValueCookedData, NumSwitches>>();
 
+		auto& AudioNodes = *AudioNodesPtr;
 		auto& AuxBusses = *AuxBussesPtr;
+		auto& DialogueEvents = *DialogueEventsPtr;
 		auto& Events = *EventsPtr;
 		auto& ExternalSources = *ExternalSourcePtr;
 		auto& InitBanks = *InitBanksPtr;
@@ -1590,6 +1913,28 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 				Switch.Id = ++Id;
 				Switch.Type = EWwiseGroupType::Switch;
 			}
+
+			for (auto& AudioNode : AudioNodes)
+			{
+				AudioNode.AudioNodeId = ++Id;
+				auto RequiredMediaCount = WwiseHashCombineFast(GetTypeHash(Id), 19593) % (MaxLeaves*3);
+				if (RequiredMediaCount > MaxLeaves*2.5) RequiredMediaCount = 0;
+				
+				auto RequiredSoundBankCount = WwiseHashCombineFast(GetTypeHash(Id), 99595) % (MaxLeaves/2);
+				if (RequiredSoundBankCount > MaxLeaves/2.5) RequiredSoundBankCount = 0;
+
+				for (uint32 i=0; i < RequiredMediaCount; ++i)
+				{
+					const auto MediaToAdd = WwiseHashCombineFast(GetTypeHash(Id), i ^ 9385934) % NumMedia;
+					AudioNode.Media.Add(Media[MediaToAdd]);
+				}
+
+				for (uint32 i=0; i < RequiredSoundBankCount; ++i)
+				{
+					const auto SoundBankToAdd = WwiseHashCombineFast(GetTypeHash(Id), i ^ 283985) % NumSoundBanks;
+					AudioNode.SoundBanks.Add(SoundBanks[SoundBankToAdd].SoundBankLanguageMap[FWwiseLanguageCookedData::Sfx]);
+				}
+			}
 			
 			for (auto& AuxBus : AuxBusses)
 			{
@@ -1628,7 +1973,45 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 				}
 
 			}
-			
+
+			for (auto& Event : DialogueEvents)
+			{
+				FWwiseDialogueEventCookedData Data;
+				Data.DialogueEventId = ++Id;
+				
+				auto RequiredSoundBankCount = WwiseHashCombineFast(GetTypeHash(Id), 16692402) % (MaxLeaves/2) % NumSoundBanks;
+				if (RequiredSoundBankCount > MaxLeaves/2.2) RequiredSoundBankCount = 0;
+
+				auto RequiredAudioNodeCount = WwiseHashCombineFast(GetTypeHash(Id), 853019401) % (MaxLeaves*2) % NumAudioNodes;
+				if (RequiredAudioNodeCount > MaxLeaves*1.5) RequiredAudioNodeCount = 0;
+
+				for (uint32 i=0; i < RequiredSoundBankCount; ++i)
+				{
+					const auto SoundBankToAdd = WwiseHashCombineFast(GetTypeHash(Id), i ^ 3123982) % NumSoundBanks;
+					Data.SoundBanks.Add(SoundBanks[SoundBankToAdd].SoundBankLanguageMap[FWwiseLanguageCookedData::Sfx]);
+				}
+
+				for (uint32 AudioNodeIter=0; AudioNodeIter < RequiredAudioNodeCount; ++AudioNodeIter)
+				{
+					const auto AudioNodeToAdd = WwiseHashCombineFast(GetTypeHash(Id), AudioNodeIter ^ 48389941) % NumAudioNodes;
+
+					auto GroupValueCount = WwiseHashCombineFast(GetTypeHash(Id), AudioNodeIter ^ 2151584104) % MaxLeaves;
+					if (GroupValueCount > MaxLeaves / 2) GroupValueCount = 0;
+					++GroupValueCount; // At least one
+
+					FWwiseGroupValueCookedDataSet GroupValueSet;
+					for (uint32 i=0; i < GroupValueCount; ++i)
+					{
+						const bool bIsState = WwiseHashCombineFast(GetTypeHash(Id), i ^ AudioNodeIter ^ 8484531414) % 4 == 0;		// Mostly switches
+						const auto NumToAdd = WwiseHashCombineFast(GetTypeHash(Id), i ^ AudioNodeIter ^ 9671952) % (bIsState ? NumStates : NumSwitches);
+						GroupValueSet.GroupValues.Add(bIsState ? States[NumToAdd] : Switches[NumToAdd]);
+					}
+					Data.AudioNodes.Add(MoveTemp(GroupValueSet), AudioNodes[AudioNodeToAdd]);
+				}
+
+				Event.DialogueEventLanguageMap.Add(FWwiseLanguageCookedData::Sfx, MoveTemp(Data));
+			}
+
 			for (auto& Event : Events)
 			{
 				FWwiseEventCookedData Data;
@@ -1643,8 +2026,8 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 				auto RequiredGroupValueCount = WwiseHashCombineFast(GetTypeHash(Id), 462058) % (MaxLeaves*4);
 				if (RequiredGroupValueCount > MaxLeaves) RequiredGroupValueCount = 0;
 				
-				auto RequiredSwitchContainerLeafCount = WwiseHashCombineFast(GetTypeHash(Id), 953019401) % (MaxLeaves*2);
-				if (RequiredSwitchContainerLeafCount > MaxLeaves) RequiredSwitchContainerLeafCount = 0;
+				auto RequiredSwitchContainerAudioNodeCount = WwiseHashCombineFast(GetTypeHash(Id), 953019401) % (MaxLeaves*2);
+				if (RequiredSwitchContainerAudioNodeCount > MaxLeaves) RequiredSwitchContainerAudioNodeCount = 0;
 
 				for (uint32 i=0; i < RequiredMediaCount; ++i)
 				{
@@ -1665,39 +2048,40 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					Data.RequiredGroupValueSet.Add(bIsState ? States[NumToAdd] : Switches[NumToAdd]);
 				}
 
-				for (uint32 LeafIter=0; LeafIter < RequiredSwitchContainerLeafCount; ++LeafIter)
+				for (uint32 AudioNodeIter=0; AudioNodeIter < RequiredSwitchContainerAudioNodeCount; ++AudioNodeIter)
 				{
-					FWwiseSwitchContainerLeafCookedData Leaf;
-					auto MediaCount = WwiseHashCombineFast(GetTypeHash(Id), LeafIter ^ 4863419941) % (MaxLeaves * 2);
+					FWwiseAudioNodeCookedData AudioNode;
+					auto MediaCount = WwiseHashCombineFast(GetTypeHash(Id), AudioNodeIter ^ 4863419941) % (MaxLeaves * 2);
 					if (MediaCount > MaxLeaves) MediaCount = 0;
 					++MediaCount; // At least one
 				
-					auto SoundBankCount = WwiseHashCombineFast(GetTypeHash(Id), LeafIter ^ 1065842795) % (MaxLeaves*3);
+					auto SoundBankCount = WwiseHashCombineFast(GetTypeHash(Id), AudioNodeIter ^ 1065842795) % (MaxLeaves*3);
 					if (SoundBankCount > MaxLeaves) SoundBankCount = 0;
 
-					auto GroupValueCount = WwiseHashCombineFast(GetTypeHash(Id), LeafIter ^ 2828284104) % MaxLeaves;
+					auto GroupValueCount = WwiseHashCombineFast(GetTypeHash(Id), AudioNodeIter ^ 2828284104) % MaxLeaves;
 					if (GroupValueCount > MaxLeaves / 2) GroupValueCount = 0;
 					++GroupValueCount; // At least one
 
 					for (uint32 i=0; i < MediaCount; ++i)
 					{
-						const auto MediaToAdd = WwiseHashCombineFast(GetTypeHash(Id), i ^ LeafIter ^ 19891919) % NumMedia;
-						Leaf.Media.Add(Media[MediaToAdd]);
+						const auto MediaToAdd = WwiseHashCombineFast(GetTypeHash(Id), i ^ AudioNodeIter ^ 19891919) % NumMedia;
+						AudioNode.Media.Add(Media[MediaToAdd]);
 					}
 
 					for (uint32 i=0; i < SoundBankCount; ++i)
 					{
-						const auto SoundBankToAdd = WwiseHashCombineFast(GetTypeHash(Id), i ^ LeafIter ^ 924606208) % NumSoundBanks;
-						Leaf.SoundBanks.Add(SoundBanks[SoundBankToAdd].SoundBankLanguageMap[FWwiseLanguageCookedData::Sfx]);
+						const auto SoundBankToAdd = WwiseHashCombineFast(GetTypeHash(Id), i ^ AudioNodeIter ^ 924606208) % NumSoundBanks;
+						AudioNode.SoundBanks.Add(SoundBanks[SoundBankToAdd].SoundBankLanguageMap[FWwiseLanguageCookedData::Sfx]);
 					}
 
+					FWwiseGroupValueCookedDataSet GroupValueSet;
 					for (uint32 i=0; i < GroupValueCount; ++i)
 					{
-						const bool bIsState = WwiseHashCombineFast(GetTypeHash(Id), i ^ LeafIter ^ 8484846414) % 4 == 0;		// Mostly switches
-						const auto NumToAdd = WwiseHashCombineFast(GetTypeHash(Id), i ^ LeafIter ^ 10671953) % (bIsState ? NumStates : NumSwitches);
-						Leaf.GroupValueSet.Add(bIsState ? States[NumToAdd] : Switches[NumToAdd]);
+						const bool bIsState = WwiseHashCombineFast(GetTypeHash(Id), i ^ AudioNodeIter ^ 8484846414) % 4 == 0;		// Mostly switches
+						const auto NumToAdd = WwiseHashCombineFast(GetTypeHash(Id), i ^ AudioNodeIter ^ 10671953) % (bIsState ? NumStates : NumSwitches);
+						GroupValueSet.GroupValues.Add(bIsState ? States[NumToAdd] : Switches[NumToAdd]);
 					}
-					Data.SwitchContainerLeaves.Add(MoveTemp(Leaf));
+					Data.AudioNodes.Add(MoveTemp(GroupValueSet), MoveTemp(AudioNode));
 				}
 
 				Event.EventLanguageMap.Add(FWwiseLanguageCookedData::Sfx, MoveTemp(Data));
@@ -1721,17 +2105,53 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 		
 		for (uint32 Op = 0; Op < NumOp; ++Op)
 		{
-			const auto Type = WwiseHashCombineFast(GetTypeHash(Op), 939401805) % 10;
+			const auto Type = WwiseHashCombineFast(GetTypeHash(Op), 939401805) % 12;
 			switch(Type)
 			{
-			case 0:		// AuxBus
+			case 0:		// AudioNode
+				{
+					const auto AudioNode = WwiseHashCombineFast(GetTypeHash(Op), 409892689) % NumAudioNodes;
+
+					// Creating Node
+					auto* Node = ResourceLoaderImpl->CreateAudioNodeListEntry(AudioNodes[AudioNode]);
+
+					WWISE_CHECK(Node);
+					if (UNLIKELY(!Node))
+					{
+						continue;
+					}
+
+					// Loading Node
+					FWwiseLoadedAudioNodePromise LoadPromise;
+					auto NodeFuture = LoadPromise.GetFuture();
+					ResourceLoaderImpl->LoadAudioNodeNode(MoveTemp(LoadPromise), MoveTemp(Node));
+
+					// Unloading Node
+					FWwiseResourceUnloadPromise UnloadPromise;
+					UnloadFutures[Op] = UnloadPromise.GetFuture();
+
+					NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedAudioNodePtr LoadedNode) mutable
+					{
+						WWISE_CHECK(LoadedNode);
+						if (UNLIKELY(!LoadedNode))
+						{
+							UnloadPromise.EmplaceValue();
+							return;
+						}
+
+						ResourceLoaderImpl->UnloadAudioNodeNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+					});
+
+				}
+				break;
+			case 1:		// AuxBus
 				{
 					const auto AuxBus = WwiseHashCombineFast(GetTypeHash(Op), 2076755927) % NumAuxBusses;
 
 					// Creating Node
-					auto* Node = ResourceLoaderImpl->CreateAuxBusNode(AuxBusses[AuxBus], nullptr);
+					auto* Node = ResourceLoaderImpl->CreateAuxBusListEntry(AuxBusses[AuxBus], nullptr);
 
-					CHECK(Node);
+					WWISE_CHECK(Node);
 					if (UNLIKELY(!Node))
 					{
 						continue;
@@ -1748,7 +2168,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 					NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedAuxBusPtr LoadedNode) mutable
 					{
-						CHECK(LoadedNode);
+						WWISE_CHECK(LoadedNode);
 						if (UNLIKELY(!LoadedNode))
 						{
 							UnloadPromise.EmplaceValue();
@@ -1760,15 +2180,49 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 				}
 				break;
+			case 2:		// Dialogue Event
+				{
+					const auto Event = WwiseHashCombineFast(GetTypeHash(Op), 99426828) % NumDialogueEvents;
+
+					// Creating Node
+					auto* Node = ResourceLoaderImpl->CreateDialogueEventListEntry(DialogueEvents[Event], nullptr);
+
+					WWISE_CHECK(Node);
+					if (UNLIKELY(!Node))
+					{
+						return;
+					}
+
+					// Loading Node
+					FWwiseLoadedDialogueEventPromise LoadPromise;
+					auto NodeFuture = LoadPromise.GetFuture();
+					ResourceLoaderImpl->LoadDialogueEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
+
+					// Unloading Node
+					FWwiseResourceUnloadPromise UnloadPromise;
+					UnloadFutures[Op] = UnloadPromise.GetFuture();
+
+					NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedDialogueEventPtr LoadedNode) mutable
+					{
+						WWISE_CHECK(LoadedNode);
+						if (UNLIKELY(!LoadedNode))
+						{
+							UnloadPromise.EmplaceValue();
+							return;
+						}
+
+						ResourceLoaderImpl->UnloadDialogueEventNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+					});
+				}
+				break;
 			default:	// More Events than anything else! (see Type's Modulo for how many are events)
-			case 1:		// Event
 				{
 					const auto Event = WwiseHashCombineFast(GetTypeHash(Op), 549205820) % NumEvents;
 
 					// Creating Node
-					auto* Node = ResourceLoaderImpl->CreateEventNode(Events[Event], nullptr);
+					auto* Node = ResourceLoaderImpl->CreateEventListEntry(Events[Event], nullptr);
 
-					CHECK(Node);
+					WWISE_CHECK(Node);
 					if (UNLIKELY(!Node))
 					{
 						return;
@@ -1785,7 +2239,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 					NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedEventPtr LoadedNode) mutable
 					{
-						CHECK(LoadedNode);
+						WWISE_CHECK(LoadedNode);
 						if (UNLIKELY(!LoadedNode))
 						{
 							UnloadPromise.EmplaceValue();
@@ -1796,14 +2250,14 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					});
 				}
 				break;
-			case 2: // External source
+			case 3: // External source
 				{
 					const auto ExternalSource = WwiseHashCombineFast(GetTypeHash(Op), 64897712) % NumExternalSources;
 
 					// Creating Node
-					auto* Node = ResourceLoaderImpl->CreateExternalSourceNode(ExternalSources[ExternalSource]);
+					auto* Node = ResourceLoaderImpl->CreateExternalSourceListEntry(ExternalSources[ExternalSource]);
 
-					CHECK(Node);
+					WWISE_CHECK(Node);
 					if (UNLIKELY(!Node))
 					{
 						continue;
@@ -1820,7 +2274,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 					NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedExternalSourcePtr LoadedNode) mutable
 					{
-						CHECK(LoadedNode);
+						WWISE_CHECK(LoadedNode);
 						if (UNLIKELY(!LoadedNode))
 						{
 							UnloadPromise.EmplaceValue();
@@ -1831,14 +2285,14 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					});
 				}
 				break;
-			case 3:		// Init Bank
+			case 4:		// Init Bank
 				{
 					const auto InitBank = WwiseHashCombineFast(GetTypeHash(Op), 65471010) % NumInitBanks;
 
 					// Creating Node
-					auto* Node = ResourceLoaderImpl->CreateInitBankNode(InitBanks[InitBank]);
+					auto* Node = ResourceLoaderImpl->CreateInitBankListEntry(InitBanks[InitBank]);
 
-					CHECK(Node);
+					WWISE_CHECK(Node);
 					if (UNLIKELY(!Node))
 					{
 						continue;
@@ -1855,7 +2309,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 					NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedInitBankPtr LoadedNode) mutable
 					{
-						CHECK(LoadedNode);
+						WWISE_CHECK(LoadedNode);
 						if (UNLIKELY(!LoadedNode))
 						{
 							UnloadPromise.EmplaceValue();
@@ -1866,14 +2320,14 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					});
 				}
 				break;
-			case 4:		// Media
+			case 5:		// Media
 				{
 					const auto Medii = WwiseHashCombineFast(GetTypeHash(Op), 193119891) % NumMedia;
 
 					// Creating Node
-					auto* Node = ResourceLoaderImpl->CreateMediaNode(Media[Medii]);
+					auto* Node = ResourceLoaderImpl->CreateMediaListEntry(Media[Medii]);
 
-					CHECK(Node);
+					WWISE_CHECK(Node);
 					if (UNLIKELY(!Node))
 					{
 						continue;
@@ -1890,7 +2344,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 					NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedMediaPtr LoadedNode) mutable
 					{
-						CHECK(LoadedNode);
+						WWISE_CHECK(LoadedNode);
 						if (UNLIKELY(!LoadedNode))
 						{
 							UnloadPromise.EmplaceValue();
@@ -1901,14 +2355,14 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					});
 				}
 				break;
-			case 5:		// ShareSet
+			case 6:		// ShareSet
 				{
 					const auto ShareSet = WwiseHashCombineFast(GetTypeHash(Op), 331319104) % NumShareSets;
 
 					// Creating Node
-					auto* Node = ResourceLoaderImpl->CreateShareSetNode(ShareSets[ShareSet], &FWwiseLanguageCookedData::Sfx);
+					auto* Node = ResourceLoaderImpl->CreateShareSetListEntry(ShareSets[ShareSet], &FWwiseLanguageCookedData::Sfx);
 
-					CHECK(Node);
+					WWISE_CHECK(Node);
 					if (UNLIKELY(!Node))
 					{
 						continue;
@@ -1925,7 +2379,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 					NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedShareSetPtr LoadedNode) mutable
 					{
-						CHECK(LoadedNode);
+						WWISE_CHECK(LoadedNode);
 						if (UNLIKELY(!LoadedNode))
 						{
 							UnloadPromise.EmplaceValue();
@@ -1937,14 +2391,14 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 				}
 				break;
-			case 6:		// SoundBank
+			case 7:		// SoundBank
 				{
 					const auto SoundBank = WwiseHashCombineFast(GetTypeHash(Op), 953952742) % NumSoundBanks;
 
 					// Creating Node
-					auto* Node = ResourceLoaderImpl->CreateSoundBankNode(SoundBanks[SoundBank], nullptr);
+					auto* Node = ResourceLoaderImpl->CreateSoundBankListEntry(SoundBanks[SoundBank], nullptr);
 
-					CHECK(Node);
+					WWISE_CHECK(Node);
 					if (UNLIKELY(!Node))
 					{
 						continue;
@@ -1961,7 +2415,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 					NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedSoundBankPtr LoadedNode) mutable
 					{
-						CHECK(LoadedNode);
+						WWISE_CHECK(LoadedNode);
 						if (UNLIKELY(!LoadedNode))
 						{
 							UnloadPromise.EmplaceValue();
@@ -1972,14 +2426,14 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					});
 				}
 				break;
-			case 7:		// State
+			case 8:		// State
 				{
 					const auto State = WwiseHashCombineFast(GetTypeHash(Op), 8198259) % NumStates;
 
 					// Creating Node
-					auto* Node = ResourceLoaderImpl->CreateGroupValueNode(States[State]);
+					auto* Node = ResourceLoaderImpl->CreateGroupValueListEntry(States[State]);
 
-					CHECK(Node);
+					WWISE_CHECK(Node);
 					if (UNLIKELY(!Node))
 					{
 						return;
@@ -1996,7 +2450,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 					NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedGroupValuePtr LoadedNode) mutable
 					{
-						CHECK(LoadedNode);
+						WWISE_CHECK(LoadedNode);
 						if (UNLIKELY(!LoadedNode))
 						{
 							UnloadPromise.EmplaceValue();
@@ -2007,14 +2461,14 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					});
 				}
 				break;
-			case 8:		// Switch
+			case 9:		// Switch
 				{
 					const auto Switch = WwiseHashCombineFast(GetTypeHash(Op), 24650269) % NumSwitches;
 
 					// Creating Node
-					auto* Node = ResourceLoaderImpl->CreateGroupValueNode(Switches[Switch]);
+					auto* Node = ResourceLoaderImpl->CreateGroupValueListEntry(Switches[Switch]);
 
-					CHECK(Node);
+					WWISE_CHECK(Node);
 					if (UNLIKELY(!Node))
 					{
 						return;
@@ -2031,7 +2485,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 					NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedGroupValuePtr LoadedNode) mutable
 					{
-						CHECK(LoadedNode);
+						WWISE_CHECK(LoadedNode);
 						if (UNLIKELY(!LoadedNode))
 						{
 							UnloadPromise.EmplaceValue();
@@ -2056,13 +2510,13 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 			UnloadFuture.Get();
 		}
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 
-	SECTION("Sequential Leaf Load")
+	SECTION("Sequential AudioNode Load")
 	{
 		const bool bMockSleepOnMediaLoad = FWwiseResourceLoaderImpl::Test::bMockSleepOnMediaLoad;
 		FWwiseResourceLoaderImpl::Test::bMockSleepOnMediaLoad = true;
@@ -2086,20 +2540,20 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 			FWwiseEventCookedData Data;
 			Data.EventId = 1;
 
-			FWwiseSwitchContainerLeafCookedData Leaf;
+			FWwiseAudioNodeCookedData AudioNode;
 			for (int i = 0; i < NumGroupValues; ++i)
 			{
-				FWwiseMediaCookedData LeafMedia;
-				LeafMedia.MediaId = 10000 + i / MediaOverlap;
-				Leaf.Media.Emplace(MoveTemp(LeafMedia));
+				FWwiseMediaCookedData AudioNodeMedia;
+				AudioNodeMedia.MediaId = 10000 + i / MediaOverlap;
+				AudioNode.Media.Emplace(MoveTemp(AudioNodeMedia));
 
-				FWwiseGroupValueCookedData LeafGroupValue;
-				LeafGroupValue.Id = 15000 + i;
-				LeafGroupValue.GroupId = 1;
-				LeafGroupValue.Type = EWwiseGroupType::Switch;
-				Leaf.GroupValueSet.Emplace(MoveTemp(LeafGroupValue));
-
-				Data.SwitchContainerLeaves.Emplace(MoveTemp(Leaf));
+				FWwiseGroupValueCookedData AudioNodeGroupValue;
+				AudioNodeGroupValue.Id = 15000 + i;
+				AudioNodeGroupValue.GroupId = 1;
+				AudioNodeGroupValue.Type = EWwiseGroupType::Switch;
+				FWwiseGroupValueCookedDataSet AudioNode1GroupValueSet;
+				AudioNode1GroupValueSet.GroupValues.Emplace(MoveTemp(AudioNodeGroupValue));
+				Data.AudioNodes.Emplace(MoveTemp(AudioNode1GroupValueSet), MoveTemp(AudioNode));
 			}
 
 			EventCookedDatas[0].EventLanguageMap.Emplace(FWwiseLanguageCookedData::Sfx, MoveTemp(Data));
@@ -2110,23 +2564,23 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 			FWwiseEventCookedData Data;
 			Data.EventId = 1;
 
-			FWwiseSwitchContainerLeafCookedData Leaf;
+			FWwiseAudioNodeCookedData AudioNode;
 			for (int i = 0; i < NumGroupValues; ++i)
 			{
 				for (uint32 j = 0; j < 2; ++j)
 				{
-					FWwiseMediaCookedData LeafMedia;
-					LeafMedia.MediaId = 10000 + (WwiseHashCombineFast(GetTypeHash(i), 142401 + j) % NumGroupValues) / MediaOverlap;
-					Leaf.Media.Emplace(MoveTemp(LeafMedia));
+					FWwiseMediaCookedData AudioNodeMedia;
+					AudioNodeMedia.MediaId = 10000 + (WwiseHashCombineFast(GetTypeHash(i), 142401 + j) % NumGroupValues) / MediaOverlap;
+					AudioNode.Media.Emplace(MoveTemp(AudioNodeMedia));
 				}
 
-				FWwiseGroupValueCookedData LeafGroupValue;
-				LeafGroupValue.Id = 15000 + i;
-				LeafGroupValue.GroupId = 1;
-				LeafGroupValue.Type = EWwiseGroupType::Switch;
-				Leaf.GroupValueSet.Emplace(MoveTemp(LeafGroupValue));
-
-				Data.SwitchContainerLeaves.Emplace(MoveTemp(Leaf));
+				FWwiseGroupValueCookedData AudioNodeGroupValue;
+				AudioNodeGroupValue.Id = 15000 + i;
+				AudioNodeGroupValue.GroupId = 1;
+				AudioNodeGroupValue.Type = EWwiseGroupType::Switch;
+				FWwiseGroupValueCookedDataSet AudioNode1GroupValueSet;
+				AudioNode1GroupValueSet.GroupValues.Emplace(MoveTemp(AudioNodeGroupValue));
+				Data.AudioNodes.Emplace(MoveTemp(AudioNode1GroupValueSet), MoveTemp(AudioNode));
 			}
 
 			EventCookedDatas[1].EventLanguageMap.Emplace(FWwiseLanguageCookedData::Sfx, MoveTemp(Data));
@@ -2153,9 +2607,9 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 				if (i == 0)
 				{
 					// Creating Node
-					auto* Node = ResourceLoaderImpl->CreateEventNode(EventCookedDatas[0], nullptr);
+					auto* Node = ResourceLoaderImpl->CreateEventListEntry(EventCookedDatas[0], nullptr);
 
-					CHECK(Node);
+					WWISE_CHECK(Node);
 					if (UNLIKELY(!Node))
 					{
 						return;
@@ -2174,7 +2628,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 					EventFutures[0].Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedEventPtr LoadedNode) mutable
 					{
-						CHECK(LoadedNode);
+						WWISE_CHECK(LoadedNode);
 						if (UNLIKELY(!LoadedNode))
 						{
 							UnloadPromise.EmplaceValue();
@@ -2188,9 +2642,9 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 				if (i == NumGroupValues / 4 * 2)
 				{
 					// Creating Node
-					auto* Node = ResourceLoaderImpl->CreateEventNode(EventCookedDatas[1], nullptr);
+					auto* Node = ResourceLoaderImpl->CreateEventListEntry(EventCookedDatas[1], nullptr);
 
-					CHECK(Node);
+					WWISE_CHECK(Node);
 					if (UNLIKELY(!Node))
 					{
 						return;
@@ -2209,7 +2663,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 					EventFutures[1].Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedEventPtr LoadedNode) mutable
 					{
-						CHECK(LoadedNode);
+						WWISE_CHECK(LoadedNode);
 						if (UNLIKELY(!LoadedNode))
 						{
 							UnloadPromise.EmplaceValue();
@@ -2222,9 +2676,9 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 				{
 					// Creating Node
-					auto* Node = ResourceLoaderImpl->CreateGroupValueNode(GroupValueCookedDatas[i]);
+					auto* Node = ResourceLoaderImpl->CreateGroupValueListEntry(GroupValueCookedDatas[i]);
 
-					CHECK(Node);
+					WWISE_CHECK(Node);
 					if (UNLIKELY(!Node))
 					{
 						return;
@@ -2241,7 +2695,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 
 					NodeFuture.Next([&ResourceLoaderImpl, UnloadPromise = MoveTemp(UnloadPromise)](FWwiseLoadedGroupValuePtr LoadedNode) mutable
 					{
-						CHECK(LoadedNode);
+						WWISE_CHECK(LoadedNode);
 						if (UNLIKELY(!LoadedNode))
 						{
 							UnloadPromise.EmplaceValue();
@@ -2268,12 +2722,11 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 			UnloadFuturesArray[i].Get();
 		}
 
-		CHECK(ExternalSourceManager->IsEmpty());
-		CHECK(MediaManager->IsEmpty());
-		CHECK(SoundBankManager->IsEmpty());
-		CHECK(ResourceLoaderImpl->IsEmpty());
+		WWISE_CHECK(ExternalSourceManager->IsEmpty());
+		WWISE_CHECK(MediaManager->IsEmpty());
+		WWISE_CHECK(SoundBankManager->IsEmpty());
+		WWISE_CHECK(ResourceLoaderImpl->IsEmpty());
 	}
 }
-
 
 #endif // WWISE_UNIT_TESTS

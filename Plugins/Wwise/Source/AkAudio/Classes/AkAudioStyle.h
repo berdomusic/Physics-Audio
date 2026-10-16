@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -38,14 +38,14 @@ public:
 	static FName GetStyleSetName();
 
 #if WITH_EDITOR
-	static void DisplayEditorMessage(const FText& messageText, EWwiseItemType::Type wwiseItemType = EWwiseItemType::Type::None, float duration = 1.5f);
+	static void DisplayEditorMessage(const FText& messageText, EWwiseItemType wwiseItemType = EWwiseItemType::None, float duration = 1.5f);
 	static const FSlateBrush* GetWwiseIcon();
-	static const FSlateBrush* GetBrush(EWwiseItemType::Type ItemType);
+	static const FSlateBrush* GetBrush(EWwiseItemType ItemType);
 	static const FSlateBrush* GetBrush(WwiseRefType WwiseRefType);
 	static const FSlateBrush* GetBrush(UClass* Class);
-#endif
 	static const FSlateBrush* GetBrush(FName PropertyName, const ANSICHAR* Specifier = NULL);
 	static const FSlateFontInfo GetFontStyle(FName PropertyName, const ANSICHAR* Specifier = NULL);
+#endif
 	static UMaterial* GetAkForegroundTextMaterial();
 	/** returns a color from the WwiseUnrealColorPalette (taken from the dark theme in the Wwise Authoring tool). Use a colorIndex of -1 to use the 'default' color. */
 	static FLinearColor GetWwiseObjectColor(int colorIndex);

@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -36,7 +36,8 @@ public:
 		DialogueEventIndex(InDialogueEventIndex)
 	{}
 	const WwiseMetadataDialogueEvent* GetDialogueEvent() const;
-	WwiseDialogueArgumentIdsMap GetDialogueArguments(const WwiseDialogueArgumentGlobalIdsMap& GlobalMap) const;
+	WwiseDialogueArgumentArray GetDialogueArguments(const WwiseDialogueArgumentGlobalIdsMap& GlobalMap) const;
+	WwiseMediaIdsMap GetAllMedia(const WwiseMediaGlobalIdsMap& GlobalMap) const;
 
 	WwiseDBShortId DialogueEventId() const;
 	WwiseDBGuid DialogueEventGuid() const;

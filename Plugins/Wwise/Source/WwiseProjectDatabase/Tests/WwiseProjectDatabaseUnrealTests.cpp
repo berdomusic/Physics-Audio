@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
 The content of this file includes portions of the proprietary AUDIOKINETIC Wwise
 Technology released in source code form as part of the game integration package.
 The content of this file may not be used without valid licenses to the
@@ -12,11 +12,12 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseUnitTests.h"
 #include "Wwise/AdapterTypes/WwiseWrapperTypes.h"
+#include "Wwise/AdapterTypes/IWwiseDirectoryVisitor.h"
 #include "Wwise/WwiseStringConverter.h"
 
 #if WWISE_UNIT_TESTS
@@ -35,14 +36,14 @@ WWISE_TEST_CASE(WwiseProjectDatabaseUnreal, "Wwise::WwiseProjectDatabase::Unreal
 		FString PathFString = FWwiseStringConverter::ToFString(Path);
 		FString EmojiFString = FWwiseStringConverter::ToFString(EmojiTest);
 
-		CHECK(UnrealFString == FString(TEXT("Test")))
-		CHECK(PathFString == FString(TEXT("Path/To/../To/Test.exe")))
+		WWISE_CHECK(UnrealFString == FString(TEXT("Test")))
+		WWISE_CHECK(PathFString == FString(TEXT("Path/To/../To/Test.exe")))
 		// Unreal strings are UTF-16 by default
-		CHECK(EmojiFString == FString(TEXT("\xD83C\xDF2D")))
+		WWISE_CHECK(EmojiFString == FString(TEXT("\xD83C\xDF2D")))
 
 
 		WwiseStandardString CafeWwiseString = FWwiseStringConverter::ToWwiseDBString(Cafe);
-		CHECK(CafeWwiseString == WwiseStandardString("Café"))
+		WWISE_CHECK(CafeWwiseString == WwiseStandardString("Café"))
 
 	}
 
@@ -61,15 +62,35 @@ WWISE_TEST_CASE(WwiseProjectDatabaseUnreal, "Wwise::WwiseProjectDatabase::Unreal
 		FString PathFString = FWwiseStringConverter::ToFString(Path);
 		FString EmojiFString = FWwiseStringConverter::ToFString(EmojiTest);
 
-		CHECK(UnrealFString == FString(TEXT("Test")))
-		CHECK(PathFString == FString(TEXT("Path/To/../To/Test.exe")))
+		WWISE_CHECK(UnrealFString == FString(TEXT("Test")))
+		WWISE_CHECK(PathFString == FString(TEXT("Path/To/../To/Test.exe")))
 		// Unreal strings are UTF-16 by default
-		CHECK(EmojiFString == FString(TEXT("\xD83C\xDF2D")))
+		WWISE_CHECK(EmojiFString == FString(TEXT("\xD83C\xDF2D")))
 		
 		WwiseUnrealString CafeWwiseString = FWwiseStringConverter::ToWwiseDBString(Cafe);
-		CHECK(CafeWwiseString == WwiseUnrealString(TEXT("Café")))
+		WWISE_CHECK(CafeWwiseString == WwiseUnrealString(TEXT("Café")))
 	}
 
+#endif // WWISE_DB_UNREAL_TYPES
+
+#ifdef WWISE_DB_UNREAL_TYPES
+	SECTION("WwiseDBStringFromPath")
+	{
+#if PLATFORM_WINDOWS
+#define WWISE_TEST_PATH(utf8, wide) std::filesystem::path(wide)
+#else
+#define WWISE_TEST_PATH(utf8, wide) std::filesystem::path(utf8)
+#endif
+		// ASCII
+		WWISE_CHECK(WwiseDBStringFromPath(WWISE_TEST_PATH(u8"hello/world.txt", TEXT("hello/world.txt")))
+			== WwiseDBString(TEXT("hello/world.txt")));
+
+		// Japanese path
+		WWISE_CHECK(WwiseDBStringFromPath(WWISE_TEST_PATH(u8"\u5165\u9580\u30C1\u30E5\u30FC\u30C8\u30EA\u30A2\u30EB", TEXT("\u5165\u9580\u30C1\u30E5\u30FC\u30C8\u30EA\u30A2\u30EB")))
+			== WwiseDBString(TEXT("\u5165\u9580\u30C1\u30E5\u30FC\u30C8\u30EA\u30A2\u30EB")));
+
+#undef WWISE_TEST_PATH
+	}
 #endif // WWISE_DB_UNREAL_TYPES
 
 }

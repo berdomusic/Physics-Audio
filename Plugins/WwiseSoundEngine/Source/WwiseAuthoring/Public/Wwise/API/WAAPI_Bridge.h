@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -59,13 +59,15 @@ public:
 	virtual void SetupErrorTranslator(
 		const FString& WaapiIP, ///< IP Address of the WAAPI server
 		AkUInt32 WaapiPort, ///< Port of the WAAPI server
-		AkUInt32 Timeout ///< Maximum time that can be spent resolving the error parameters. Set to INT_MAX to wait infinitely or 0 to disable XML translation entirely.
-		) override;
+		AkUInt32 Timeout
+		///< Maximum time that can be spent resolving the error parameters. Set to INT_MAX to wait infinitely or 0 to disable XML translation entirely.
+	) override;
 
 	/// Terminate the default, WwiseSDK-provided WAAPI error translator.
 	virtual void TerminateErrorTranslator() override;
+
 private:
-	static AkWAAPIErrorMessageTranslator WaapiErrorMessageTranslator;
+	TUniquePtr<AkWAAPIErrorMessageTranslator> WaapiErrorMessageTranslator;
 #endif
 };
 #endif

@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 /*------------------------------------------------------------------------------------
@@ -38,12 +38,15 @@ const FString WwiseWaapiHelper::AUX_BUSSES                   = TEXT("auxBusses")
 const FString WwiseWaapiHelper::BACK_SLASH                   = TEXT("\\");
 const FString WwiseWaapiHelper::BANK_DATA                    = TEXT("bankData");
 const FString WwiseWaapiHelper::BANK_INFO                    = TEXT("bankInfo");
+const FString WwiseWaapiHelper::CHANGES                      = TEXT("changes");
 const FString WwiseWaapiHelper::CHILD                        = TEXT("child");
 const FString WwiseWaapiHelper::CHILDREN                     = TEXT("children");
 const FString WwiseWaapiHelper::CHILDREN_COUNT               = TEXT("childrenCount");
 const FString WwiseWaapiHelper::CLASSID                      = TEXT("classId");
 const FString WwiseWaapiHelper::COMMAND                      = TEXT("command");
+const FString WwiseWaapiHelper::CREATE                       = TEXT("create");
 const FString WwiseWaapiHelper::DATA                         = TEXT("data");
+const FString WwiseWaapiHelper::DELETE_ITEM                 = TEXT("Delete");
 const FString WwiseWaapiHelper::DELETE_ITEMS                 = TEXT("Delete Items");
 const FString WwiseWaapiHelper::DESCENDANTS                  = TEXT("descendants"); 
 const FString WwiseWaapiHelper::DISPLAY_NAME                 = TEXT("displayName");
@@ -58,6 +61,7 @@ const FString WwiseWaapiHelper::FROM                         = TEXT("from");
 const FString WwiseWaapiHelper::ID                           = TEXT("id");
 const FString WwiseWaapiHelper::INCLUSIONS                   = TEXT("inclusions");
 const FString WwiseWaapiHelper::INFO_FILE                    = TEXT("infoFile");
+const FString WwiseWaapiHelper::IS_AVAILABLE                 = TEXT("isAvailable");
 const FString WwiseWaapiHelper::IS_CONNECTED                 = TEXT("isConnected");
 const FString WwiseWaapiHelper::LANGUAGE                     = TEXT("language");
 const FString WwiseWaapiHelper::LANGUAGES                    = TEXT("languages");
@@ -66,17 +70,21 @@ const FString WwiseWaapiHelper::MAX_RADIUS_ATTENUATION       = TEXT("audioSource
 const FString WwiseWaapiHelper::MESSSAGE                     = TEXT("message");
 const FString WwiseWaapiHelper::MIN                          = TEXT("min");
 const FString WwiseWaapiHelper::NAME                         = TEXT("name");
+const FString WwiseWaapiHelper::NAME_CHANGE                   = TEXT("nameChange");
 const FString WwiseWaapiHelper::NAMECONTAINS                 = TEXT("name:contains");
 const FString WwiseWaapiHelper::NEW                          = TEXT("new");
 const FString WwiseWaapiHelper::NEW_NAME                     = TEXT("newName");
+const FString WwiseWaapiHelper::NEW_PARENT                   = TEXT("newParent");
 const FString WwiseWaapiHelper::NOTES                        = TEXT("notes");
 const FString WwiseWaapiHelper::OBJECT                       = TEXT("object");
 const FString WwiseWaapiHelper::OBJECTS                      = TEXT("objects");
 const FString WwiseWaapiHelper::OF_TYPE                      = TEXT("ofType");
 const FString WwiseWaapiHelper::OLD_NAME                     = TEXT("oldName");
+const FString WwiseWaapiHelper::OLD_PARENT                   = TEXT("oldParent");
 const FString WwiseWaapiHelper::ON_NAME_CONFLICT             = TEXT("onNameConflict");
 const FString WwiseWaapiHelper::OPERATION					 = TEXT("operation");
 const FString WwiseWaapiHelper::PARENT                       = TEXT("parent");
+const FString WwiseWaapiHelper::PARENT_CHANGE                = TEXT("parentChange");
 const FString WwiseWaapiHelper::PATH                         = TEXT("path");
 const FString WwiseWaapiHelper::PHYSICAL_FOLDER              = TEXT("PhysicalFolder");
 const FString WwiseWaapiHelper::PLATFORM                     = TEXT("platform");

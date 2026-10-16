@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -26,14 +26,16 @@ class WWISEFILEHANDLER_API FWwiseSoundBankManagerImpl : public IWwiseSoundBankMa
 {
 public:
 	FWwiseSoundBankManagerImpl();
-	~FWwiseSoundBankManagerImpl() override;
+	virtual ~FWwiseSoundBankManagerImpl() override;
 
-	const TCHAR* GetManagingTypeName() const override { return TEXT("SoundBank"); }
-	void LoadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, FLoadSoundBankCallback&& InCallback) override;
-	void UnloadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, FUnloadSoundBankCallback&& InCallback) override;
-	void SetGranularity(uint32 InStreamingGranularity) override;
+	virtual const TCHAR* GetManagingTypeName() const override { return TEXT("SoundBank"); }
+	virtual void LoadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, FLoadSoundBankCallback&& InCallback) override;
+	virtual void UnloadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, FUnloadSoundBankCallback&& InCallback) override;
+	virtual void SetGranularity(uint32 InStreamingGranularity) override;
 
-	IWwiseStreamingManagerHooks& GetStreamingHooks() final { return *this; }
+	virtual void DoPostTerm() override;
+	
+	virtual IWwiseStreamingManagerHooks& GetStreamingHooks() override final { return *this; }
 
 protected:
 	uint32 StreamingGranularity;

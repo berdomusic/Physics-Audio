@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -25,6 +25,8 @@ Copyright (c) 2025 Audiokinetic Inc.
 #include "Wwise/Packaging/WwiseFilterableAssetLibrary.h"
 
 #include "WwiseAssetLibraryDetailsCustomization.generated.h"
+
+class UWwiseAssetLibraryGroup;
 
 class UWwisePackagingSettings;
 /**
@@ -205,6 +207,9 @@ protected:
 	// Whether the Asset Library is represented in the Packaging Settings or not. Calculated in UpdateAssetLibraryInSettings.
 	bool bAssetLibraryInSettings{ false };
 
+	// The Library Group that contains the Asset Library.
+	UWwiseAssetLibraryGroup* LibraryGroup = nullptr;
+
 	// Show what will be packaged in this asset.
 	bool bHonorPackagingSettings{ true };
 
@@ -231,6 +236,9 @@ protected:
 	virtual bool IsPackagingSettingsHonored() const;
 	virtual void FilterPackagingSettings(FWwiseAssetLibraryProcessor* Processor,
 		const TUniquePtr<FWwiseAssetLibraryFilteringSharedData>& FilteringSharedData, UWwiseFilterableAssetLibrary* StopBefore) const;
+	virtual void SetGameplayModulesTargeted(TArray<FString>& PackagePaths, TArray<FString>& ExcludedGameplayModules) const;
+	virtual EVisibility IsLibraryUnusedVisible() const;
+	virtual bool IsLibraryUnusedEnabled() const;
 
 	virtual void ClaimWorkingThread();
 	virtual void ReleaseWorkingThread();

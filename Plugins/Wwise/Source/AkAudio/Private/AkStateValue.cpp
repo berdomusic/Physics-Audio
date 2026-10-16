@@ -12,11 +12,12 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "AkStateValue.h"
 
+#include "Wwise/WwiseGlobalCallbacks.h"
 #include "Wwise/WwiseResourceLoader.h"
 #include "Wwise/Stats/AkAudio.h"
 
@@ -28,7 +29,7 @@ Copyright (c) 2025 Audiokinetic Inc.
 
 void UAkStateValue::LoadGroupValue()
 {
-	SCOPED_AKAUDIO_EVENT_2(TEXT("UAkStateValue::LoadGroupValue"));
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkStateValue::LoadGroupValue"));
 	FWwiseResourceLoaderPtr ResourceLoader = FWwiseResourceLoader::Get();
 	if (UNLIKELY(!ResourceLoader))
 	{
@@ -55,8 +56,8 @@ void UAkStateValue::LoadGroupValue()
 	}
 	if (!ResourceCooker->PrepareCookedData(GroupValueCookedData, GetValidatedInfo(GroupValueInfo), EWwiseGroupType::State))
 	{
-		const auto* AudioDevice = FAkAudioDevice::Get();
-		if( AudioDevice && AudioDevice->IsWwiseProfilerConnected())
+		const auto* GlobalCallbacks = FWwiseGlobalCallbacks::Get();
+		if( GlobalCallbacks && GlobalCallbacks->IsWwiseProfilerConnected())
 		{
 			UE_LOG(LogAkAudio, Verbose, TEXT("Could not fetch CookedData for State Value %s, but Wwise profiler is connected. Previous errors can be ignored."),
 			*GetName());
@@ -78,6 +79,7 @@ void UAkStateValue::LoadGroupValue()
 
 void UAkStateValue::Serialize(FArchive& Ar)
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkStateValue::Serialize"));
 	Super::Serialize(Ar);
 
 	if (HasAnyFlags(RF_ClassDefaultObject))
@@ -104,6 +106,7 @@ void UAkStateValue::Serialize(FArchive& Ar)
 #if WITH_EDITORONLY_DATA
 void UAkStateValue::FillInfo()
 {
+	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkStateValue::FillInfo"));
 	auto* ResourceCooker = IWwiseResourceCooker::GetDefault();
 	if (UNLIKELY(!ResourceCooker))
 	{

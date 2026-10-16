@@ -12,7 +12,7 @@ Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
 this file in accordance with the end user license agreement provided with the
 software or, alternatively, in accordance with the terms contained
 in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2025 Audiokinetic Inc.
+Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "MovieSceneWwiseGameParameterTemplate.h"
@@ -39,6 +39,7 @@ struct FAkAudioRTPCExecutionToken : IMovieSceneExecutionToken
 {
 	virtual void Execute(const FMovieSceneContext& Context, const FMovieSceneEvaluationOperand& Operand, FPersistentEvaluationData& PersistentData, IMovieScenePlayer& Player) override
 	{
+		SCOPED_AKAUDIO_EVENT_3(TEXT("FAkAudioRTPCExecutionToken::Execute"));
 		auto AudioDevice = FAkAudioDevice::Get();
 		if (!AudioDevice)
 		{
